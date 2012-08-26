@@ -23,8 +23,11 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define _Complex_h 1
 
 
-#include <iostream.h>
+#include <iostream>
+#include <fstream>
 #include <math.h>
+using std::ostream;
+using std::istream;
 
 class Complex
 {

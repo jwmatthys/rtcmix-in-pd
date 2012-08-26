@@ -1,0 +1,1273 @@
+making all ...
+make[1]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include'
+ln -sf ../src/rtcmix/rt.h .
+ln -sf ../src/rtcmix/rtdefs.h .
+ln -sf ../src/rtcmix/ug_intro.h .
+ln -sf ../src/rtcmix/spray.h .
+ln -sf ../src/rtcmix/RefCounted.h .
+ln -sf ../src/rtcmix/lock.h .
+ln -sf ../src/rtcmix/Lockable.h .
+ln -sf ../src/rtcmix/Locked.h .
+ln -sf ../src/rtcmix/Instrument.h .
+ln -sf ../src/rtcmix/PField.h .
+ln -sf ../src/rtcmix/PFieldSet.h .
+ln -sf ../src/rtcmix/Random.h .
+ln -sf ../src/rtcmix/Option.h .
+ln -sf ../src/rtcmix/sockdefs.h .
+ln -sf ../src/rtcmix/sfheader.h .
+ln -sf ../src/rtcmix/notetags.h .
+ln -sf ../src/rtcmix/RTcmix.h .
+ln -sf ../src/rtcmix/mixerr.h .
+make[1]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include'
+make[1]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/genlib'
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o allpass.o allpass.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o allpole.o allpole.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o ampdb.o ampdb.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o ballpole.o ballpole.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o bbuzz.o bbuzz.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o boost.o boost.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o boscili.o boscili.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o bpluck.o bpluck.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o breson.o breson.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o brrand.o brrand.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o buzz.o buzz.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o comb.o comb.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o combset.o combset.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o delget.o delget.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o delput.o delput.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o delset.o delset.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o dliget.o dliget.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o hcomb.o hcomb.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o hplset.o hplset.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o hpluck.o hpluck.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o evp.o evp.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o evset.o evset.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o oscil.o oscil.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o oscili.o oscili.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o osciln.o osciln.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o oscilni.o oscilni.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o pitchconv.o pitchconv.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o pluck.o pluck.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o pluckset.o pluckset.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o randf.o randf.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o random.o random.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o reson.o reson.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o resonz.o resonz.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o reverb.o reverb.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o rrand.o rrand.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o rsnset.o rsnset.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o rvbset.o rvbset.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o setline.o setline.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o spray.o spray.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o table.o table.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o tablei.o tablei.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o tableset.o tableset.c
+gcc  -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o wshape.o wshape.c
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Oallpass.o Oallpass.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Oallpassi.o Oallpassi.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Obalance.o Obalance.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Obucket.o Obucket.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Ocomb.o Ocomb.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Ocombi.o Ocombi.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Odcblock.o Odcblock.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Odelay.o Odelay.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Odelayi.o Odelayi.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Odistort.o Odistort.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Oequalizer.o Oequalizer.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Offt.o Offt.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Oonepole.o Oonepole.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Ooscil.o Ooscil.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Ooscili.o Ooscili.cpp
+Ooscili.cpp: In member function ‘float Ooscili::next()’:
+Ooscili.cpp:52:27: warning: suggest parentheses around ‘-’ in operand of ‘&’ [-Wparentheses]
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Orand.o Orand.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Oreson.o Oreson.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Orms.o Orms.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Ortgetin.o Ortgetin.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o Ostrum.o Ostrum.cpp
+g++ -Wno-deprecated -c  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../src/include -I../src/rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -o FFTReal.o FFTReal.cpp
+rm -f libgen.a
+ar rv libgen.a allpass.o allpole.o ampdb.o ballpole.o bbuzz.o boost.o boscili.o bpluck.o breson.o brrand.o buzz.o comb.o combset.o delget.o delput.o delset.o dliget.o hcomb.o hplset.o hpluck.o evp.o evset.o oscil.o oscili.o osciln.o oscilni.o pitchconv.o pluck.o pluckset.o randf.o random.o reson.o resonz.o reverb.o rrand.o rsnset.o rvbset.o setline.o spray.o table.o tablei.o tableset.o wshape.o Oallpass.o Oallpassi.o Obalance.o Obucket.o Ocomb.o Ocombi.o Odcblock.o Odelay.o Odelayi.o Odistort.o Oequalizer.o Offt.o Oonepole.o Ooscil.o Ooscili.o Orand.o Oreson.o Orms.o Ortgetin.o Ostrum.o FFTReal.o
+ar: creating libgen.a
+a - allpass.o
+a - allpole.o
+a - ampdb.o
+a - ballpole.o
+a - bbuzz.o
+a - boost.o
+a - boscili.o
+a - bpluck.o
+a - breson.o
+a - brrand.o
+a - buzz.o
+a - comb.o
+a - combset.o
+a - delget.o
+a - delput.o
+a - delset.o
+a - dliget.o
+a - hcomb.o
+a - hplset.o
+a - hpluck.o
+a - evp.o
+a - evset.o
+a - oscil.o
+a - oscili.o
+a - osciln.o
+a - oscilni.o
+a - pitchconv.o
+a - pluck.o
+a - pluckset.o
+a - randf.o
+a - random.o
+a - reson.o
+a - resonz.o
+a - reverb.o
+a - rrand.o
+a - rsnset.o
+a - rvbset.o
+a - setline.o
+a - spray.o
+a - table.o
+a - tablei.o
+a - tableset.o
+a - wshape.o
+a - Oallpass.o
+a - Oallpassi.o
+a - Obalance.o
+a - Obucket.o
+a - Ocomb.o
+a - Ocombi.o
+a - Odcblock.o
+a - Odelay.o
+a - Odelayi.o
+a - Odistort.o
+a - Oequalizer.o
+a - Offt.o
+a - Oonepole.o
+a - Ooscil.o
+a - Ooscili.o
+a - Orand.o
+a - Oreson.o
+a - Orms.o
+a - Ortgetin.o
+a - Ostrum.o
+a - FFTReal.o
+touch libgen.a
+cp -f libgen.a /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib
+make[1]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/genlib'
+make[1]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts'
+find: warning: you have specified the -mindepth option after a non-option argument -type, but options are not positional (-mindepth affects tests specified before it as well as those specified after it).  Please specify options before other arguments.
+
+find: warning: you have specified the -maxdepth option after a non-option argument -type, but options are not positional (-maxdepth affects tests specified before it as well as those specified after it).  Please specify options before other arguments.
+
+find: warning: you have specified the -mindepth option after a non-option argument -type, but options are not positional (-mindepth affects tests specified before it as well as those specified after it).  Please specify options before other arguments.
+
+find: warning: you have specified the -maxdepth option after a non-option argument -type, but options are not positional (-maxdepth affects tests specified before it as well as those specified after it).  Please specify options before other arguments.
+
+making all in ./base...
+make[2]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/base'
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/base/MIX'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o MIX.o MIX.cpp
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/base/MIX'
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/base/WAVETABLE'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o WAVETABLE.o WAVETABLE.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libWAVETABLE.so -o libWAVETABLE.so WAVETABLE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/base/WAVETABLE'
+make[2]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/base'
+done in ./base
+making all in ./jg...
+make[2]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg'
+making in objlib...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/objlib'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o JGFilter.o JGFilter.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o JGOnePole.o JGOnePole.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o TwoPole.o TwoPole.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o JGOneZero.o JGOneZero.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o TwoZero.o TwoZero.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o NZero.o NZero.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o JGBiQuad.o JGBiQuad.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Butter.o Butter.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o DCBlock.o DCBlock.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o RMS.o RMS.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Balance.o Balance.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o DLineN.o DLineN.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o DLineL.o DLineL.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o DLineA.o DLineA.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Reverb.o Reverb.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o PRCRev.o PRCRev.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o JCRev.o JCRev.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o NRev.o NRev.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Comb.o Comb.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o ZComb.o ZComb.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Notch.o Notch.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o ZNotch.o ZNotch.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Allpass.o Allpass.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Envelope.o Envelope.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o ADSR.o ADSR.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Oscil.o Oscil.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o OscilN.o OscilN.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o OscilL.o OscilL.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o KOscilN.o KOscilN.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o TableN.o TableN.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o TableL.o TableL.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o JGNoise.o JGNoise.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o SubNoise.o SubNoise.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o SubNoiseL.o SubNoiseL.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o WavShape.o WavShape.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o ZAllpass.o ZAllpass.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Equalizer.o Equalizer.cpp
+rm -f objlib.a
+ar q objlib.a JGFilter.o JGOnePole.o TwoPole.o JGOneZero.o TwoZero.o NZero.o JGBiQuad.o Butter.o DCBlock.o RMS.o Balance.o DLineN.o DLineL.o DLineA.o Reverb.o PRCRev.o JCRev.o NRev.o Comb.o ZComb.o Notch.o ZNotch.o Allpass.o Envelope.o ADSR.o Oscil.o OscilN.o OscilL.o KOscilN.o TableN.o TableL.o JGNoise.o SubNoise.o SubNoiseL.o WavShape.o ZAllpass.o Equalizer.o
+ar: creating objlib.a
+touch objlib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/objlib'
+done in objlib
+making all in BUTTER...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/BUTTER'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o BUTTER.o BUTTER.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libBUTTER.so -o libBUTTER.so BUTTER.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../objlib/objlib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/BUTTER'
+done in BUTTER
+making all in COMPLIMIT...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/COMPLIMIT'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -Wall   -c -o COMPLIMIT.o COMPLIMIT.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libCOMPLIMIT.so -o libCOMPLIMIT.so COMPLIMIT.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/COMPLIMIT'
+done in COMPLIMIT
+making all in CONVOLVE1...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/CONVOLVE1'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o CONVOLVE1.o CONVOLVE1.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libCONVOLVE1.so -o libCONVOLVE1.so CONVOLVE1.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/CONVOLVE1'
+done in CONVOLVE1
+making all in DCBLOCK...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/DCBLOCK'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o DCBLOCK.o DCBLOCK.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libDCBLOCK.so -o libDCBLOCK.so DCBLOCK.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/DCBLOCK'
+done in DCBLOCK
+making all in DECIMATE...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/DECIMATE'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o DECIMATE.o DECIMATE.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libDECIMATE.so -o libDECIMATE.so DECIMATE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../objlib/objlib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/DECIMATE'
+done in DECIMATE
+making all in DISTORT...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/DISTORT'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o DISTORT.o DISTORT.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libDISTORT.so -o libDISTORT.so DISTORT.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../objlib/objlib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/DISTORT'
+done in DISTORT
+making all in ELL...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/ELL'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o ELL.o ELL.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o ellipse.o ellipse.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o setell.o setell.c
+g++ -Wno-deprecated -shared -Wl,-soname,libELL.so -o libELL.so ELL.o ellipse.o setell.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/ELL'
+done in ELL
+making all in EQ...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/EQ'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o EQ.o EQ.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libEQ.so -o libEQ.so EQ.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../objlib/objlib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/EQ'
+done in EQ
+making all in FILTERBANK...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/FILTERBANK'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o FILTERBANK.o FILTERBANK.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libFILTERBANK.so -o libFILTERBANK.so FILTERBANK.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/FILTERBANK'
+done in FILTERBANK
+making all in FILTSWEEP...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/FILTSWEEP'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o FILTSWEEP.o FILTSWEEP.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libFILTSWEEP.so -o libFILTSWEEP.so FILTSWEEP.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../objlib/objlib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/FILTSWEEP'
+done in FILTSWEEP
+making all in FLANGE...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/FLANGE'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o FLANGE.o FLANGE.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libFLANGE.so -o libFLANGE.so FLANGE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../objlib/objlib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/FLANGE'
+done in FLANGE
+making all in FOLLOWER...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/FOLLOWER'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o FOLLOWER.o FOLLOWER.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o FOLLOWER_BASE.o FOLLOWER_BASE.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libFOLLOWER.so -o libFOLLOWER.so FOLLOWER.o FOLLOWER_BASE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  \
+		../objlib/objlib.a
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o FOLLOWGATE.o FOLLOWGATE.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libFOLLOWGATE.so -o libFOLLOWGATE.so FOLLOWGATE.o FOLLOWER_BASE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  \
+		../objlib/objlib.a
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o FOLLOWBUTTER.o FOLLOWBUTTER.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libFOLLOWBUTTER.so -o libFOLLOWBUTTER.so FOLLOWBUTTER.o FOLLOWER_BASE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  \
+		../objlib/objlib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/FOLLOWER'
+done in FOLLOWER
+making all in FREEVERB...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/FREEVERB'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -Wall    -c -o FREEVERB.o FREEVERB.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -Wall    -c -o allpass.o allpass.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -Wall    -c -o comb.o comb.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -Wall    -c -o delay.o delay.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -Wall    -c -o revmodel.o revmodel.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libFREEVERB.so -o libFREEVERB.so FREEVERB.o allpass.o comb.o delay.o revmodel.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/FREEVERB'
+done in FREEVERB
+making all in GRANSYNTH...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/GRANSYNTH'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o GRANSYNTH.o GRANSYNTH.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o synthgrainstream.o synthgrainstream.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o synthgrainvoice.o synthgrainvoice.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o ../../../src/rtcmix/Random.o ../../../src/rtcmix/Random.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libGRANSYNTH.so -o libGRANSYNTH.so GRANSYNTH.o synthgrainstream.o synthgrainvoice.o ../../../src/rtcmix/Random.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/GRANSYNTH'
+done in GRANSYNTH
+making all in JCHOR...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/JCHOR'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o JCHOR.o JCHOR.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libJCHOR.so -o libJCHOR.so JCHOR.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/JCHOR'
+done in JCHOR
+making all in JDELAY...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/JDELAY'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o JDELAY.o JDELAY.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libJDELAY.so -o libJDELAY.so JDELAY.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/JDELAY'
+done in JDELAY
+making all in JFIR...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/JFIR'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o JFIR.o JFIR.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libJFIR.so -o libJFIR.so JFIR.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../objlib/objlib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/JFIR'
+done in JFIR
+making all in JGRAN...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/JGRAN'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o JGRAN.o JGRAN.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libJGRAN.so -o libJGRAN.so JGRAN.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../objlib/objlib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/JGRAN'
+done in JGRAN
+making all in MOOGVCF...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/MOOGVCF'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -Wall    -c -o MOOGVCF.o MOOGVCF.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMOOGVCF.so -o libMOOGVCF.so MOOGVCF.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/MOOGVCF'
+done in MOOGVCF
+making all in MROOM...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/MROOM'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o MROOM.o MROOM.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o timeset.o timeset.c
+g++ -Wno-deprecated -shared -Wl,-soname,libMROOM.so -o libMROOM.so MROOM.o timeset.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/MROOM'
+done in MROOM
+making all in MULTEQ...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/MULTEQ'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o MULTEQ.o MULTEQ.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMULTEQ.so -o libMULTEQ.so MULTEQ.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/MULTEQ'
+done in MULTEQ
+making all in MULTIWAVE...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/MULTIWAVE'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o MULTIWAVE.o MULTIWAVE.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMULTIWAVE.so -o libMULTIWAVE.so MULTIWAVE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/MULTIWAVE'
+done in MULTIWAVE
+making all in PAN...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/PAN'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o PAN.o PAN.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libPAN.so -o libPAN.so PAN.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/PAN'
+done in PAN
+making all in REV...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/REV'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o REV.o REV.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libREV.so -o libREV.so REV.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../objlib/objlib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/REV'
+done in REV
+making all in REVERBIT...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/REVERBIT'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o REVERBIT.o REVERBIT.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libREVERBIT.so -o libREVERBIT.so REVERBIT.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/REVERBIT'
+done in REVERBIT
+making all in ROOM...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/ROOM'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o ROOM.o ROOM.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o roomset.o roomset.c
+g++ -Wno-deprecated -shared -Wl,-soname,libROOM.so -o libROOM.so ROOM.o roomset.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/ROOM'
+done in ROOM
+making all in SHAPE...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/SHAPE'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o SHAPE.o SHAPE.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libSHAPE.so -o libSHAPE.so SHAPE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../objlib/objlib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/SHAPE'
+done in SHAPE
+making all in SPECTACLE...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/SPECTACLE'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o SPECTACLE.o SPECTACLE.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o SPECTACLE_BASE.o SPECTACLE_BASE.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o fft.o fft.c
+g++ -Wno-deprecated -shared -Wl,-soname,libSPECTACLE.so -o libSPECTACLE.so SPECTACLE.o SPECTACLE_BASE.o fft.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  \
+		../objlib/objlib.a
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o TVSPECTACLE.o TVSPECTACLE.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libTVSPECTACLE.so -o libTVSPECTACLE.so TVSPECTACLE.o SPECTACLE_BASE.o fft.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  \
+		../objlib/objlib.a
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o SPECTEQ.o SPECTEQ.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libSPECTEQ.so -o libSPECTEQ.so SPECTEQ.o SPECTACLE_BASE.o fft.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  \
+		../objlib/objlib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/SPECTACLE'
+done in SPECTACLE
+making all in SPECTACLE2...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/SPECTACLE2'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o SPECTACLE2.o SPECTACLE2.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o SPECTACLE2_BASE.o SPECTACLE2_BASE.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libSPECTACLE2.so -o libSPECTACLE2.so SPECTACLE2.o SPECTACLE2_BASE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o SPECTEQ2.o SPECTEQ2.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libSPECTEQ2.so -o libSPECTEQ2.so SPECTEQ2.o SPECTACLE2_BASE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/SPECTACLE2'
+done in SPECTACLE2
+making all in SPLITTER...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/SPLITTER'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o SPLITTER.o SPLITTER.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libSPLITTER.so -o libSPLITTER.so SPLITTER.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/SPLITTER'
+done in SPLITTER
+making all in VOCODE2...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/VOCODE2'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o VOCODE2.o VOCODE2.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libVOCODE2.so -o libVOCODE2.so VOCODE2.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../objlib/objlib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/VOCODE2'
+done in VOCODE2
+making all in VOCODE3...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/VOCODE3'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o VOCODE3.o VOCODE3.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libVOCODE3.so -o libVOCODE3.so VOCODE3.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/VOCODE3'
+done in VOCODE3
+making all in VOCODESYNTH...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/VOCODESYNTH'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o VOCODESYNTH.o VOCODESYNTH.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libVOCODESYNTH.so -o libVOCODESYNTH.so VOCODESYNTH.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../objlib/objlib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/VOCODESYNTH'
+done in VOCODESYNTH
+making all in WAVY...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/WAVY'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o WAVY.o WAVY.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o fparser27/fparser.o fparser27/fparser.cc
+fparser27/fparser.cc: In member function ‘int FunctionParser::CheckSyntax(const char*)’:
+fparser27/fparser.cc:572:41: warning: ignoring return value of ‘double strtod(const char*, char**)’, declared with attribute warn_unused_result [-Wunused-result]
+g++ -Wno-deprecated -shared -Wl,-soname,libWAVY.so -o libWAVY.so WAVY.o fparser27/fparser.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/WAVY'
+done in WAVY
+making all in WIGGLE...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/WIGGLE'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I../objlib   -c -o WIGGLE.o WIGGLE.cpp
+WIGGLE.cpp: In member function ‘void WIGGLE::doupdate()’:
+WIGGLE.cpp:380:72: warning: operation on ‘((WIGGLE*)this)->WIGGLE::pan’ may be undefined [-Wsequence-point]
+g++ -Wno-deprecated -shared -Wl,-soname,libWIGGLE.so -o libWIGGLE.so WIGGLE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../objlib/objlib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/WIGGLE'
+done in WIGGLE
+making all in denoise...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/denoise'
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o denoise.o denoise.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o cfast.o cfast.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o cfsst.o cfsst.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o cfr2tr.o cfr2tr.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o cfr4tr.o cfr4tr.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o cfr4syn.o cfr4syn.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o cford1.o cford1.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o cford2.o cford2.c
+g++ -Wno-deprecated -shared -Wl,-soname,libdenoise.so -o libdenoise.so denoise.o cfast.o cfsst.o cfr2tr.o cfr4tr.o cfr4syn.o cford1.o cford2.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg/denoise'
+done in denoise
+make[2]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/jg'
+done in ./jg
+making all in ./std...
+make[2]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std'
+making all in AM...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/AM'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o AM.o AM.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libAM.so -o libAM.so AM.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/AM'
+done in AM
+making all in AMINST...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/AMINST'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o AMINST.o AMINST.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libAMINST.so -o libAMINST.so AMINST.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/AMINST'
+done in AMINST
+making all in CLAR...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/CLAR'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o CLAR.o CLAR.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o cfuncs.o cfuncs.c
+g++ -Wno-deprecated -shared -Wl,-soname,libCLAR.so -o libCLAR.so CLAR.o cfuncs.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/CLAR'
+done in CLAR
+making all in COMBIT...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/COMBIT'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o COMBIT.o COMBIT.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libCOMBIT.so -o libCOMBIT.so COMBIT.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/COMBIT'
+done in COMBIT
+making all in DELAY...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/DELAY'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o DELAY.o DELAY.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libDELAY.so -o libDELAY.so DELAY.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/DELAY'
+done in DELAY
+making all in DEL1...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/DEL1'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o DEL1.o DEL1.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libDEL1.so -o libDEL1.so DEL1.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/DEL1'
+done in DEL1
+making all in DUMP...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/DUMP'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o DUMP.o DUMP.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libDUMP.so -o libDUMP.so DUMP.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/DUMP'
+done in DUMP
+making all in FIR...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/FIR'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o FIR.o FIR.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libFIR.so -o libFIR.so FIR.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/FIR'
+done in FIR
+making all in FMINST...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/FMINST'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o FMINST.o FMINST.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libFMINST.so -o libFMINST.so FMINST.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/FMINST'
+done in FMINST
+making all in HOLO...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/HOLO'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o HOLO.o HOLO.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libHOLO.so -o libHOLO.so HOLO.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/HOLO'
+done in HOLO
+making all in IIR...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/IIR'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o INPUTSIG.o INPUTSIG.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o NOISE.o NOISE.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o BUZZ.o BUZZ.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o PULSE.o PULSE.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o cfuncs.o cfuncs.c
+g++ -Wno-deprecated -shared -Wl,-soname,libIIR.so -o libIIR.so INPUTSIG.o NOISE.o BUZZ.o PULSE.o cfuncs.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/IIR'
+done in IIR
+making all in LPCPLAY...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/LPCPLAY'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -DUSE_HEADERS   -c -o LPCPLAY.o LPCPLAY.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -DUSE_HEADERS   -c -o DataSet.o DataSet.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -DUSE_HEADERS   -c -o setup.o setup.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -DUSE_HEADERS   -c -o shift.o shift.c
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -DUSE_HEADERS -c buzz.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -DUSE_HEADERS   -c -o bmultf.o bmultf.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -DUSE_HEADERS   -c -o lpcheader.o lpcheader.c
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -DUSE_HEADERS -c rand.c
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -DUSE_HEADERS   -c -o stabilize.o stabilize.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -DUSE_HEADERS   -c -o Complex.o Complex.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libLPCPLAY.so -o libLPCPLAY.so LPCPLAY.o DataSet.o setup.o shift.o buzz.o bmultf.o lpcheader.o rand.o stabilize.o Complex.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/LPCPLAY'
+done in LPCPLAY
+making all in MARAGRAN...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MARAGRAN'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o SGRANR.o SGRANR.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libSGRANR.so -o libSGRANR.so SGRANR.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o STGRANR.o STGRANR.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libSTGRANR.so -o libSTGRANR.so STGRANR.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MARAGRAN'
+done in MARAGRAN
+making all in METAFLUTE...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/METAFLUTE'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o SFLUTE.o SFLUTE.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o BSFLUTE.o BSFLUTE.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o VSFLUTE.o VSFLUTE.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o LSFLUTE.o LSFLUTE.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o sflcfuncs.o sflcfuncs.c
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o rtprofile.o rtprofile.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMETAFLUTE.so -o libMETAFLUTE.so SFLUTE.o BSFLUTE.o VSFLUTE.o LSFLUTE.o sflcfuncs.o rtprofile.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/METAFLUTE'
+done in METAFLUTE
+making all in MOCKBEND...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOCKBEND'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o MOCKBEND.o MOCKBEND.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMOCKBEND.so -o libMOCKBEND.so MOCKBEND.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOCKBEND'
+done in MOCKBEND
+making all in MOVE...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -funroll-loops    -c -o PLACE.o PLACE.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o placeprof.o placeprof.c
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -funroll-loops    -c -o BASE.o BASE.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o cmixfuns.o cmixfuns.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o setup.o setup.c
+setup.c: In function ‘oldmatrix’:
+setup.c:177:18: warning: ignoring return value of ‘scanf’, declared with attribute warn_unused_result [-Wunused-result]
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -funroll-loops    -c -o common.o common.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libPLACE.so -o libPLACE.so PLACE.o placeprof.o BASE.o cmixfuns.o setup.o common.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -funroll-loops    -c -o MOVE.o MOVE.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o moveprof.o moveprof.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o path.o path.c
+g++ -Wno-deprecated -shared -Wl,-soname,libMOVE.so -o libMOVE.so MOVE.o moveprof.o path.o BASE.o cmixfuns.o setup.o common.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE'
+done in MOVE
+making all in MULTICOMB...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MULTICOMB'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o MULTICOMB.o MULTICOMB.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMULTICOMB.so -o libMULTICOMB.so MULTICOMB.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MULTICOMB'
+done in MULTICOMB
+making all in NOISE...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/NOISE'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o NOISE.o NOISE.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libNOISE.so -o libNOISE.so NOISE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/NOISE'
+done in NOISE
+making all in PANECHO...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/PANECHO'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o PANECHO.o PANECHO.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libPANECHO.so -o libPANECHO.so PANECHO.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/PANECHO'
+done in PANECHO
+making all in PHASER...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/PHASER'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o PHASER.o PHASER.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libPHASER.so -o libPHASER.so PHASER.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/PHASER'
+done in PHASER
+making all in PVOC...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/PVOC'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o PVOC.o PVOC.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o lpa.o lpa.c
+In file included from lpa.c:1:0:
+pv.h:15:60: warning: conflicting types for built-in function ‘csqrt’ [enabled by default]
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o lpamp.o lpamp.c
+In file included from lpamp.c:1:0:
+pv.h:15:60: warning: conflicting types for built-in function ‘csqrt’ [enabled by default]
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o makewindows.o makewindows.c
+In file included from makewindows.c:1:0:
+pv.h:15:60: warning: conflicting types for built-in function ‘csqrt’ [enabled by default]
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o fft.o fft.c
+In file included from fft.c:1:0:
+pv.h:15:60: warning: conflicting types for built-in function ‘csqrt’ [enabled by default]
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o fold.o fold.c
+In file included from fold.c:1:0:
+pv.h:15:60: warning: conflicting types for built-in function ‘csqrt’ [enabled by default]
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o overlapadd.o overlapadd.c
+In file included from overlapadd.c:1:0:
+pv.h:15:60: warning: conflicting types for built-in function ‘csqrt’ [enabled by default]
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o PVFilter.o PVFilter.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o setup.o setup.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libPVOC.so -o libPVOC.so PVOC.o lpa.o lpamp.o makewindows.o fft.o fold.o overlapadd.o PVFilter.o setup.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/PVOC'
+done in PVOC
+making all in REVMIX...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/REVMIX'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o REVMIX.o REVMIX.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libREVMIX.so -o libREVMIX.so REVMIX.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/REVMIX'
+done in REVMIX
+making all in SCULPT...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/SCULPT'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o SCULPT.o SCULPT.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libSCULPT.so -o libSCULPT.so SCULPT.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/SCULPT'
+done in SCULPT
+making all in STEREO...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/STEREO'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o STEREO.o STEREO.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libSTEREO.so -o libSTEREO.so STEREO.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/STEREO'
+done in STEREO
+making all in STRUM...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/STRUM'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o START.o START.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o BEND.o BEND.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o FRET.o FRET.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o START1.o START1.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o BEND1.o BEND1.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o FRET1.o FRET1.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o VSTART1.o VSTART1.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o VFRET1.o VFRET1.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o rtprofile.o rtprofile.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o randfill.o randfill.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o sset.o sset.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o strum.o strum.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o squisher.o squisher.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o delayset.o delayset.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o delayclean.o delayclean.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o dist.o dist.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o delay.o delay.c
+g++ -Wno-deprecated -shared -Wl,-soname,libSTRUM.so -o libSTRUM.so START.o BEND.o FRET.o START1.o BEND1.o FRET1.o VSTART1.o VFRET1.o rtprofile.o randfill.o sset.o strum.o squisher.o delayset.o delayclean.o dist.o delay.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/STRUM'
+done in STRUM
+making all in STRUM2...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/STRUM2'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o STRUM2.o STRUM2.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libSTRUM2.so -o libSTRUM2.so STRUM2.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/STRUM2'
+done in STRUM2
+making all in STRUMFB...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/STRUMFB'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o STRUMFB.o STRUMFB.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libSTRUMFB.so -o libSTRUMFB.so STRUMFB.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/STRUMFB'
+done in STRUMFB
+making all in TRANS...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/TRANS'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o TRANS.o TRANS.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o TRANS3.o TRANS3.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libTRANS.so -o libTRANS.so TRANS.o TRANS3.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/TRANS'
+done in TRANS
+making all in TRANSBEND...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/TRANSBEND'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o TRANSBEND.o TRANSBEND.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libTRANSBEND.so -o libTRANSBEND.so TRANSBEND.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/TRANSBEND'
+done in TRANSBEND
+making all in WAVESHAPE...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/WAVESHAPE'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o WAVESHAPE.o WAVESHAPE.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libWAVESHAPE.so -o libWAVESHAPE.so WAVESHAPE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/WAVESHAPE'
+done in WAVESHAPE
+making all in MMOVE...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MMOVE'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -funroll-loops  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE    -c -o MPLACE.o MPLACE.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE    -c -o placeprof.o placeprof.c
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -funroll-loops  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE    -c -o MBASE.o MBASE.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -funroll-loops  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE    -c -o RVB.o RVB.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -funroll-loops  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE    -c -o msetup.o msetup.cpp
+msetup.cpp: In function ‘double m_oldmatrix(float*, int)’:
+msetup.cpp:270:32: warning: ignoring return value of ‘int scanf(const char*, ...)’, declared with attribute warn_unused_result [-Wunused-result]
+g++ -Wno-deprecated -shared -Wl,-soname,libMPLACE.so -o libMPLACE.so MPLACE.o placeprof.o MBASE.o RVB.o msetup.o /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE/cmixfuns.o /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE/common.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -funroll-loops  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE    -c -o MMOVE.o MMOVE.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE    -c -o moveprof.o moveprof.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE    -c -o path.o path.c
+g++ -Wno-deprecated -shared -Wl,-soname,libMMOVE.so -o libMMOVE.so MMOVE.o moveprof.o path.o MBASE.o RVB.o msetup.o /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE/cmixfuns.o /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE/common.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -funroll-loops  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE    -c -o DMOVE.o DMOVE.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libDMOVE.so -o libDMOVE.so DMOVE.o moveprof.o path.o MBASE.o RVB.o msetup.o /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE/cmixfuns.o /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MOVE/common.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/MMOVE'
+done in MMOVE
+making all in SCRUB...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/SCRUB'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o SCRUB.o SCRUB.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libSCRUB.so -o libSCRUB.so SCRUB.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std/SCRUB'
+done in SCRUB
+make[2]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/std'
+done in ./std
+making all in ./stk...
+make[2]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk'
+making in stklib...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/stklib'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Brass.o Brass.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o DelayA.o DelayA.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o BiQuad.o BiQuad.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Filter.o Filter.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Stk.o Stk.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o PoleZero.o PoleZero.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Instrmnt.o Instrmnt.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Delay.o Delay.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o DelayL.o DelayL.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Noise.o Noise.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o BowTabl.o BowTabl.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o BandedWG.o BandedWG.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o JetTabl.o JetTabl.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o BlowBotl.o BlowBotl.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o ReedTabl.o ReedTabl.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o OneZero.o OneZero.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o BlowHole.o BlowHole.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o OnePole.o OnePole.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Bowed.o Bowed.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Clarinet.o Clarinet.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Flute.o Flute.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Modal.o Modal.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o ModalBar.o ModalBar.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Mesh2D.o Mesh2D.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Saxofony.o Saxofony.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Shakers.o Shakers.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Sitar.o Sitar.cpp
+rm -f stklib.a
+ar q stklib.a Brass.o DelayA.o BiQuad.o Filter.o Stk.o PoleZero.o Instrmnt.o Delay.o DelayL.o Noise.o BowTabl.o BandedWG.o JetTabl.o BlowBotl.o ReedTabl.o OneZero.o BlowHole.o OnePole.o Bowed.o Clarinet.o Flute.o Modal.o ModalBar.o Mesh2D.o Saxofony.o Shakers.o Sitar.o
+ar: creating stklib.a
+touch stklib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/stklib'
+done in stklib
+making in MBANDEDWG...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MBANDEDWG'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I../stklib -Wall    -c -o MBANDEDWG.o MBANDEDWG.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMBANDEDWG.so -o libMBANDEDWG.so MBANDEDWG.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../stklib/stklib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MBANDEDWG'
+done in MBANDEDWG
+making in MBLOWBOTL...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MBLOWBOTL'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I../stklib -Wall    -c -o MBLOWBOTL.o MBLOWBOTL.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMBLOWBOTL.so -o libMBLOWBOTL.so MBLOWBOTL.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../stklib/stklib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MBLOWBOTL'
+done in MBLOWBOTL
+making in MBLOWHOLE...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MBLOWHOLE'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I../stklib -Wall    -c -o MBLOWHOLE.o MBLOWHOLE.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMBLOWHOLE.so -o libMBLOWHOLE.so MBLOWHOLE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../stklib/stklib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MBLOWHOLE'
+done in MBLOWHOLE
+making in MBOWED...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MBOWED'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I../stklib -Wall    -c -o MBOWED.o MBOWED.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMBOWED.so -o libMBOWED.so MBOWED.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../stklib/stklib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MBOWED'
+done in MBOWED
+making in MBRASS...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MBRASS'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I../stklib -Wall    -c -o MBRASS.o MBRASS.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMBRASS.so -o libMBRASS.so MBRASS.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../stklib/stklib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MBRASS'
+done in MBRASS
+making in MCLAR...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MCLAR'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I../stklib -Wall    -c -o MCLAR.o MCLAR.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMCLAR.so -o libMCLAR.so MCLAR.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../stklib/stklib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MCLAR'
+done in MCLAR
+making in MMESH2D...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MMESH2D'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I../stklib -Wall    -c -o MMESH2D.o MMESH2D.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMMESH2D.so -o libMMESH2D.so MMESH2D.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../stklib/stklib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MMESH2D'
+done in MMESH2D
+making in MMODALBAR...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MMODALBAR'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I../stklib -Wall    -c -o MMODALBAR.o MMODALBAR.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMMODALBAR.so -o libMMODALBAR.so MMODALBAR.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../stklib/stklib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MMODALBAR'
+done in MMODALBAR
+making in MSAXOFONY...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MSAXOFONY'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I../stklib -Wall    -c -o MSAXOFONY.o MSAXOFONY.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMSAXOFONY.so -o libMSAXOFONY.so MSAXOFONY.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../stklib/stklib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MSAXOFONY'
+done in MSAXOFONY
+making in MSHAKERS...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MSHAKERS'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I../stklib -Wall    -c -o MSHAKERS.o MSHAKERS.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMSHAKERS.so -o libMSHAKERS.so MSHAKERS.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../stklib/stklib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MSHAKERS'
+done in MSHAKERS
+making in MSITAR...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MSITAR'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I../stklib -Wall    -c -o MSITAR.o MSITAR.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMSITAR.so -o libMSITAR.so MSITAR.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl  ../stklib/stklib.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk/MSITAR'
+done in MSITAR
+make[2]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/stk'
+done in ./stk
+making all in ./maxmsp...
+make[2]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/maxmsp'
+making in MAXBANG...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/maxmsp/MAXBANG'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o MAXBANG.o MAXBANG.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMAXBANG.so -o libMAXBANG.so MAXBANG.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/maxmsp/MAXBANG'
+done in MAXBANG
+making in MAXMESSAGE...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/maxmsp/MAXMESSAGE'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o MAXMESSAGE.o MAXMESSAGE.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libMAXMESSAGE.so -o libMAXMESSAGE.so MAXMESSAGE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/maxmsp/MAXMESSAGE'
+done in MAXMESSAGE
+make[2]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/maxmsp'
+done in ./maxmsp
+making all in ./joel...
+make[2]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/joel'
+making in jfuncs...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/joel/jfuncs'
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I.   -c -o jfuncs.o jfuncs.c
+g++ -Wno-deprecated -shared -Wl,-soname,libjfuncs.so -o libjfuncs.so jfuncs.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/joel/jfuncs'
+done in jfuncs
+making in tuning...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/joel/tuning'
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I.   -c -o tuning.o tuning.c
+g++ -Wno-deprecated -shared -Wl,-soname,libtuning.so -o libtuning.so tuning.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/joel/tuning'
+done in tuning
+make[2]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/joel'
+done in ./joel
+making all in ./bgg...
+make[2]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/bgg'
+making in GVERB...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/bgg/GVERB'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o GVERB.o GVERB.cpp
+In file included from GVERB.h:1:0,
+                 from GVERB.cpp:35:
+gverbdsp.h: In function ‘float diffuser_do(ty_diffuser*, float)’:
+gverbdsp.h:56:2: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+gverbdsp.h:56:2: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+gverbdsp.h: In function ‘void fixeddelay_write(ty_fixeddelay*, float)’:
+gverbdsp.h:73:2: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+gverbdsp.h:73:2: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+In file included from GVERB.h:2:0,
+                 from GVERB.cpp:35:
+gverbdefs.h: In function ‘void gverb_do(ty_gverb*, float, float*, float*)’:
+gverbdefs.h:114:5: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+gverbdefs.h:114:24: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+gverbdefs.h: In function ‘void gverb_set_roomsize(ty_gverb*, double)’:
+gverbdefs.h:169:17: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gverbdsp.o gverbdsp.cpp
+In file included from gverbdsp.cpp:26:0:
+gverbdsp.h: In function ‘float diffuser_do(ty_diffuser*, float)’:
+gverbdsp.h:56:2: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+gverbdsp.h:56:2: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+gverbdsp.h: In function ‘void fixeddelay_write(ty_fixeddelay*, float)’:
+gverbdsp.h:73:2: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+gverbdsp.h:73:2: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+gverbdsp.cpp: In function ‘int ff_trunc(float)’:
+gverbdsp.cpp:125:26: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+gverbdsp.cpp: In function ‘int ff_round(float)’:
+gverbdsp.cpp:131:26: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+g++ -Wno-deprecated -shared -Wl,-soname,libGVERB.so -o libGVERB.so GVERB.o gverbdsp.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/bgg/GVERB'
+done in GVERB
+making in HALFWAVE...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/bgg/HALFWAVE'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o HALFWAVE.o HALFWAVE.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libHALFWAVE.so -o libHALFWAVE.so HALFWAVE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/bgg/HALFWAVE'
+done in HALFWAVE
+making in SYNC...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/bgg/SYNC'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o SYNC.o SYNC.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libSYNC.so -o libSYNC.so SYNC.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/bgg/SYNC'
+done in SYNC
+making in VWAVE...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/bgg/VWAVE'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o VWAVE.o VWAVE.cpp
+g++ -Wno-deprecated -shared -Wl,-soname,libVWAVE.so -o libVWAVE.so VWAVE.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/bgg/VWAVE'
+done in VWAVE
+making in PFSCHED...
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/bgg/PFSCHED'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o PFSCHED.o PFSCHED.cpp
+PFSCHED.cpp: In member function ‘virtual int PFSCHED::run()’:
+PFSCHED.cpp:137:12: warning: converting to non-pointer type ‘int’ from NULL [-Wconversion-null]
+PFSCHED.cpp:142:12: warning: converting to non-pointer type ‘int’ from NULL [-Wconversion-null]
+g++ -Wno-deprecated -shared -Wl,-soname,libPFSCHED.so -o libPFSCHED.so PFSCHED.o  -Wl,-rpath /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/bgg/PFSCHED'
+done in PFSCHED
+make[2]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts/bgg'
+done in ./bgg
+make[1]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/insts'
+make[1]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src'
+make[2]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/sndlib'
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o headers.o headers.c
+headers.c: In function ‘update_next_header_comment’:
+headers.c:666:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:678:9: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:682:20: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘update_aiff_header_comment’:
+headers.c:1330:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1332:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1336:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘update_riff_header_comment’:
+headers.c:1710:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1712:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1716:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘mus_header_update’:
+headers.c:5053:9: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:5059:9: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:5065:9: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘update_next_header’:
+headers.c:659:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘update_aiff_header’:
+headers.c:1299:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1308:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1312:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1315:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘update_riff_header’:
+headers.c:1683:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1691:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1694:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘update_nist_header’:
+headers.c:2240:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘read_nist_header’:
+headers.c:2178:8: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘write_nist_header’:
+headers.c:2228:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘write_aif_header’:
+headers.c:1100:12: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1209:13: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1220:13: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1231:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1244:12: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1259:12: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1277:12: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1284:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘write_riff_header’:
+headers.c:1651:13: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1662:13: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1673:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1677:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘write_ircam_header’:
+headers.c:2446:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:2455:9: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:2465:9: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:2469:20: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘mus_header_read_with_fd_and_name’:
+headers.c:4686:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘read_bicsf_header’:
+headers.c:2272:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘read_soundfont_header’:
+headers.c:1982:9: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:2003:10: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘read_avi_header’:
+headers.c:1814:9: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1831:9: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1842:10: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:1851:14: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘read_smp_header’:
+headers.c:2886:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘read_voc_header’:
+headers.c:2589:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘read_sd1_header’:
+headers.c:3343:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘read_gravis_header’:
+headers.c:3518:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:3524:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘read_comdisco_header’:
+headers.c:4172:12: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘read_diamondware_header’:
+headers.c:4066:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘read_adf_header’:
+headers.c:4017:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘read_file_samp_header’:
+headers.c:3300:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘read_esps_header’:
+headers.c:2984:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:3030:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:3067:8: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘read_sppack_header’:
+headers.c:2920:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘read_sbstudio_header’:
+headers.c:3630:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘read_paf_header’:
+headers.c:4099:7: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘mus_header_riff_aux_comment’:
+headers.c:1735:11: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘mus_header_aiff_aux_comment’:
+headers.c:1365:9: warning: ignoring return value of ‘read’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c: In function ‘mus_header_write_next_header’:
+headers.c:628:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:636:9: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:646:9: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+headers.c:650:20: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o io.o io.c
+io.c: In function ‘mus_expand_filename’:
+io.c:1582:10: warning: ignoring return value of ‘getcwd’, declared with attribute warn_unused_result [-Wunused-result]
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o extra.o extra.c
+rm -f sndlib.a
+ar q sndlib.a headers.o io.o extra.o
+ar: creating sndlib.a
+touch sndlib.a
+make[2]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/sndlib'
+make[2]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/audio'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../sndlib -I../rtcmix -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -c AudioDevice.cpp -o AudioDevice.o
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../sndlib -I../rtcmix -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -c AudioIODevice.cpp -o AudioIODevice.o
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../sndlib -I../rtcmix -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -c AudioDeviceImpl.cpp -o AudioDeviceImpl.o
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../sndlib -I../rtcmix -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -c ThreadedAudioDevice.cpp -o ThreadedAudioDevice.o
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../sndlib -I../rtcmix -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -c AudioOutputGroupDevice.cpp -o AudioOutputGroupDevice.o
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../sndlib -I../rtcmix -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -c DualOutputAudioDevice.cpp -o DualOutputAudioDevice.o
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../sndlib -I../rtcmix -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -c AudioFileDevice.cpp -o AudioFileDevice.o
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../sndlib -I../rtcmix -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -c NetAudioDevice.cpp -o NetAudioDevice.o
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../sndlib -I../rtcmix -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -c audio_dev_creator.cpp -o audio_dev_creator.o
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../sndlib -I../rtcmix -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DCMIX_LEGACY -DAUTO -c sndlibsupport.c -o sndlibsupport.o
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../sndlib -I../rtcmix -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -c OSSAudioDevice.cpp -o OSSAudioDevice.o
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../sndlib -I../rtcmix -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -c SinglePortOSSAudioDevice.cpp -o SinglePortOSSAudioDevice.o
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../sndlib -I../rtcmix -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -c MultiPortOSSAudioDevice.cpp -o MultiPortOSSAudioDevice.o
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../sndlib -I../rtcmix -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -c ALSAAudioDevice.cpp -o ALSAAudioDevice.o
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../sndlib -I../rtcmix -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -c TestAudioDevice.cpp -o TestAudioDevice.o
+rm -f librtaudio.a
+ar q librtaudio.a AudioDevice.o AudioIODevice.o AudioDeviceImpl.o ThreadedAudioDevice.o AudioOutputGroupDevice.o DualOutputAudioDevice.o AudioFileDevice.o NetAudioDevice.o audio_dev_creator.o sndlibsupport.o OSSAudioDevice.o SinglePortOSSAudioDevice.o MultiPortOSSAudioDevice.o ALSAAudioDevice.o TestAudioDevice.o
+ar: creating librtaudio.a
+touch librtaudio.a
+make[2]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/audio'
+make[2]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/conf'
+flex -l -Pconf  conf.l
+sh fixlexoutput.sh lex.conf.c
+bison -t -p conf -d  conf.ypp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o conf.tab.o conf.tab.cpp
+In file included from conf.ypp:12:0:
+conf.l: In function ‘int conflex(YYSTYPE*)’:
+conf.l:44:30: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+conf.tab.cpp: In function ‘int confparse(void*)’:
+conf.tab.cpp:1586:35: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+conf.tab.cpp:1728:35: warning: deprecated conversion from string constant to ‘char*’ [-Wwrite-strings]
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o Config.o Config.cpp
+rm -f libconf.a
+ar q libconf.a conf.tab.o Config.o
+ar: creating libconf.a
+touch libconf.a
+make[2]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/conf'
+make[2]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/parser'
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -c parse_with_minc.c
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/parser/minc'
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../../include -I../../rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o y.tab.o y.tab.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../../include -I../../rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o builtin.o builtin.c
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../../include -I../../rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o callextfunc.o callextfunc.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../../include -I../../rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o error.o error.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../../include -I../../rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o sym.o sym.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../../include -I../../rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o trees.o trees.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../../include -I../../rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o utils.o utils.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../../include -I../../rtcmix -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o handle.o handle.c
+rm -f libminc.a
+ar q libminc.a y.tab.o builtin.o callextfunc.o error.o sym.o trees.o utils.o handle.o
+ar: creating libminc.a
+touch libminc.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/parser/minc'
+make[2]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/parser'
+make[2]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/control'
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/control/maxmsp'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I../../rtcmix   -c -o RTInletPField.o RTInletPField.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I../../rtcmix -c -o inletglue.o inletglue.cpp
+rm -f libinlet.a
+ar q libinlet.a RTInletPField.o inletglue.o
+ar: creating libinlet.a
+touch libinlet.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/control/maxmsp'
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/control/pfbus'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I../../rtcmix   -c -o PFBusPField.o PFBusPField.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -I. -I../../rtcmix -c -o pfbusglue.o pfbusglue.cpp
+rm -f libpfbus.a
+ar q libpfbus.a PFBusPField.o pfbusglue.o
+ar: creating libpfbus.a
+touch libpfbus.a
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/control/pfbus'
+make[2]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/control'
+make[2]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/rtcmix'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -DSHAREDLIBDIR=\"/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/shlib\" -c addcheckfunc.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o addrtInst.o addrtInst.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o buffers.o buffers.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o bus_config.o bus_config.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o checkInsts.o checkInsts.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o dispatch.o dispatch.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o filter.o filter.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o Instrument.o Instrument.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o intraverse.o intraverse.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DSHAREDLIBDIR=\"/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/shlib\" -c loader.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o lfo.o lfo.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o minc_info.o minc_info.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o DataFile.o DataFile.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o mm_rtsetparams.o mm_rtsetparams.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -DSHAREDLIBDIR=\"/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/shlib\" -c Option.cpp -o Option.o
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o PField.o PField.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o PFieldSet.o PFieldSet.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o RefCounted.o RefCounted.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -DSHAREDLIBDIR=\"/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/shlib\" -c RTcmix.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o rtcmix_types.o rtcmix_types.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o rtcmix_wrappers.o rtcmix_wrappers.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o rtgetin.o rtgetin.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o rtgetsamps.o rtgetsamps.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o rtinput.o rtinput.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o rtoutput.o rtoutput.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o rtprofile.o rtprofile.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o rtsendsamps.o rtsendsamps.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o rtsetinput.o rtsetinput.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o rtsetoutput.o rtsetoutput.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o rtsetparams.o rtsetparams.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o rtwritesamps.o rtwritesamps.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o set_option.o set_option.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o table.o table.cpp
+table.cpp: In function ‘double plottable(const Arg*, int)’:
+table.cpp:2085:13: warning: ignoring return value of ‘int system(const char*)’, declared with attribute warn_unused_result [-Wunused-result]
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o tableutils.o tableutils.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o modtable.o modtable.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o ops.o ops.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o utils.o utils.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o rt_ug_intro.o rt_ug_intro.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO -DSHAREDLIBDIR=\"/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/shlib\" -c connection.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o converter.o converter.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o monitor.o monitor.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o check_byte_order.o check_byte_order.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o command_line.o command_line.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o funderflow.o funderflow.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o getsample.o getsample.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o infile.o infile.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o io.o io.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o load_utils.o load_utils.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o merror.o merror.c
+merror.c: In function ‘merror’:
+merror.c:30:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+merror.c:31:8: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+merror.c:33:7: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+merror.c:34:7: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o message.o message.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o minc_functions.o minc_functions.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o minout.o minout.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o m_system.o m_system.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o printsf.o printsf.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o profile.o profile.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o resetamp.o resetamp.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o sampfunc.o sampfunc.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o sfcopy.o sfcopy.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o sfprint.o sfprint.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o sfstats.o sfstats.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o sound.o sound.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o soundio.o soundio.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o tempo.o tempo.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o ug_intro.o ug_intro.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/fdump.o gen/fdump.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/floc.o gen/floc.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/fnscl.o gen/fnscl.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/fplot.o gen/fplot.c
+gen/fplot.c: In function ‘fplot’:
+gen/fplot.c:103:10: warning: ignoring return value of ‘system’, declared with attribute warn_unused_result [-Wunused-result]
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/fsize.o gen/fsize.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/gen10.o gen/gen10.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/gen17.o gen/gen17.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/gen18.o gen/gen18.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/gen1.o gen/gen1.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/gen20.o gen/gen20.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/gen24.o gen/gen24.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/gen25.o gen/gen25.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/gen2.o gen/gen2.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/gen3.o gen/gen3.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/gen4.o gen/gen4.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/gen5.o gen/gen5.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/gen6.o gen/gen6.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/gen7.o gen/gen7.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/gen9.o gen/gen9.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/makegen.o gen/makegen.c
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o gen/modgens.o gen/modgens.c
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o heap/heap.o heap/heap.cpp
+heap/heap.cpp: In member function ‘Instrument* heap::deleteMin(long unsigned int, long unsigned int*)’:
+heap/heap.cpp:191:14: warning: suggest explicit braces to avoid ambiguous ‘else’ [-Wparentheses]
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o heap/queue.o heap/queue.cpp
+compiling heap.
+(cd heap; make -w all;)
+make[3]: Entering directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/rtcmix/heap'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I.. -I../../include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o rtQueue.o rtQueue.cpp
+rm -f rtHeap.o
+ar q rtHeap.o heap.o queue.o rtQueue.o
+ar: creating rtHeap.o
+touch rtHeap.o
+make[3]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/rtcmix/heap'
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o ../audio/audio_devices.o ../audio/audio_devices.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o RTcmixMain.o RTcmixMain.cpp
+g++ -Wno-deprecated  -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX  -DAUTO   -c -o main.o main.cpp
+gcc   -I. -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/include -I../include -I../audio -I../sndlib -I./heap -I../conf -g -O2 -fPIC -Wall -Wno-unused -DLINUX    -c -o RTsockfuncs.o RTsockfuncs.c
+RTsockfuncs.c: In function ‘RTsendsock’:
+RTsockfuncs.c:195:7: warning: ignoring return value of ‘write’, declared with attribute warn_unused_result [-Wunused-result]
+RTsockfuncs.c: In function ‘RTkillsocket’:
+RTsockfuncs.c:145:8: warning: ignoring return value of ‘system’, declared with attribute warn_unused_result [-Wunused-result]
+g++ -Wno-deprecated  -shared -flat_namespace -o rtcmixdylib.so \
+	addcheckfunc.o addrtInst.o buffers.o bus_config.o checkInsts.o dispatch.o filter.o Instrument.o intraverse.o loader.o lfo.o minc_info.o DataFile.o mm_rtsetparams.o Option.o PField.o PFieldSet.o Random.o RefCounted.o RTcmix.o rtcmix_types.o rtcmix_wrappers.o rtgetin.o rtgetsamps.o rtinput.o rtoutput.o rtprofile.o rtsendsamps.o rtsetinput.o rtsetoutput.o rtsetparams.o rtwritesamps.o set_option.o table.o tableutils.o modtable.o ops.o utils.o rt_ug_intro.o connection.o converter.o monitor.o check_byte_order.o command_line.o funderflow.o getsample.o infile.o io.o load_utils.o merror.o message.o minc_functions.o minout.o m_system.o printsf.o profile.o resetamp.o sampfunc.o sfcopy.o sfprint.o sfstats.o sound.o soundio.o tempo.o ug_intro.o gen/fdump.o gen/floc.o gen/fnscl.o gen/fplot.o gen/fsize.o gen/gen10.o gen/gen17.o gen/gen18.o gen/gen1.o gen/gen20.o gen/gen24.o gen/gen25.o gen/gen2.o gen/gen3.o gen/gen4.o gen/gen5.o gen/gen6.o gen/gen7.o gen/gen9.o gen/makegen.o gen/modgens.o heap/rtHeap.o ../../insts/base/MIX/MIX.o ../../insts/base/WAVETABLE/WAVETABLE.o ../../insts/std/AM/AM.o ../../insts/std/AMINST/AMINST.o ../../insts/std/CLAR/CLAR.o ../../insts/std/CLAR/cfuncs.o ../../insts/std/COMBIT/COMBIT.o ../../insts/std/DEL1/DEL1.o ../../insts/std/DELAY/DELAY.o ../../insts/std/FIR/FIR.o ../../insts/std/FMINST/FMINST.o ../../insts/std/HOLO/HOLO.o ../../insts/std/IIR/BUZZ.o ../../insts/std/IIR/INPUTSIG.o ../../insts/std/IIR/NOISE.o ../../insts/std/IIR/PULSE.o ../../insts/std/IIR/cfuncs.o ../../insts/std/LPCPLAY/Complex.o ../../insts/std/LPCPLAY/DataSet.o ../../insts/std/LPCPLAY/LPCPLAY.o ../../insts/std/LPCPLAY/bmultf.o ../../insts/std/LPCPLAY/buzz.o ../../insts/std/LPCPLAY/lpcheader.o ../../insts/std/LPCPLAY/rand.o ../../insts/std/LPCPLAY/setup.o ../../insts/std/LPCPLAY/shift.o ../../insts/std/LPCPLAY/stabilize.o ../../insts/std/MARAGRAN/SGRANR.o ../../insts/std/MARAGRAN/STGRANR.o ../../insts/std/METAFLUTE/BSFLUTE.o ../../insts/std/METAFLUTE/LSFLUTE.o ../../insts/std/METAFLUTE/SFLUTE.o ../../insts/std/METAFLUTE/VSFLUTE.o ../../insts/std/MOVE/BASE.o ../../insts/std/MOVE/MOVE.o ../../insts/std/MOVE/PLACE.o ../../insts/std/MOVE/cmixfuns.o ../../insts/std/MOVE/common.o ../../insts/std/MOVE/path.o ../../insts/std/MOVE/setup.o ../../insts/std/MOCKBEND/MOCKBEND.o ../../insts/std/MULTICOMB/MULTICOMB.o ../../insts/std/PANECHO/PANECHO.o ../../insts/std/PHASER/PHASER.o ../../insts/std/PVOC/PVFilter.o ../../insts/std/PVOC/PVOC.o ../../insts/std/PVOC/fft.o ../../insts/std/PVOC/fold.o ../../insts/std/PVOC/lpa.o ../../insts/std/PVOC/lpamp.o ../../insts/std/PVOC/makewindows.o ../../insts/std/PVOC/overlapadd.o ../../insts/std/PVOC/setup.o ../../insts/std/REVMIX/REVMIX.o ../../insts/std/SCRUB/SCRUB.o ../../insts/std/SCULPT/SCULPT.o ../../insts/std/STEREO/STEREO.o ../../insts/std/STRUM/BEND.o ../../insts/std/STRUM/BEND1.o ../../insts/std/STRUM/FRET.o ../../insts/std/STRUM/FRET1.o ../../insts/std/STRUM/START.o ../../insts/std/STRUM/START1.o ../../insts/std/STRUM/VFRET1.o ../../insts/std/STRUM/VSTART1.o ../../insts/std/STRUM/delay.o ../../insts/std/STRUM/delayclean.o ../../insts/std/STRUM/delayset.o ../../insts/std/STRUM/dist.o ../../insts/std/STRUM/randfill.o ../../insts/std/STRUM/squisher.o ../../insts/std/STRUM/sset.o ../../insts/std/STRUM/strum.o ../../insts/std/STRUM2/STRUM2.o ../../insts/std/STRUMFB/STRUMFB.o ../../insts/std/TRANS/TRANS.o ../../insts/std/TRANS/TRANS3.o ../../insts/std/TRANSBEND/TRANSBEND.o ../../insts/std/WAVESHAPE/WAVESHAPE.o ../../insts/jg/objlib/objlib.a ../../insts/jg/BUTTER/BUTTER.o ../../insts/jg/COMPLIMIT/COMPLIMIT.o ../../insts/jg/CONVOLVE1/CONVOLVE1.o ../../insts/jg/DCBLOCK/DCBLOCK.o ../../insts/jg/DECIMATE/DECIMATE.o ../../insts/jg/DISTORT/DISTORT.o ../../insts/jg/ELL/ELL.o ../../insts/jg/ELL/ellipse.o ../../insts/jg/ELL/setell.o ../../insts/jg/EQ/EQ.o ../../insts/jg/FILTERBANK/FILTERBANK.o ../../insts/jg/FILTSWEEP/FILTSWEEP.o ../../insts/jg/FLANGE/FLANGE.o ../../insts/jg/FOLLOWER/FOLLOWBUTTER.o ../../insts/jg/FOLLOWER/FOLLOWER.o ../../insts/jg/FOLLOWER/FOLLOWER_BASE.o ../../insts/jg/FOLLOWER/FOLLOWGATE.o ../../insts/jg/FREEVERB/FREEVERB.o ../../insts/jg/FREEVERB/allpass.o ../../insts/jg/FREEVERB/comb.o ../../insts/jg/FREEVERB/delay.o ../../insts/jg/FREEVERB/revmodel.o ../../insts/jg/GRANSYNTH/GRANSYNTH.o ../../insts/jg/GRANSYNTH/synthgrainstream.o ../../insts/jg/GRANSYNTH/synthgrainvoice.o ../../insts/jg/JCHOR/JCHOR.o ../../insts/jg/JDELAY/JDELAY.o ../../insts/jg/JFIR/JFIR.o ../../insts/jg/JGRAN/JGRAN.o ../../insts/jg/MOOGVCF/MOOGVCF.o ../../insts/jg/MROOM/MROOM.o ../../insts/jg/MROOM/timeset.o ../../insts/jg/MULTEQ/MULTEQ.o ../../insts/jg/MULTIWAVE/MULTIWAVE.o ../../insts/jg/PAN/PAN.o ../../insts/jg/REV/REV.o ../../insts/jg/REVERBIT/REVERBIT.o ../../insts/jg/ROOM/ROOM.o ../../insts/jg/ROOM/roomset.o ../../insts/jg/SHAPE/SHAPE.o ../../insts/jg/SPECTACLE/SPECTACLE.o ../../insts/jg/SPECTACLE/SPECTACLE_BASE.o ../../insts/jg/SPECTACLE/SPECTEQ.o ../../insts/jg/SPECTACLE/TVSPECTACLE.o ../../insts/jg/SPECTACLE/fft.o ../../insts/jg/SPECTACLE2/SPECTACLE2.o ../../insts/jg/SPECTACLE2/SPECTACLE2_BASE.o ../../insts/jg/SPECTACLE2/SPECTEQ2.o ../../insts/jg/SPLITTER/SPLITTER.o ../../insts/jg/VOCODE2/VOCODE2.o ../../insts/jg/VOCODE3/VOCODE3.o ../../insts/jg/VOCODESYNTH/VOCODESYNTH.o ../../insts/jg/WAVY/WAVY.o ../../insts/jg/WAVY/fparser27/fparser.o ../../insts/jg/WIGGLE/WIGGLE.o ../../insts/stk/stklib/stklib.a ../../insts/stk/MBANDEDWG/MBANDEDWG.o ../../insts/stk/MBLOWBOTL/MBLOWBOTL.o ../../insts/stk/MBLOWHOLE/MBLOWHOLE.o ../../insts/stk/MBOWED/MBOWED.o ../../insts/stk/MBRASS/MBRASS.o ../../insts/stk/MCLAR/MCLAR.o ../../insts/stk/MMESH2D/MMESH2D.o ../../insts/stk/MMODALBAR/MMODALBAR.o ../../insts/stk/MSAXOFONY/MSAXOFONY.o ../../insts/stk/MSHAKERS/MSHAKERS.o ../../insts/stk/MSITAR/MSITAR.o ../../insts/maxmsp/MAXBANG/MAXBANG.o ../../insts/maxmsp/MAXMESSAGE/MAXMESSAGE.o ../../insts/bgg/GVERB/GVERB.o ../../insts/bgg/GVERB/gverbdsp.o ../../insts/bgg/HALFWAVE/HALFWAVE.o ../../insts/bgg/PFSCHED/PFSCHED.o ../../insts/bgg/SYNC/SYNC.o ../../insts/bgg/VWAVE/VWAVE.o ../../insts/joel/jfuncs/jfuncs.o ../../insts/joel/tuning/tuning.o ../audio/audio_devices.o ../audio/librtaudio.a   ../sndlib/sndlib.a ../conf/libconf.a RTcmixMain.o main.o ../control/maxmsp/libinlet.a ../control/pfbus/libpfbus.a /home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/parser/parse_with_minc.o \
+	../../insts/jg/objlib/objlib.a ../../insts/stk/stklib/stklib.a ../parser/minc/libminc.a \
+	-L/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/lib -lgen -lpthread -lm -ldl 
+make[2]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src/rtcmix'
+make[1]: Leaving directory `/home/jwmatthys/Software/rtcmix-in-pd/RTcmix-maxmsp-4.0.1.6/src'
+done
