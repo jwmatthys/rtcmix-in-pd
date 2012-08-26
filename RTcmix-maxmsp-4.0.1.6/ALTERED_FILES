@@ -1,0 +1,52 @@
+The following files have been radically hacked for the max-msp version.
+
+	*Minc/intraverse.C (now split into intraverse.C and pulltraverse.C)
+		src/rtcmix/intraverse.cpp (rtInteractive set to 1 in runMainLoop())
+			runMainLoop sets it up, inTraverse is pulltraverse
+	*Minc/Makefile (obviously)
+		src/parse/minc/Makefile (don't do the lex and yacc recompile)
+	*Minc/lex.yy.c (set up for max-msp)
+		src/parser/minc/lex.yy.c (set up for max-msp)
+	*Minc/y.tab.c (set up for max-msp
+		src/parser/minc/y.tab.c (set up for max-msp)
+		src/parser/minc/minc.h (new prototype for yyparse())
+	*Minc/main.C (set up to be rtcmixmain(); added max-msp funcs at end)
+		src/rtcmix/main.cpp (set up to be rtcmixmain(); added max-msp funcs at end)
+		src/rtcmix/RTcmixMain.[cpp,h] (several changes)
+		src/rtcmix/RTcmix.cpp (readConfigFile commented out, rtInteractive = 0)
+		src/rtcmix/rtsetparams.cpp (not used, RTcmix::mm_rtsetparams() instead)
+		src/rtcmix/rtsendsamps.cpp (write_to_audio_device set to fill maxmsp output buffer)
+		src/rtcmix/rtgetsamps.cpp (set to fill maxmsp input buffer)
+		genlib/Makefile (compile static genlib)
+	*Minc/parse_with_minc.c
+		src/parser/parse_with_minc.c (set to read from max/msp buffer)
+		src/parser/rtcmix_parse.h (new proto for parse_score())
+	*insts.base/MIX (now set up to produce rtcmix.so shared object for
+			max-msp linking, lots of changes in the Makefile and directory)
+		src/rtcmix/Makefile (creates the rtcmix.so shared object)
+		src/rtcmix/rtprofile.cpp (real rtprofile.cpp in insts/base/MIX)
+		base/MIX (rtprofile now in a separate file)
+	insts.jg/objlib (a number of functions changed with a "J" in front
+		(like BiQuad() is now JBiQuad()) to avoid conflict with
+		insts.stk/stklib -- also, a number of insts.jg instruments reflect
+		this change)
+	*sys/audio_port.c
+		src/audio/audio_devices.cpp -- create_audio_devices() no-op now
+	*sys/message.c (modifed to prevent exits on errors)
+		src/rtcmix/message.cpp
+		src/parser/minc/error.c (set to call the message.cpp functions)
+		src/rtcmix/bus_config.cpp (set to return errors and not exit)
+		src/rtcmix/rtgetin.cpp (set to return errors and not exit)
+		src/rtcmix/set_option.cpp (got rid of some die()'s)
+	sys/m_system.c (fork() added for quick returns)
+	all of the INSTRUMENT files have had profile()/rtprofile() commented out
+		and moved to insts.base/MIX/rtprofile.C and insts.base/MIX/profile.c
+
+		src/rtcmix/connection.cpp (added create_handle for inlet-pfields,
+			modified makeconnection() for no dso-loading)
+
+Most other files (and even some of the above) are reasonably consistent
+with release 3.6 of RTcmix (March, 2004)
+
+Brad Garton
+3/2004

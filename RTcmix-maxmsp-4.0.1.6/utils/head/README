@@ -1,0 +1,7 @@
+sfprint prints soundfile header stats.
+sfcreate creates soundfile headers in several formats.
+sfhedit edits information in a header.
+sfshrink changes the length of a soundfile to a given duration,
+   expanding with a hole if necessary.
+sffixsize updates the size in a soundfile header to reflect what's
+   actually in the file.
