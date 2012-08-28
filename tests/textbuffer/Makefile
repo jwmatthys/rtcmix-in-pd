@@ -3,26 +3,26 @@ current: textbuffer_linux
 clean: ; rm -f *.pd_linux *.o
 
 # ----------------------- NT -----------------------
-#
-#rtcmix~_nt: rtcmix~.dll
-#
-#.SUFFIXES: .dll
-#
-#PDNTCFLAGS = /W3 /WX /DNT /DPD /nologo
-#VC="C:\Program Files\Microsoft Visual Studio\Vc98"
-#
-#PDNTINCLUDE = /I. /I\tcl\include /I..\src /I$(VC)\include
-#
-#PDNTLDIR = $(VC)\lib
-#PDNTLIB = $(PDNTLDIR)\libc.lib \
-#        $(PDNTLDIR)\oldnames.lib \
-#        $(PDNTLDIR)\kernel32.lib \
-#        ..\bin\pd.lib
-#
-#.c.dll:
-#        cl $(PDNTCFLAGS) $(PDNTINCLUDE) /c $*.c
-#        link /dll /export:rtcmix_tilde_setup $*.obj $(PDNTLIB)
-#
+
+rtcmix~_nt: rtcmix~.dll
+
+.SUFFIXES: .dll
+
+PDNTCFLAGS = /W3 /WX /DNT /DPD /nologo
+VC="C:\Program Files\Microsoft Visual Studio\Vc98"
+
+PDNTINCLUDE = /I. /I\tcl\include /I..\src /I$(VC)\include
+
+PDNTLDIR = $(VC)\lib
+PDNTLIB = $(PDNTLDIR)\libc.lib \
+	$(PDNTLDIR)\oldnames.lib \
+	$(PDNTLDIR)\kernel32.lib \
+	..\bin\pd.lib
+
+.c.dll:
+	cl $(PDNTCFLAGS) $(PDNTINCLUDE) /c $*.c
+	link /dll /export:rtcmix_tilde_setup $*.obj $(PDNTLIB)
+
 #-------------- Linux --------------------------------
 
 textbuffer_linux: textbuffer.pd_linux
