@@ -10,7 +10,8 @@
 #include "lp.h"
 
 // BGG mm -- needed for intel architecture
-#include <CoreFoundation/CoreFoundation.h>
+// JWM - edited out for Pd
+// #include <CoreFoundation/CoreFoundation.h>
 // from src/rtcmix/byte_routines.h
 #define byte_reverse4(data)                                    \
     { char c, *t; t = (char *) data;                           \
@@ -19,108 +20,110 @@
 
 
 DataSet::DataSet()
-	: _nPoles(0), _frameCount(0), _fdesc(-1), _lpHeaderSize(0), 
-	  _array(NULL), _oldframe(0), _endframe(0)
+        : _nPoles(0), _frameCount(0), _fdesc(-1), _lpHeaderSize(0),
+          _array(NULL), _oldframe(0), _endframe(0)
 {
-	_fprec = 22;
+        _fprec = 22;
 }
 
 DataSet::~DataSet()
 {
-	if (_fdesc > 0)
-		::close(_fdesc);
-	delete [] _array;
+        if (_fdesc > 0)
+                ::close(_fdesc);
+        delete [] _array;
 }
 
 int
 DataSet::open(const char *fileName, int npoleGuess, float sampRate)
 {
     if ((_fdesc = ::open(fileName, O_RDONLY)) < 0) {
-		::rterror("dataset", "Can't open %s", fileName);
-		return -1;
+                ::rterror("dataset", "Can't open %s", fileName);
+                return -1;
     }
-	_nPoles = npoleGuess;	// in case we are not using headers
-	::rtcmix_advise("dataset", "Opened lpc dataset %s.", fileName);
+        _nPoles = npoleGuess;	// in case we are not using headers
+        ::rtcmix_advise("dataset", "Opened lpc dataset %s.", fileName);
 #ifdef USE_HEADERS
-	if ((_lpHeaderSize = ::checkForHeader(_fdesc, &_nPoles, sampRate)) < 0) {
-	    ::rterror("dataset", "Failed to check header");
-		return -1;
-	}
+        if ((_lpHeaderSize = ::checkForHeader(_fdesc, &_nPoles, sampRate)) < 0) {
+            ::rterror("dataset", "Failed to check header");
+                return -1;
+        }
 #else
-	if (!_nPoles) {
-		return -1;
-	}
+        if (!_nPoles) {
+                return -1;
+        }
 #endif /* USE_HEADERS */
 
-	allocArray(_nPoles);
+        allocArray(_nPoles);
 
-	_npolem1=_nPoles-1;
-	_framsize=_nPoles+4;
-	_recsize=_fprec*_framsize;
-	_bprec=_recsize*FLOAT;
-	_bpframe=_framsize*FLOAT;
+        _npolem1=_nPoles-1;
+        _framsize=_nPoles+4;
+        _recsize=_fprec*_framsize;
+        _bprec=_recsize*FLOAT;
+        _bpframe=_framsize*FLOAT;
 
-	struct stat st;
-	/* store and return number of frames in datafile */
-	if (::stat(fileName, &st) >= 0) {
-		_frameCount = (st.st_size-_lpHeaderSize) / _bpframe;
-		return _frameCount;
-	}
-	else {
-		::rterror("dataset", "Unable to stat dataset file.");
-		return -1;
-	}
+        struct stat st;
+        /* store and return number of frames in datafile */
+        if (::stat(fileName, &st) >= 0) {
+                _frameCount = (st.st_size-_lpHeaderSize) / _bpframe;
+                return _frameCount;
+        }
+        else {
+                ::rterror("dataset", "Unable to stat dataset file.");
+                return -1;
+        }
 }
 
 int
 DataSet::getFrame(float frameno, float *pCoeffs)
 {
-	int i,j;
+        int i,j;
 // BGG mm -- needed for intel architecture
-	float swap1, swap2;
-	int frame = (int)frameno;
-	float fraction = frameno - (float)frame;
-	if (!((frame >= _oldframe) && (frame < _endframe))) {
-		int bytesRead, framesRead = _fprec;
-    	if (::lseek(_fdesc, _lpHeaderSize+(frame*_bpframe), 0) == -1)
-		{
-            	fprintf(stderr,"bad lseek on analysis file \n");
-            	return(-1);
-    	}
+        float swap1, swap2;
+        int frame = (int)frameno;
+        float fraction = frameno - (float)frame;
+        if (!((frame >= _oldframe) && (frame < _endframe))) {
+                int bytesRead, framesRead = _fprec;
+        if (::lseek(_fdesc, _lpHeaderSize+(frame*_bpframe), 0) == -1)
+                {
+                fprintf(stderr,"bad lseek on analysis file \n");
+                return(-1);
+        }
 #ifdef debug
-		printf("Reading frames %d - %d from file\n", frame, frame + 22);
+                printf("Reading frames %d - %d from file\n", frame, frame + 22);
 #endif
 
-		/* Quit if we read less than one complete frame */
-    	if ((bytesRead = ::read(_fdesc, _array, _bprec)) < _bpframe)
-		{
-            	fprintf(stderr,"reached eof on analysis file \n");
-            	return(-1);
-    	}
-		framesRead = bytesRead / _bpframe;
-    	_oldframe = frame;
-    	_endframe = _oldframe + framesRead - 1;
-	}
+                /* Quit if we read less than one complete frame */
+        if ((bytesRead = ::read(_fdesc, _array, _bprec)) < _bpframe)
+                {
+                fprintf(stderr,"reached eof on analysis file \n");
+                return(-1);
+        }
+                framesRead = bytesRead / _bpframe;
+        _oldframe = frame;
+        _endframe = _oldframe + framesRead - 1;
+        }
 
-	for(i=(frame-_oldframe)*_framsize,j=0; j<_framsize; i++,j++)  {
+        for(i=(frame-_oldframe)*_framsize,j=0; j<_framsize; i++,j++)  {
 // BGG mm -- needed for intel architecture
 //		should do this on _array as it is read, but DANG it's all tangled
 //		THIS WHOLE INSTRUMENT NEEDS REDOING!!!!!!!
-		swap1 = _array[i];
-		swap2 = _array[i+_framsize];
-		if (CFByteOrderGetCurrent() == CFByteOrderLittleEndian) {
-			byte_reverse4(&swap1);
-			byte_reverse4(&swap2);
-		}
-     	pCoeffs[j] = swap1 + fraction * (swap2 - swap1);
-	}
-	return(0);
+// JWM - removed for linux test build
+/*		swap1 = _array[i];
+                swap2 = _array[i+_framsize];
+                if (CFByteOrderGetCurrent() == CFByteOrderLittleEndian) {
+                        byte_reverse4(&swap1);
+                        byte_reverse4(&swap2);
+                }
+        pCoeffs[j] = swap1 + fraction * (swap2 - swap1);
+*/
+        }
+        return(0);
 }
 
 void
 DataSet::allocArray(int nPoles)
 {
-	if (_array)
-	    delete [] _array;
-	_array = new float[_fprec * (nPoles + 4)];
+        if (_array)
+            delete [] _array;
+        _array = new float[_fprec * (nPoles + 4)];
 }

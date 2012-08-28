@@ -16,7 +16,7 @@
 	-- BGG mm 1/2005
 */
 
-#include <iostream.h>
+#include <iostream>
 #include <RTcmix.h>
 #include <stdio.h>
 #include <stdlib.h>

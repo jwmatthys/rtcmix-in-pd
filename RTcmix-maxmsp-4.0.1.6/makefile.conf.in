@@ -122,9 +122,11 @@ ifeq ($(NPLAY_SUPPORT), TRUE)
 CMIX_FLAGS += -DNETAUDIO
 endif
 
-
+# JWM - isolated OSX-only flags
 # BGG mm UB
-UB_CFLAGS = -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386
+ifeq ($(ARCH),MACOSX)
+	UB_CFLAGS = -isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386
+endif
 CFLAGS = $(UB_CFLAGS) $(INCLUDES) $(OPT) $(ARCHFLAGS) $(CMIX_FLAGS)
 CXXFLAGS = $(UB_CFLAGS) $(INCLUDES) $(OPT) $(ARCHFLAGS) $(CMIX_FLAGS)
 
