@@ -8,18 +8,13 @@
 #define VERSION "0.01"
 #define RTcmixVERSION "RTcmix-maxmsp-4.0.1.6"
 
-#include "ext.h"
-#include "z_dsp.h"
-#include "string.h"
-#include "ext_strings.h"
-#include "edit.h"
-#include "ext_wind.h"
+// JWM - Pd headers
+#include "m_pd.h"
+#include <string.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "buffer.h"
-#include "ext_obex.h"
 
 // JWM WHAT A ROCKSTAR Brad is! Reverting to dlopen for linux
 // BGG kept the dlopen() stuff in for future use
@@ -707,6 +702,7 @@ void rtcmix_bang(t_rtcmix *x)
 
   if (x->flushflag == 1) return; // heap and queue being reset
 
+  // JWM - FIXME - no A_LONG in Pd
   a[0].a_w.w_long = x->current_script;
   a[0].a_type = A_LONG;
   defer_low(x, (method)rtcmix_dogoscript, NULL, 1, a);
@@ -747,9 +743,10 @@ void rtcmix_dotext(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
     {
       switch (argv[i].a_type)
         {
-        case A_LONG:
-          sprintf(xfer, " %ld", argv[i].a_w.w_long);
-          break;
+          //JWM - no A_LONG in Pd
+          //case A_LONG:
+          //sprintf(xfer, " %ld", argv[i].a_w.w_long);
+          //break;
         case A_FLOAT:
           sprintf(xfer, " %lf", argv[i].a_w.w_float);
           break;
@@ -758,9 +755,9 @@ void rtcmix_dotext(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
           if ( !(x->var_set[varnum-1]) ) error("variable $%d has not been set yet, using 0.0 as default",varnum);
           sprintf(xfer, " %lf", x->var_array[varnum-1]);
           break;
-        case A_SYM:
-          if (top == 0) { sprintf(xfer, "%s", argv[i].a_w.w_sym->s_name); top = 1;}
-          else sprintf(xfer, " %s", argv[i].a_w.w_sym->s_name);
+        case A_SYMBOL:
+          if (top == 0) { sprintf(xfer, "%s", argv[i].a_w.w_symbol->s_name); top = 1;}
+          else sprintf(xfer, " %s", argv[i].a_w.w_symbol->s_name);
           break;
         case A_SEMI:
           sprintf(xfer, ";");
@@ -867,14 +864,15 @@ void rtcmix_dortcmix(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
     {
       switch (argv[i].a_type)
         {
-        case A_LONG:
-          p[i-1] = (double)(argv[i].a_w.w_long);
-          break;
+          // JWM: no A_LONG in Pd
+          //case A_LONG:
+          //p[i-1] = (double)(argv[i].a_w.w_long);
+          //break;
         case A_FLOAT:
           p[i-1] = (double)(argv[i].a_w.w_float);
           break;
-        case A_SYM:
-          cmd = argv[i].a_w.w_sym->s_name;
+        case A_SYMBOL:
+          cmd = argv[i].a_w.w_symbol->s_name;
         }
     }
 
@@ -898,9 +896,10 @@ void rtcmix_var(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
       x->var_set[varnum-1] = true;
       switch (argv[i+1].a_type)
         {
-        case A_LONG:
-          x->var_array[varnum-1] = (float)(argv[i+1].a_w.w_long);
-          break;
+          // JWM - no A_LONG in Pd
+          //case A_LONG:
+          //x->var_array[varnum-1] = (float)(argv[i+1].a_w.w_long);
+          //break;
         case A_FLOAT:
           x->var_array[varnum-1] = argv[i+1].a_w.w_float;
         }
@@ -924,9 +923,10 @@ void rtcmix_varlist(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
       x->var_set[i] = true;
       switch (argv[i].a_type)
         {
-        case A_LONG:
-          x->var_array[i] = (float)(argv[i].a_w.w_long);
-          break;
+          // JWM - No A_LONG in Pd
+          //case A_LONG:
+          //x->var_array[i] = (float)(argv[i].a_w.w_long);
+          //break;
         case A_FLOAT:
           x->var_array[i] = argv[i].a_w.w_float;
         }
@@ -1030,9 +1030,10 @@ void rtcmix_dogoscript(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
     {
       switch (argv[i].a_type)
         {
-        case A_LONG:
-          temp = (short)argv[i].a_w.w_long;
-          break;
+          // JWM: No A_LONG in Pd
+          //case A_LONG:
+          //temp = (short)argv[i].a_w.w_long;
+          //break;
         case A_FLOAT:
           temp = (short)argv[i].a_w.w_float;
         }
@@ -1102,9 +1103,10 @@ void rtcmix_openscript(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
     {
       switch (argv[i].a_type)
         {
-        case A_LONG:
-          temp = (short)argv[i].a_w.w_long;
-          break;
+          // JWM: No A_LONG in Pd
+          //case A_LONG:
+          //temp = (short)argv[i].a_w.w_long;
+          //break;
         case A_FLOAT:
           temp = (short)argv[i].a_w.w_float;
         }
@@ -1141,9 +1143,10 @@ void rtcmix_setscript(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
     {
       switch (argv[i].a_type)
         {
-        case A_LONG:
-          temp = (short)argv[i].a_w.w_long;
-          break;
+          // JWM - No A_LONG in Pd
+          //case A_LONG:
+          //temp = (short)argv[i].a_w.w_long;
+          //break;
         case A_FLOAT:
           temp = (short)argv[i].a_w.w_float;
         }
@@ -1173,9 +1176,10 @@ void rtcmix_write(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
     {
       switch (argv[i].a_type)
         {
-        case A_LONG:
-          temp = (short)argv[i].a_w.w_long;
-          break;
+          //JWM: No A_LONG in Pd
+          //case A_LONG:
+          //temp = (short)argv[i].a_w.w_long;
+          //break;
         case A_FLOAT:
           temp = (short)argv[i].a_w.w_float;
         }
@@ -1208,6 +1212,7 @@ void rtcmix_writeas(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
     {
       switch (argv[i].a_type)
         {
+          // JWM: FIXME - No A_LONG in PD
         case A_LONG:
           temp = (short)argv[i].a_w.w_long;
           if (temp > MAX_SCRIPTS)
@@ -1314,6 +1319,7 @@ void rtcmix_doread(t_rtcmix *x, Symbol *s, short argc, t_atom *argv)
     {
       switch (argv[i].a_type)
         {
+          // JWM: FIXME - No A_LONG in Pd
         case A_LONG:
           temp = (short)argv[i].a_w.w_long;
           if (temp > MAX_SCRIPTS)
