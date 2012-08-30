@@ -187,7 +187,7 @@ int main(void)
   addmess((method)rtcmix_rtcmix, "rtcmix", A_GIMME, 0);
   addmess((method)rtcmix_var, "var", A_GIMME, 0);
   addmess((method)rtcmix_varlist, "varlist", A_GIMME, 0);
-  addmess((method)rtcmix_bufset, "bufset", A_SYM, 0);
+  addmess((method)rtcmix_bufset, "bufset", A_SYMBOL, 0);
   addmess((method)rtcmix_flush, "flush", 0);
 
   //so we know what to do with floats that we receive at the inputs
@@ -755,7 +755,7 @@ void rtcmix_dotext(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
           if ( !(x->var_set[varnum-1]) ) error("variable $%d has not been set yet, using 0.0 as default",varnum);
           sprintf(xfer, " %lf", x->var_array[varnum-1]);
           break;
-        case A_SYMBOL:
+        case A_SYMBOLBOL:
           if (top == 0) { sprintf(xfer, "%s", argv[i].a_w.w_symbol->s_name); top = 1;}
           else sprintf(xfer, " %s", argv[i].a_w.w_symbol->s_name);
           break;
@@ -1243,8 +1243,8 @@ void rtcmix_writeas(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
           x->current_script = temp;
           x->s_name[x->current_script][0] = 0;
           break;
-        case A_SYM://this doesn't work yet
-          strcpy(x->s_name[x->current_script], argv[i].a_w.w_sym->s_name);
+        case A_SYMBOL://this doesn't work yet
+          strcpy(x->s_name[x->current_script], argv[i].a_w.w_symbol->s_name);
           post("rtcmix~: writing file %s",x->s_name[x->current_script]);
         }
     }
@@ -1350,8 +1350,8 @@ void rtcmix_doread(t_rtcmix *x, Symbol *s, short argc, t_atom *argv)
           temp = (short)argv[i].a_w.w_float;
           x->s_name[x->current_script][0] = 0;
           break;
-        case A_SYM:
-          strcpy(filename, argv[i].a_w.w_sym->s_name);
+        case A_SYMBOL:
+          strcpy(filename, argv[i].a_w.w_symbol->s_name);
           strcpy(x->s_name[x->current_script], filename);
         }
     }
@@ -1463,15 +1463,15 @@ void rtcmix_restore(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
   // script #, current buffer size, final script size, script data
   x->current_script = argv[0].a_w.w_long;
   bsize = argv[1].a_w.w_long;
-  if (argv[2].a_type == A_SYM)
+  if (argv[2].a_type == A_SYMBOL)
     { // this is for v1.399 scripts that had the symbol size limit bug
       fsize = bsize;
-      fptr = argv[2].a_w.w_sym->s_name;
+      fptr = argv[2].a_w.w_symbol->s_name;
     }
   else
     {
       fsize = argv[2].a_w.w_long;
-      fptr = argv[3].a_w.w_sym->s_name;
+      fptr = argv[3].a_w.w_symbol->s_name;
     }
 
   if (!x->rtcmix_script[x->current_script])
