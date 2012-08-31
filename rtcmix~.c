@@ -77,7 +77,7 @@ typedef struct _rtcmix
   int dylibincr;
   void *rtcmixdylib;
   // for the full path to the rtcmixdylib.so file
-  char pathname[1024]; // probably should be malloc'd
+  char pathname[MAXPDSTRING];
 
   // space for these malloc'd in rtcmix_dsp()
   float *pd_outbuf;
@@ -97,7 +97,7 @@ typedef struct _rtcmix
   t_atom valslist[MAXDISPARGS];
 
   // buffer for error-reporting
-  char theerror[1024];
+  char theerror[MAXPDSTRING];
 
   // editor stuff
   t_object m_obj;
@@ -113,7 +113,7 @@ typedef struct _rtcmix
 
 // for where the rtcmix-dylibs folder is located
 char *mpathptr;
-char mpathname[1024]; // probably should be malloc'd
+char mpathname[MAXPDSTRING];
 
 
 /****PROTOTYPES****/
@@ -221,6 +221,7 @@ int main(void)
   dsp_initclass();
 
   // find the rtcmix-dylibs folder location
+  // JWM - use dylib() functions instead of Max/MSP ones
   nameinpath("rtcmix-dylibs", &path);
   rval = path_topathname(path, "", mpathname);
   if (rval != 0) error("couldn't find the rtcmix-dylibs folder!");
@@ -246,9 +247,9 @@ void *rtcmix_new(long num_inoutputs, long num_additional)
   t_rtcmix *x;
 
   // for the full path to the rtcmixdylib.so file
-  char pathname[1000]; // probably should be malloc'd
+  char pathname[MAXPDSTRING]; // probably should be malloc'd
   // BGG kept this in for the dlopen() stuff
-  char cp_command[1024]; // should probably be malloc'd
+  char cp_command[MAXPDSTRING]; // should probably be malloc'd
 
 
   // creates the object
@@ -257,7 +258,7 @@ void *rtcmix_new(long num_inoutputs, long num_additional)
   //zero out the struct, to be careful (takk to jkclayton)
   if (x)
     {
-      for(i=sizeof(t_pxobject);i<sizeof(t_rtcmix);i++)
+      for(i=sizeof(t_object);i<sizeof(t_rtcmix);i++)
         ((char *)x)[i]=0;
     }
 
@@ -291,7 +292,7 @@ void *rtcmix_new(long num_inoutputs, long num_additional)
   x->num_pinlets = num_additional;
 
   // setup up inputs and outputs, for audio inputs
-  dsp_setup((t_pxobject *)x, x->num_inputs + x->num_pinlets);
+  dsp_setup((t_object *)x, x->num_inputs + x->num_pinlets);
 
   // outputs, right-to-left
   x->outpointer = outlet_new((t_object *)x, 0); // for bangs (from MAXBANG), values + value lists (from MAXMESSAGE)
@@ -332,6 +333,11 @@ void *rtcmix_new(long num_inoutputs, long num_additional)
 
   // load the dylib
   x->rtcmixdylib = dlopen(x->pathname, RTLD_NOW | RTLD_LOCAL);
+  // JWM: for safety (and debugging), added check for load error
+  if (!x->rtcmixdylib)
+    {
+      error("dlopen error loading dylib");
+    }
 
   // find the main entry to be sure we're cool...
   x->rtcmixmain = dlsym(x->rtcmixdylib, "rtcmixmain");
@@ -639,7 +645,7 @@ void rtcmix_assist(t_rtcmix *x, void *b, long m, long a, char *s)
 void rtcmix_free(t_rtcmix *x)
 {
   // BGG kept dlopen() stuff in in case NSLoad gets dropped
-    char rm_command[1024]; // should probably be malloc'd
+    char rm_command[MAXPDSTRING]; // should probably be malloc'd
 
     dlclose(x->rtcmixdylib);
     sprintf(rm_command, "rm -rf \"%s\" ", x->pathname);
@@ -649,7 +655,7 @@ void rtcmix_free(t_rtcmix *x)
     if (x->m_editor)
       freeobject((t_object *)x->m_editor);
     x->m_editor = NULL;
-    dsp_free((t_pxobject *)x);
+    dsp_free((t_object *)x);
 }
 
 

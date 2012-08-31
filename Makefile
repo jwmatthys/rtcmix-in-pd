@@ -1,4 +1,4 @@
-current: textbuffer_linux
+current: rtcmix~
 
 clean: ; rm -f *.pd_linux *.o
 
@@ -25,7 +25,7 @@ PDNTLIB = $(PDNTLDIR)\libc.lib \
 
 #-------------- Linux --------------------------------
 
-textbuffer_linux: textbuffer.pd_linux
+textbuffer_linux: rtcmix~.pd_linux
 
 .SUFFIXES: .pd_linux
 
