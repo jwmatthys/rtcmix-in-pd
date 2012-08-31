@@ -32,14 +32,14 @@ typedef struct textbuffer
 /****PROTOTYPES****/
 
 //int dylibincr;
-void rtcmix_text(t_textbuffer *x, t_symbol *s, int argc, t_atom *argv);
-void rtcmix_dotext(t_textbuffer *x, t_symbol *s, int argc, t_atom *argv);
+void rtcmix_text(t_textbuffer *x, t_symbol *s, short argc, t_atom *argv);
+void rtcmix_dotext(t_textbuffer *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_badquotes(char *cmd, char *buf); // this is to check for 'split' quoted params, called in rtcmix_dotext
 
 /*** TEXT BUFFER FUNCTIONS ***/
 
 // see the note for rtcmix_dotext() below
-void rtcmix_text(t_textbuffer *x, t_symbol *s, int argc, t_atom *argv)
+void rtcmix_text(t_textbuffer *x, t_symbol *s, short argc, t_atom *argv)
 {
   if (x->flushflag == 1) return; // heap and queue being reset
   // uh oh, no defer_low in Pd. Hope this doesn't cause trouble...
@@ -49,7 +49,7 @@ void rtcmix_text(t_textbuffer *x, t_symbol *s, int argc, t_atom *argv)
 
 // what to do when we get the message "text"
 // rtcmix~ scores come from the [textedit] object this way
-void rtcmix_dotext(t_textbuffer *x, t_symbol *s, int argc, t_atom *argv)
+void rtcmix_dotext(t_textbuffer *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i, varnum;
   char thebuf[8192]; // should #define these probably

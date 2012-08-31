@@ -46,7 +46,7 @@ void *rtcmix_class;
 typedef struct _rtcmix
 {
   //header
-  t_pxobject x_obj;
+  t_object x_obj;
 
   //variables specific to this object
   float srate;                                        //sample rate
@@ -89,7 +89,7 @@ typedef struct _rtcmix
   // for the rtmix_var() and rtcmix_varlist() $n variable scheme
 #define NVARS 9
   float var_array[NVARS];
-  Boolean var_set[NVARS];
+  int var_set[NVARS];
 
   // stuff for check_vals
 #define MAXDISPARGS 1024 // from RTcmix H/maxdispargs.h
@@ -130,16 +130,16 @@ void rtcmix_free(t_rtcmix *x);
 void rtcmix_float(t_rtcmix *x, double f);
 void rtcmix_int(t_rtcmix *x, int i);
 void rtcmix_bang(t_rtcmix *x);
-// JWM: remove these since there's no defer in Pd
+// JWM: removed this since there's no defer in Pd
 //void rtcmix_dobangout(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv); // for the defer
 
 //for custom messages
 void rtcmix_version(t_rtcmix *x);
 void rtcmix_text(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_dotext(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv); // for the defer
+void rtcmix_dotext(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_badquotes(char *cmd, char *buf); // this is to check for 'split' quoted params, called in rtcmix_dotext
 void rtcmix_rtcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_dortcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv); // for the defer
+void rtcmix_dortcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_var(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_varlist(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_bufset(t_rtcmix *x, t_symbol *s);
@@ -149,7 +149,7 @@ void rtcmix_flush(t_rtcmix *x);
 void rtcmix_edclose (t_rtcmix *x, char **text, long size);
 void rtcmix_dblclick(t_rtcmix *x);
 void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv); // for the defer
+void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_openscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
@@ -163,6 +163,7 @@ void rtcmix_okclose (t_rtcmix *x, char *prompt, short *result);
 void rtcmix_save(t_rtcmix *x, void *w);
 void rtcmix_restore(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 
+// JWM: TODO - attach to table?
 t_symbol *ps_buffer; // for [buffer~]
 
 
@@ -380,7 +381,7 @@ void *rtcmix_new(long num_inoutputs, long num_additional)
   // set up for the variable-substitution scheme
   for(i = 0; i < NVARS; i++)
     {
-      x->var_set[i] = false;
+      x->var_set[i] = 0;
       x->var_array[i] = 0.0;
     }
 
@@ -779,6 +780,7 @@ void rtcmix_dotext(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   // ok, here's the deal -- when cycling tokenizes the message stream, if a quoted param (like a pathname to a soundfile)
   // contains any spaces it will be split into to separate, unquoted Symbols.  The function below repairs this for
   // certain specific rtcmix commands.  Not really elegant, but I don't know of another solution at present
+ // JWM - TODO - what if, upon getting quotes, we jump to a separate routine until we get close quotes? Then jump back.
   rtcmix_badquotes("rtinput", thebuf);
   rtcmix_badquotes("system", thebuf);
   rtcmix_badquotes("dataset", thebuf);
@@ -792,24 +794,24 @@ void rtcmix_badquotes(char *cmd, char *thebuf)
 {
   int i;
   char *rtinputptr;
-  Boolean badquotes, checkon;
+  int badquotes, checkon;
   int clen;
   char tbuf[8192];
 
   // jeez this just sucks big giant easter eggs
-  badquotes = false;
+  badquotes = 0;
   rtinputptr = strstr(thebuf, cmd); // find (if it exists) the instance of the command that may have a split in the quoted param
   if (rtinputptr) {
     rtinputptr += strlen(cmd);
     clen = strlen(thebuf) - (rtinputptr-thebuf);
-    checkon = false;
+    checkon = 0;
     for (i = 0; i < clen; i++) { // start from the command and look for spaces, between ( )
-      if (*rtinputptr++ == '(' ) checkon = true;
+      if (*rtinputptr++ == '(' ) checkon = 1;
       if (checkon) {
         if ((int)*rtinputptr == 34) { // we found a quote, so its cool and we can stop
           i = clen;
         } else if (*rtinputptr == ')' ) {  // uh oh, no quotes and this command expects them
-          badquotes = true;
+          badquotes = 1;
           i = clen;
         }
       }
@@ -820,9 +822,9 @@ void rtcmix_badquotes(char *cmd, char *thebuf)
   if (badquotes) { // now we're gonna put in the missing quotes
     rtinputptr = strstr(thebuf, cmd);
     rtinputptr += strlen(cmd);
-    checkon = false;
+    checkon = 0;
     for (i = 0; i < clen; i++) {
-      if (*rtinputptr++ == '(' ) checkon = true;
+      if (*rtinputptr++ == '(' ) checkon = 1;
       if (checkon)
         if (*rtinputptr != ' ') i = clen;
     } // at this point we're at the beginning of the should-be-quoted param in the buffer
@@ -899,7 +901,7 @@ void rtcmix_var(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
           error("only vars $1 - $9 are allowed");
           return;
         }
-      x->var_set[varnum-1] = true;
+      x->var_set[varnum-1] = 1;
       switch (argv[i+1].a_type)
         {
           // JWM - no A_LONG in Pd
@@ -926,7 +928,7 @@ void rtcmix_varlist(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
   for (i = 0; i < argc; i++)
     {
-      x->var_set[i] = true;
+      x->var_set[i] = 1;
       switch (argv[i].a_type)
         {
           // JWM - No A_LONG in Pd
