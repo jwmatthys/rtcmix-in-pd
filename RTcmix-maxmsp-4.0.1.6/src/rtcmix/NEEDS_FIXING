@@ -1,7 +1,0 @@
-genlib/delput.c (I fixed in this version)
-	-- actually, fix cfuncs and sflcfuncs in CLAR and METAFLUTE
-COMBIT.cpp -- delay alloc
-DELAY.cpp -- delay alloc
-PANECHO.cpp -- delay alloc
-FRET*.cpp -- firsttime addition (fixed here)
-FLANGE.cpp -- pctleft (fixed here)

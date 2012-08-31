@@ -1,5 +1,0 @@
-set_option("full_duplex_on")
-rtsetparams(44100, 2, 256)
-load("IIR")
-rtinput("AUDIO", "MIC")
-makegen(1, 7, 1000, 0, 500, 1, 500, 0)
