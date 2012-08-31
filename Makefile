@@ -1,6 +1,9 @@
 current: rtcmix~
 
-clean: ; rm -f *.pd_linux *.o
+clean:
+	rm -f *.pd_linux *.o
+	rm rtcmix-dylib/*
+	rm -r rtcmix-dylib
 
 # ----------------------- NT -----------------------
 
@@ -40,3 +43,6 @@ LINUXINCLUDE =  -I../..
 	ld -shared -o $*.pd_linux $*.o -lc -lm
 	strip --strip-unneeded $*.pd_linux
 	rm $*.o
+	mkdir rtcmix-dylib
+	cp RTcmix-*/src/rtcmix/*.so rtcmix-dylib
+

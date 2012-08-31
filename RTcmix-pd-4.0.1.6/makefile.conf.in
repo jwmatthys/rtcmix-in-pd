@@ -118,6 +118,8 @@ endif
 
 INCLUDES = -I. -I$(CMIXDIR)/include
 
+# JWM - abort on error
+
 ifeq ($(NPLAY_SUPPORT), TRUE)
 CMIX_FLAGS += -DNETAUDIO
 endif
@@ -138,10 +140,6 @@ LIBRTCMIX = $(LIBDIR)/$(RTLIB)
 RTLDFLAGS = -L$(LIBDIR) -lrtcmix -lgen
 
 LIBGEN = libgen.$(SHLIB_SUFFIX)
-# GENLIB macro is no longer needed because it is dynamically linked
-# via SYSLIBS
-
-GENLIB =
 
 # Platform-specific library flags Key:
 #

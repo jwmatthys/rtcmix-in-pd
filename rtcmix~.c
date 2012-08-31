@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <unistd.h> // JWM: for getcwd()
 
 // JWM WHAT A ROCKSTAR Brad is! Reverting to dlopen for linux
 // BGG kept the dlopen() stuff in for future use
@@ -112,7 +113,6 @@ typedef struct _rtcmix
 
 
 // for where the rtcmix-dylibs folder is located
-char *mpathptr;
 char mpathname[MAXPDSTRING];
 
 
@@ -172,9 +172,6 @@ t_symbol *ps_buffer; // for [buffer~]
 //primary Pd funcs
 int main(void)
 {
-  int i;
-  short path, rval;
-
   //the A_DEFLONG arguments give us the object arguments for the user to set number of ins/outs, etc.
   // JWM: Pd has no long type; presumably it becomes A_DEFFLOAT
   //change these if you want different user args
@@ -220,19 +217,20 @@ int main(void)
   //gotta have this one....
   dsp_initclass();
 
-  // find the rtcmix-dylibs folder location
-  // JWM - use dylib() functions instead of Max/MSP ones
-  nameinpath("rtcmix-dylibs", &path);
-  rval = path_topathname(path, "", mpathname);
-  if (rval != 0) error("couldn't find the rtcmix-dylibs folder!");
+  // find the rtcmix-dylib folder location
+  // JWM: frustrated by Pd's alternative to nameinpath(),
+  // looks for rtcmixdylib/rtcmixdylib.so in same dir as
+  // external
+
+  char temp_path[MAXPDSTRING];
+  if (!getcwd(temp_path,MAXPDSTRING))
+    error ("can't get cwd()");
   else
-    { // this is to find the beginning "/" for root
-      for (i = 0; i < 1000; i++)
-        if (mpathname[i] == '/') break;
-      mpathptr = mpathname+i;
+    {
+      sprintf(mpathname,"%s/rtcmix-dylib/",temp_path);
     }
 
-  ps_buffer = gensym("buffer~"); // for [buffer~]
+  //ps_buffer = gensym("buffer~"); // for [buffer~]
 
   // ho ho!
   post("rtcmix~ -- RTcmix music language, v. %s (%s)", VERSION, RTcmixVERSION);
@@ -246,8 +244,6 @@ void *rtcmix_new(long num_inoutputs, long num_additional)
   int i;
   t_rtcmix *x;
 
-  // for the full path to the rtcmixdylib.so file
-  char pathname[MAXPDSTRING]; // probably should be malloc'd
   // BGG kept this in for the dlopen() stuff
   char cp_command[MAXPDSTRING]; // should probably be malloc'd
 
@@ -313,22 +309,15 @@ void *rtcmix_new(long num_inoutputs, long num_additional)
   x->x_obj.z_misc = Z_NO_INPLACE;
 
 
-  // RTcmix stuff
-  // full path to the rtcmixdylib.so file
-  sprintf(pathname, "%s/rtcmixdylib.so", mpathptr);
-
-  // JWM: This is a lifesaver.
-  // BGG kept this in for future use of dlopen() (if NSLoad gets dropped)
-
   x->dylibincr = dylibincr++; // keep track of rtcmixdylibN.so for copy/load
 
   // full path to the rtcmixdylib.so file
-  sprintf(x->pathname, "%s/rtcmixdylib%d.so", mpathptr, x->dylibincr);
+  sprintf(x->pathname, "%s/rtcmixdylib%d.so", mpathname, x->dylibincr);
 
   // ok, this is fairly insane.  To guarantee a fully-isolated namespace with dlopen(), we need
   // a totally *unique* dylib, so we copy this.  Deleted in rtcmix_free() below
   // RTLD_LOCAL doesn't do it all - probably the global vars in RTcmix
-  sprintf(cp_command, "cp \"%s/BASE_rtcmixdylib.so\" \"%s\"", mpathptr,x->pathname);
+  sprintf(cp_command, "cp \"%s/BASE_rtcmixdylib.so\" \"%s\"",mpathname,x->pathname);
   system(cp_command);
 
   // load the dylib
@@ -415,8 +404,6 @@ void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
   int i;
 
   // RTcmix vars
-  // for the full path to the rtcmixdylib.so file
-  char pathname[1000]; // probably should be malloc'd
 
   // these are the entry function pointers in to the rtcmixdylib.so lib
   x->rtcmixmain = NULL;
@@ -446,17 +433,15 @@ void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
   dsp_add_args[x->num_inputs + x->num_pinlets + x->num_outputs + 1] = (void *)sp[0]->s_n; //pointer to the vector size
   dsp_addv(rtcmix_perform, (x->num_inputs + x->num_pinlets + x->num_outputs + 2), dsp_add_args); //add them to the signal chain
 
-  // RTcmix stuff
-  // full path to the rtcmixdylib.so file
-  sprintf(pathname, "%s/rtcmixdylib.so", mpathptr);
-
-  // BGG kept this in for dlopen() stuff, future if NSLoad gets dropped
-
   // reload, this reinits the RTcmix queue, etc.
   dlclose(x->rtcmixdylib);
 
   // load the dylib
   x->rtcmixdylib = dlopen(x->pathname,  RTLD_NOW | RTLD_LOCAL);
+  if (!x->rtcmixdylib)
+    {
+      error("dlopen error loading dylib");
+    }
 
   // find the main entry to be sure we're cool...
   x->rtcmixmain = dlsym(x->rtcmixdylib, "rtcmixmain");
