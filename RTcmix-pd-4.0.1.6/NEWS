@@ -1,0 +1,74 @@
+This gives a very brief summary of new things for each stable version.
+If you want more detail, see the ChangeLog.
+
+
+RTcmix version 4.0
+------------------
+
+Includes a major new set of features to enable dynamic parameter
+updates.  Major internal reorganization and stability improvements.
+Several new instruments.
+
+
+RTcmix version 3.8
+------------------
+
+Includes a new way to access audio hardware that is more flexible and
+reliable.  Support for the ALSA driver on Linux.  Support for 24-bit
+files.
+
+
+RTcmix version 3.6
+------------------
+
+Some new instruments, many bug fixes and some internal re-design work.
+
+
+RTcmix version 3.4
+------------------
+
+Includes an imbeddable RTcmix object and sample programs that use it.
+This lets you imbed RTcmix into another program and make instrument
+calls and update parameters interactively.  Also includes some new
+instruments, makegen table-processing functions and many bug fixes.
+
+
+RTcmix version 3.2
+------------------
+
+RTcmix version 3.2 has many bug fixes and a few new instruments and
+features.  It now supports the FreeBSD operating system.
+
+
+RTcmix version 3.1
+------------------
+
+RTcmix version 3.1 adds bug fixes, new features, new instruments,
+and support for Mac OS X.  (See ChangeLog.)  One new feature --
+the pgen Minc call and friends -- is still somewhat experimental.
+See docs in insts.vccm for info on using this.  This does not
+yet work in OS X.
+
+
+RTcmix version 3.0
+------------------
+
+In addition to many bug fixes, RTcmix version 3.0 adds a major feature:
+the ability to route signals between instruments and to multiple outputs.
+You set up the bus routing for each instrument using a new Minc call,
+bus_config. See "docs/README.bus_config" for explanation.
+
+A new instrument, MIXN, takes full advantage of the multiple-output
+capability.
+
+Instrument designers should see "docs/README.inst_porting" to find out
+how to make your instruments compatible with this version of RTcmix.
+
+Later 3.0 versions add support for alternative parsers: Perl and Python.
+
+
+----------------------------------
+Brad Garton
+John Gibson
+Doug Scott
+Dave Topper

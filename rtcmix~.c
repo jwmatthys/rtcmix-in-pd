@@ -6,7 +6,7 @@
 // see rtcmix~.c in BGG's rtcmix~ for Max/MSP thank yous & changelog
 
 #define VERSION "0.01"
-#define RTcmixVERSION "RTcmix-maxmsp-4.0.1.6"
+#define RTcmixVERSION "RTcmix-pd-4.0.1.6"
 
 // JWM - Pd headers
 #include "m_pd.h"
@@ -30,7 +30,7 @@ int dylibincr;
 
 /******* RTcmix stuff *******/
 typedef int (*rtcmixmainFunctionPtr)();
-typedef int (*maxmsp_rtsetparamsFunctionPtr)(float sr, int nchans, int vecsize, float *maxmsp_inbuf, float *maxmsp_outbuf, char *theerror);
+typedef int (*pd_rtsetparamsFunctionPtr)(float sr, int nchans, int vecsize, float *pd_inbuf, float *pd_outbuf, char *theerror);
 typedef int (*parse_scoreFunctionPtr)();
 typedef void (*pullTraverseFunctionPtr)();
 typedef int (*check_bangFunctionPtr)();
@@ -61,7 +61,7 @@ typedef struct _rtcmix
 
   /******* RTcmix stuff *******/
   rtcmixmainFunctionPtr rtcmixmain;
-  maxmsp_rtsetparamsFunctionPtr maxmsp_rtsetparams;
+  pd_rtsetparamsFunctionPtr pd_rtsetparams;
   parse_scoreFunctionPtr parse_score;
   pullTraverseFunctionPtr pullTraverse;
   check_bangFunctionPtr check_bang;
@@ -80,8 +80,8 @@ typedef struct _rtcmix
   char pathname[1024]; // probably should be malloc'd
 
   // space for these malloc'd in rtcmix_dsp()
-  float *maxmsp_outbuf;
-  float *maxmsp_inbuf;
+  float *pd_outbuf;
+  float *pd_inbuf;
 
   // script buffer pointer for large binbuf restores
   char *restore_buf_ptr;
@@ -130,52 +130,54 @@ void rtcmix_free(t_rtcmix *x);
 void rtcmix_float(t_rtcmix *x, double f);
 void rtcmix_int(t_rtcmix *x, int i);
 void rtcmix_bang(t_rtcmix *x);
-void rtcmix_dobangout(t_rtcmix *x, Symbol *s, short argc, t_atom *argv); // for the defer
+// JWM: remove these since there's no defer in Pd
+//void rtcmix_dobangout(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv); // for the defer
 
 //for custom messages
 void rtcmix_version(t_rtcmix *x);
-void rtcmix_text(t_rtcmix *x, Symbol *s, short argc, Atom *argv);
-void rtcmix_dotext(t_rtcmix *x, Symbol *s, short argc, Atom *argv); // for the defer
+void rtcmix_text(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+void rtcmix_dotext(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv); // for the defer
 void rtcmix_badquotes(char *cmd, char *buf); // this is to check for 'split' quoted params, called in rtcmix_dotext
-void rtcmix_rtcmix(t_rtcmix *x, Symbol *s, short argc, Atom *argv);
-void rtcmix_dortcmix(t_rtcmix *x, Symbol *s, short argc, Atom *argv); // for the defer
-void rtcmix_var(t_rtcmix *x, Symbol *s, short argc, Atom *argv);
-void rtcmix_varlist(t_rtcmix *x, Symbol *s, short argc, Atom *argv);
+void rtcmix_rtcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+void rtcmix_dortcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv); // for the defer
+void rtcmix_var(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+void rtcmix_varlist(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_bufset(t_rtcmix *x, t_symbol *s);
 void rtcmix_flush(t_rtcmix *x);
 
 //for the text editor
 void rtcmix_edclose (t_rtcmix *x, char **text, long size);
 void rtcmix_dblclick(t_rtcmix *x);
-void rtcmix_goscript(t_rtcmix *x, Symbol *s, short argc, Atom *argv);
-void rtcmix_dogoscript(t_rtcmix *x, Symbol *s, short argc, Atom *argv); // for the defer
-void rtcmix_openscript(t_rtcmix *x, Symbol *s, short argc, Atom *argv);
-void rtcmix_setscript(t_rtcmix *x, Symbol *s, short argc, Atom *argv);
-void rtcmix_read(t_rtcmix *x, Symbol *s, short argc, Atom *argv);
-void rtcmix_doread(t_rtcmix *x, Symbol *s, short argc, t_atom *argv);
-void rtcmix_write(t_rtcmix *x, Symbol *s, short argc, Atom *argv);
-void rtcmix_writeas(t_rtcmix *x, Symbol *s, short argc, Atom *argv);
-void rtcmix_dowrite(t_rtcmix *x, Symbol *s, short argc, t_atom *argv);
+void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv); // for the defer
+void rtcmix_openscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+void rtcmix_doread(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+void rtcmix_write(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+void rtcmix_writeas(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_okclose (t_rtcmix *x, char *prompt, short *result);
 
 //for binbuf storage of scripts
 void rtcmix_save(t_rtcmix *x, void *w);
-void rtcmix_restore(t_rtcmix *x, Symbol *s, short argc, Atom *argv);
+void rtcmix_restore(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 
 t_symbol *ps_buffer; // for [buffer~]
 
 
 /****FUNCTIONS****/
 
-//primary MSP funcs
+//primary Pd funcs
 int main(void)
 {
   int i;
   short path, rval;
 
   //the A_DEFLONG arguments give us the object arguments for the user to set number of ins/outs, etc.
+  // JWM: Pd has no long type; presumably it becomes A_DEFFLOAT
   //change these if you want different user args
-  setup((struct messlist **)&rtcmix_class, (method)rtcmix_new, (method)rtcmix_free, (short)sizeof(t_rtcmix), 0L, A_DEFLONG, A_DEFLONG, 0);
+  setup((struct messlist **)&rtcmix_class, (method)rtcmix_new, (method)rtcmix_free, (short)sizeof(t_rtcmix), 0L, A_DEFFLOAT, A_DEFFLOAT, 0);
 
   //standard messages; don't change these
   addmess((method)rtcmix_dsp, "dsp", A_CANT, 0);
@@ -264,7 +266,7 @@ void *rtcmix_new(long num_inoutputs, long num_additional)
 
   // these are the entry function pointers in to the rtcmixdylib.so lib
   x->rtcmixmain = NULL;
-  x->maxmsp_rtsetparams = NULL;
+  x->pd_rtsetparams = NULL;
   x->pullTraverse = NULL;
   x->parse_score = NULL;
   x->check_bang = NULL;
@@ -335,9 +337,9 @@ void *rtcmix_new(long num_inoutputs, long num_additional)
   if (x->rtcmixmain)	x->rtcmixmain();
   else error("rtcmix~ could not call rtcmixmain()");
 
-  x->maxmsp_rtsetparams = dlsym(x->rtcmixdylib, "maxmsp_rtsetparams");
-  if (!(x->maxmsp_rtsetparams))
-    error("rtcmix~ could not find maxmsp_rtsetparams()");
+  x->pd_rtsetparams = dlsym(x->rtcmixdylib, "pd_rtsetparams");
+  if (!(x->pd_rtsetparams))
+    error("rtcmix~ could not find pd_rtsetparams()");
 
   x->parse_score = dlsym(x->rtcmixdylib, "parse_score");
   if (!(x->parse_score))
@@ -411,7 +413,7 @@ void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
 
   // these are the entry function pointers in to the rtcmixdylib.so lib
   x->rtcmixmain = NULL;
-  x->maxmsp_rtsetparams = NULL;
+  x->pd_rtsetparams = NULL;
   x->pullTraverse = NULL;
   x->parse_score = NULL;
   x->check_bang = NULL;
@@ -454,9 +456,9 @@ void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
   if (x->rtcmixmain)	x->rtcmixmain();
   else error("rtcmix~ could not call rtcmixmain()");
 
-  x->maxmsp_rtsetparams = dlsym(x->rtcmixdylib, "maxmsp_rtsetparams");
-  if (!(x->maxmsp_rtsetparams))
-    error("rtcmix~ could not find maxmsp_rtsetparams()");
+  x->pd_rtsetparams = dlsym(x->rtcmixdylib, "pd_rtsetparams");
+  if (!(x->pd_rtsetparams))
+    error("rtcmix~ could not find pd_rtsetparams()");
 
   x->parse_score = dlsym(x->rtcmixdylib, "parse_score");
   if (!(x->parse_score))
@@ -495,16 +497,16 @@ void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
     error("rtcmix~ could not find flush_sched()");
 
   // allocate the RTcmix i/o transfer buffers
-  x->maxmsp_inbuf = malloc(sizeof(float) * sp[0]->s_n * x->num_inputs);
-  x->maxmsp_outbuf = malloc(sizeof(float) * sp[0]->s_n * x->num_outputs);
+  x->pd_inbuf = malloc(sizeof(float) * sp[0]->s_n * x->num_inputs);
+  x->pd_outbuf = malloc(sizeof(float) * sp[0]->s_n * x->num_outputs);
 
   // zero out these buffers for UB
-  for (i = 0; i < (sp[0]->s_n * x->num_inputs); i++) x->maxmsp_inbuf[i] = 0.0;
-  for (i = 0; i < (sp[0]->s_n * x->num_outputs); i++) x->maxmsp_outbuf[i] = 0.0;
+  for (i = 0; i < (sp[0]->s_n * x->num_inputs); i++) x->pd_inbuf[i] = 0.0;
+  for (i = 0; i < (sp[0]->s_n * x->num_outputs); i++) x->pd_outbuf[i] = 0.0;
 
-  if (x->maxmsp_rtsetparams)
+  if (x->pd_rtsetparams)
     {
-      x->maxmsp_rtsetparams(x->srate, x->num_outputs, sp[0]->s_n, x->maxmsp_inbuf, x->maxmsp_outbuf, x->theerror);
+      x->pd_rtsetparams(x->srate, x->num_outputs, sp[0]->s_n, x->pd_inbuf, x->pd_outbuf, x->theerror);
     }
 }
 
@@ -555,12 +557,12 @@ t_int *rtcmix_perform(t_int *w)
 
       for(i = 0; i < x->num_inputs; i++)
         if (x->in_connected[i])
-          (x->maxmsp_inbuf)[k++] = *in[i]++;
+          (x->pd_inbuf)[k++] = *in[i]++;
         else
-          (x->maxmsp_inbuf)[k++] = *in[i];
+          (x->pd_inbuf)[k++] = *in[i];
 
       for(i = 0; i < x->num_outputs; i++)
-        *out[i]++ = (x->maxmsp_outbuf)[j++];
+        *out[i]++ = (x->pd_outbuf)[j++];
 
     }
 
@@ -569,9 +571,11 @@ t_int *rtcmix_perform(t_int *w)
   x->pullTraverse();
 
   // look for a pending bang from MAXBANG()
-  if (x->check_bang() == 1) // I don't think I really need this defer, but what the heck.
-    defer_low(x, (method)rtcmix_dobangout, (Symbol *)NULL, 0, (Atom *)NULL);
-
+  if (x->check_bang() == 1) // JWM: no defer in Pd, and BGG says unnecessary anyway
+    {
+      //defer_low(x, (method)rtcmix_dobangout, (t_symbol *)NULL, 0, (t_atom *)NULL);
+      outlet_bang(x->outpointer);
+    }
   // look for pending vals from MAXMESSAGE()
   valflag = x->check_vals(x->thevals);
 
@@ -607,10 +611,10 @@ t_int *rtcmix_perform(t_int *w)
 
 
 // the deferred bang output
-void rtcmix_dobangout(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
-{
+/*void rtcmix_dobangout(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+  {
   outlet_bang(x->outpointer);
-}
+  }*/
 
 
 //tells the user about the inputs/outputs when mousing over them
@@ -698,14 +702,15 @@ void rtcmix_int(t_rtcmix *x, int ival)
 // bang triggers the current working script
 void rtcmix_bang(t_rtcmix *x)
 {
-  Atom a[1];
+  t_atom a[1];
 
   if (x->flushflag == 1) return; // heap and queue being reset
 
   // JWM - FIXME - no A_LONG in Pd
   a[0].a_w.w_long = x->current_script;
   a[0].a_type = A_LONG;
-  defer_low(x, (method)rtcmix_dogoscript, NULL, 1, a);
+  //defer_low(x, (method)rtcmix_dogoscript, NULL, 1, a);
+  rtcmix_dogoscript(x, NULL, 1, a);
 }
 
 
@@ -717,16 +722,16 @@ void rtcmix_version(t_rtcmix *x)
 
 
 // see the note for rtcmix_dotext() below
-void rtcmix_text(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
+void rtcmix_text(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   if (x->flushflag == 1) return; // heap and queue being reset
-  defer_low(x, (method)rtcmix_dotext, s, argc, argv); // always defer this message
+  rtcmix_dotext(x, s, argc, argv); // always defer this message
 }
 
 
 // what to do when we get the message "text"
 // rtcmix~ scores come from the [textedit] object this way
-void rtcmix_dotext(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
+void rtcmix_dotext(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i, varnum;
   char thebuf[8192]; // should #define these probably
@@ -845,16 +850,17 @@ void rtcmix_badquotes(char *cmd, char *thebuf)
 
 
 // see the note for rtcmix_dortcmix() below
-void rtcmix_rtcmix(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
+void rtcmix_rtcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   if (x->flushflag == 1) return; // heap and queue being reset
-  defer_low(x, (method)rtcmix_dortcmix, s, argc, argv); // always defer this message
+  //defer_low(x, (method)rtcmix_dortcmix, s, argc, argv); // always defer this message
+  rtcmix_dortcmix(x,s,argc,argv);
 }
 
 
 // what to do when we get the message "rtcmix"
 // used for single-shot RTcmix scorefile commands
-void rtcmix_dortcmix(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
+void rtcmix_dortcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i;
   double p[1024]; // should #define this probably
@@ -881,7 +887,7 @@ void rtcmix_dortcmix(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
 
 
 // the "var" message allows us to set $n variables imbedded in a scorefile with varnum value messages
-void rtcmix_var(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
+void rtcmix_var(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i, varnum;
 
@@ -908,7 +914,7 @@ void rtcmix_var(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
 
 
 // the "varlist" message allows us to set $n variables imbedded in a scorefile with a list of positional vars
-void rtcmix_varlist(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
+void rtcmix_varlist(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i;
 
@@ -1004,15 +1010,16 @@ void rtcmix_dblclick(t_rtcmix *x)
 
 
 // see the note for rtcmix_goscript() below
-void rtcmix_goscript(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
+void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   if (x->flushflag == 1) return; // heap and queue being reset
-  defer_low(x, (method)rtcmix_dogoscript, s, argc, argv); // always defer this message
+  //defer_low(x, (method)rtcmix_dogoscript, s, argc, argv); // always defer this message
+  rtcmix_dogoscript(x, s, argc, argv);
 }
 
 
 // the [goscript N] message will cause buffer N to be sent to the RTcmix parser
-void rtcmix_dogoscript(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
+void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i,j,temp = 0;
   int tval;
@@ -1089,7 +1096,7 @@ void rtcmix_dogoscript(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
 
 
 // [openscript N] will open a buffer N
-void rtcmix_openscript(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
+void rtcmix_openscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i,temp = 0;
 
@@ -1129,7 +1136,7 @@ void rtcmix_openscript(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
 
 
 // [setscript N] will set the currently active script to N
-void rtcmix_setscript(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
+void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i,temp = 0;
 
@@ -1168,7 +1175,7 @@ void rtcmix_setscript(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
 
 
 // the [savescript] message triggers this
-void rtcmix_write(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
+void rtcmix_write(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i, temp = 0;
 
@@ -1199,12 +1206,13 @@ void rtcmix_write(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
   x->current_script = temp;
   post("rtcmix: current script is %d", temp);
 
-  defer(x, (method)rtcmix_dowrite, s, argc, argv); // always defer this message
+  //defer(x, (method)rtcmix_dowrite, s, argc, argv); // always defer this message
+  rtcmix_dowrite(x,s,argc,argv);
 }
 
 
 // the [savescriptas] message triggers this
-void rtcmix_writeas(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
+void rtcmix_writeas(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i, temp = 0;
 
@@ -1250,12 +1258,13 @@ void rtcmix_writeas(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
     }
   post("rtcmix: current script is %d", temp);
 
-  defer(x, (method)rtcmix_dowrite, s, argc, argv); // always defer this message
+  //defer(x, (method)rtcmix_dowrite, s, argc, argv); // always defer this message
+  rtcmix_dowrite(x,s,argc,argv);
 }
 
 
 // deferred from the [save*] messages
-void rtcmix_dowrite(t_rtcmix *x, Symbol *s, short argc, t_atom *argv)
+void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   char filename[256];
   t_handle script_handle;
@@ -1299,13 +1308,14 @@ void rtcmix_dowrite(t_rtcmix *x, Symbol *s, short argc, t_atom *argv)
 }
 
 // the [read ...] message triggers this
-void rtcmix_read(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
+void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
-  defer(x, (method)rtcmix_doread, s, argc, argv); // always defer this message
+  //defer(x, (method)rtcmix_doread, s, argc, argv); // always defer this message
+  rtcmix_doread(x,s,argc,argv);
 }
 
 // the deferred read
-void rtcmix_doread(t_rtcmix *x, Symbol *s, short argc, t_atom *argv)
+void rtcmix_doread(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   char filename[256];
   short err, i, temp = 0;
@@ -1454,7 +1464,7 @@ void rtcmix_save(t_rtcmix *x, void *w)
 
 
 // and this gets the message set up by rtcmix_save()
-void rtcmix_restore(t_rtcmix *x, Symbol *s, short argc, Atom *argv)
+void rtcmix_restore(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   int i;
   int bsize, fsize;
