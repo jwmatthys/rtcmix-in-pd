@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <unistd.h> // for getcwd()
 #include <dlfcn.h>
 
 #define MAX_INPUTS 100  //arbitrary -- for Damon!
@@ -27,11 +28,14 @@ typedef struct textbuffer
   t_object x_obj;
   t_inlet *x_inindex;
   t_int flushflag;
+  //void *rtcmixdylib;
+  //char pathname[MAXPDSTRING];
 } t_textbuffer;
 
 /****PROTOTYPES****/
 
 //int dylibincr;
+void look_for_dylib();
 void rtcmix_text(t_textbuffer *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_dotext(t_textbuffer *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_badquotes(char *cmd, char *buf); // this is to check for 'split' quoted params, called in rtcmix_dotext
@@ -163,9 +167,21 @@ void rtcmix_badquotes(char *cmd, char *thebuf)
 
 void textbuffer_new(void)
 {
+  look_for_dylib();
   t_textbuffer *x = (t_textbuffer *)pd_new(textbuffer_class);
   x->flushflag = 0;
-  //return (void *)x;
+}
+
+void look_for_dylib()
+{
+  char path[MAXPDSTRING];
+  if (!getcwd(path,MAXPDSTRING))
+    error("can't get cwd.");
+  else
+    {
+      sprintf(path,"%s/rtcmix-dylib-test/rtcmixdylib.so",path);
+      post(path);
+    }
 }
 
 void textbuffer_setup(void)
