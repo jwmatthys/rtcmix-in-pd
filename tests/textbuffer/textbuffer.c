@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <unistd.h> // for getcwd()
 #include <dlfcn.h>
 
 #define MAX_INPUTS 100  //arbitrary -- for Damon!
@@ -174,14 +173,22 @@ void textbuffer_new(void)
 
 void look_for_dylib()
 {
-  char path[MAXPDSTRING];
-  if (!getcwd(path,MAXPDSTRING))
+  char path[MAXPDSTRING], *pathptr;
+  //open_via_path(dir,name,ext...
+  int fd = -1;
+  // OK, we can use this to find the path to this external, then place the
+  // dylib in a subdirectory.
+  fd = open_via_path("","textbuffer.pd_linux","",path,&pathptr,MAXPDSTRING,1);
+  post("fd = %d",fd);
+  post("path = %s",path);
+  /*  if (!getcwd(path,MAXPDSTRING))
     error("can't get cwd.");
   else
     {
       sprintf(path,"%s/rtcmix-dylib-test/rtcmixdylib.so",path);
       post(path);
     }
+  */
 }
 
 void textbuffer_setup(void)

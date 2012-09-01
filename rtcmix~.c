@@ -292,14 +292,15 @@ static void *rtcmix_new(t_symbol *s, int argc, t_atom *argv)
       x->in_connected[i] = 0;
     }
 
-  // JWM: YIKES! getcwd() returns path Pd was launched from
-  // Back to the drawing board...
-  char temp_path[MAXPDSTRING];
-  if (!getcwd(temp_path,MAXPDSTRING))
-    error ("can't get cwd()");
+  // using Pd's open_via_path to find rtcmix~, and from there rtcmixdylib.so
+  char temp_path[MAXPDSTRING], *pathptr;
+  int fd = -1;
+  fd = open_via_path(".z","rtcmix~.pd_linux","",temp_path, &pathptr, MAXPDSTRING,1);
+  if (fd < 0)
+    error ("open_via_path() failed!");
   else
     {
-      sprintf(mpathname,"%s/rtcmix-dylib/",temp_path);
+      sprintf(mpathname,"%s/dylib/",temp_path);
     }
 
   //ps_buffer = gensym("buffer~"); // for [buffer~]
