@@ -239,7 +239,7 @@ static void *rtcmix_new(t_symbol *s, int argc, t_atom *argv)
 {
   // creates the object
   t_rtcmix *x = (t_rtcmix *)pd_new(rtcmix_class);
-  unsigned int i;
+  int i;
 
   short num_inoutputs = 1;
   short num_additional = 0;
@@ -295,7 +295,7 @@ static void *rtcmix_new(t_symbol *s, int argc, t_atom *argv)
   // using Pd's open_via_path to find rtcmix~, and from there rtcmixdylib.so
   char temp_path[MAXPDSTRING], *pathptr;
   int fd = -1;
-  fd = open_via_path(".z","rtcmix~.pd_linux","",temp_path, &pathptr, MAXPDSTRING,1);
+  fd = open_via_path(".","rtcmix~.pd_linux","",temp_path, &pathptr, MAXPDSTRING,1);
   if (fd < 0)
     error ("open_via_path() failed!");
   else
@@ -315,8 +315,9 @@ static void *rtcmix_new(t_symbol *s, int argc, t_atom *argv)
   //zero out the struct, to be careful (takk to jkclayton)
   if (x)
     {
-      for(i=sizeof(t_object);i<sizeof(t_rtcmix);i++)
-        ((char *)x)[i]=0;
+      unsigned int j;
+      for(j=sizeof(t_object);j<sizeof(t_rtcmix);j++)
+        ((char *)x)[j]=0;
     }
 
   // binbuf storage
