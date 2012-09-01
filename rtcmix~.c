@@ -22,12 +22,12 @@
 // for the dlopen() loader
 #include <dlfcn.h>
 int dylibincr;
+// for where the rtcmix-dylibs folder is located
+char mpathname[MAXPDSTRING];
 
-
-#define MAX_INPUTS 100  //arbitrary -- for Damon!
-#define MAX_OUTPUTS 20	//also arbitrary
+#define MAX_INPUTS 8    //switched to 8 for sanity sake (have to contruct manually)
+#define MAX_OUTPUTS 8	//do we ever need more than 8? we'll cross that bridge when we come to it
 #define MAX_SCRIPTS 20	//how many scripts can we store internally
-
 
 /******* RTcmix stuff *******/
 typedef int (*rtcmixmainFunctionPtr)();
@@ -42,7 +42,9 @@ typedef void (*pfield_setFunctionPtr)(int inlet, float pval);
 typedef void (*buffer_setFunctionPtr)(char *bufname, float *bufstart, int nframes, int nchans, int modtime);
 typedef int (*flushPtr)();
 
-void *rtcmix_class;
+
+/*** PD FUNCTIONS ***/
+static t_class *rtcmix_class;
 
 typedef struct _rtcmix
 {
@@ -58,7 +60,7 @@ typedef struct _rtcmix
   //we use this "connected" boolean so that users can connect *either* signals or floats
   //to the various inputs; sometimes it's easier just to have floats, but other times
   //it's essential to have signals.... but we have to know.
-  void *outpointer;
+  t_outlet *outpointer;
 
   /******* RTcmix stuff *******/
   rtcmixmainFunctionPtr rtcmixmain;
@@ -109,18 +111,14 @@ typedef struct _rtcmix
 
   // for flushing all events on the queue/heap (resets to new ones inside RTcmix)
   int flushflag;
+  t_float f;
 } t_rtcmix;
-
-
-// for where the rtcmix-dylibs folder is located
-char mpathname[MAXPDSTRING];
-
 
 /****PROTOTYPES****/
 
 //setup funcs; this probably won't change, unless you decide to change the number of
 //args that the user can input, in which case rtcmix_new will have to change
-void *rtcmix_new(long num_inoutputs, long num_additional);
+void rtcmix_new(long num_inoutputs, long num_additional);
 void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count);
 t_int *rtcmix_perform(t_int *w);
 void rtcmix_assist(t_rtcmix *x, void *b, long m, long a, char *s);
@@ -164,43 +162,61 @@ void rtcmix_save(t_rtcmix *x, void *w);
 void rtcmix_restore(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 
 // JWM: TODO - attach to table?
-t_symbol *ps_buffer; // for [buffer~]
+//t_symbol *ps_buffer; // for [buffer~]
 
 
 /****FUNCTIONS****/
 
 //primary Pd funcs
-int main(void)
+void rtcmix_setup(void)
 {
+  rtcmix_class = class_new (gensym("rtcmix~"),
+                            (t_newmethod)rtcmix_new,
+                            (t_newmethod)rtcmix_free,
+                            sizeof(t_rtcmix),
+                            CLASS_DEFAULT,
+                            A_GIMME, 0);
+
   //the A_DEFLONG arguments give us the object arguments for the user to set number of ins/outs, etc.
   // JWM: Pd has no long type; presumably it becomes A_DEFFLOAT
   //change these if you want different user args
-  setup((struct messlist **)&rtcmix_class, (method)rtcmix_new, (method)rtcmix_free, (short)sizeof(t_rtcmix), 0L, A_DEFFLOAT, A_DEFFLOAT, 0);
+  //setup((struct messlist **)&rtcmix_class, (method)rtcmix_new, (method)rtcmix_free, (short)sizeof(t_rtcmix), 0L, A_DEFFLOAT, A_DEFFLOAT, 0);
 
   //standard messages; don't change these
-  addmess((method)rtcmix_dsp, "dsp", A_CANT, 0);
-  addmess((method)rtcmix_assist,"assist", A_CANT,0);
+  //addmess((method)rtcmix_assist,"assist", A_CANT,0);
+  CLASS_MAINSIGNALIN(rtcmix_class,t_rtcmix,f);
+  //addmess((method)rtcmix_dsp, "dsp", A_CANT, 0);
+  class_addmethod(rtcmix_class, (t_method)rtcmix_dsp, gensym("dsp"), 0);
 
   //our own messages
-  addmess((method)rtcmix_version, "version", 0);
-  addmess((method)rtcmix_text, "text", A_GIMME, 0);
+  /*addmess((method)rtcmix_text, "text", A_GIMME, 0);
   addmess((method)rtcmix_rtcmix, "rtcmix", A_GIMME, 0);
   addmess((method)rtcmix_var, "var", A_GIMME, 0);
   addmess((method)rtcmix_varlist, "varlist", A_GIMME, 0);
   addmess((method)rtcmix_bufset, "bufset", A_SYMBOL, 0);
   addmess((method)rtcmix_flush, "flush", 0);
-
+  addmess((method)rtcmix_version, "version", 0);*/
+  class_addmethod(rtcmix_class,(t_method)rtcmix_version, gensym("version"), 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_rtcmix, gensym("rtcmix"), A_GIMME, 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_var, gensym("var"), A_GIMME, 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_varlist, gensym("varlist"), A_GIMME, 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_bufset, gensym("bufset"), A_SYMBOL, 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_flush, gensym("flush"), 0);
+  /*
   //so we know what to do with floats that we receive at the inputs
   addfloat((method)rtcmix_float);
-
-  // this for ints...
   addint((method)rtcmix_int);
-
-  // trigger scripts
   addbang((method)rtcmix_bang);
+  */
+  class_addlist(rtcmix_class, rtcmix_text);
+  // JWM: not sure if float is allowed in multiuse inlet
+  class_addfloat(rtcmix_class, rtcmix_float);
+  // trigger scripts
+  class_addbang(rtcmix_class, rtcmix_bang);
 
   //for the text editor and scripts
-  addmess ((method)rtcmix_edclose, "edclose", A_CANT, 0);
+  //JWM - TODO
+  /*addmess ((method)rtcmix_edclose, "edclose", A_CANT, 0);
   addmess((method)rtcmix_dblclick,	"dblclick",	A_CANT, 0);
   addmess((method)rtcmix_goscript, "goscript", A_GIMME, 0);
   addmess((method)rtcmix_openscript, "openscript", A_GIMME, 0);
@@ -208,11 +224,13 @@ int main(void)
   addmess((method)rtcmix_read, "read", A_GIMME, 0);
   addmess ((method)rtcmix_okclose, "okclose", A_CANT, 0);
   addmess((method)rtcmix_write, "savescript", A_GIMME, 0);
-  addmess((method)rtcmix_writeas, "savescriptas", A_GIMME, 0);
+  addmess((method)rtcmix_writeas, "savescriptas", A_GIMME, 0);*/
 
   // binbuf storage
-  addmess((method)rtcmix_save, "save", A_CANT, 0);
-  addmess((method)rtcmix_restore, "restore", A_GIMME, 0);
+  //addmess((method)rtcmix_save, "save", A_CANT, 0);
+  //addmess((method)rtcmix_restore, "restore", A_GIMME, 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("save"), A_CANT, 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_restore, gensym("restore"), A_GIMME, 0);
 
   //gotta have this one....
   dsp_initclass();
@@ -239,17 +257,28 @@ int main(void)
 
 
 //this gets called when the object is created; everytime the user types in new args, this will get called
-void *rtcmix_new(long num_inoutputs, long num_additional)
+//void rtcmix_new(long num_inoutputs, long num_additional)
+void rtcmix_new(t_symbol *s, int argc, t_atom *argv)
 {
   int i;
-  t_rtcmix *x;
+  t_rtcmix *x = (t_rtcmix *)pd_new(rtcmix_class);
+  // creates the object
+  //x = (t_rtcmix *)newobject(rtcmix_class);
+
+  short num_inoutputs = 1;
+  short num_additional = 0;
+  switch(argc)
+    {
+    default:
+    case 2:
+      num_additional = atom_getint(argv+1);
+    case 1:
+      num_inoutputs = atom_getint(argv);
+    }
 
   // BGG kept this in for the dlopen() stuff
   char cp_command[MAXPDSTRING]; // should probably be malloc'd
 
-
-  // creates the object
-  x = (t_rtcmix *)newobject(rtcmix_class);
 
   //zero out the struct, to be careful (takk to jkclayton)
   if (x)
@@ -260,7 +289,8 @@ void *rtcmix_new(long num_inoutputs, long num_additional)
 
   // binbuf storage
   // this sends the 'restore' message (rtcmix_restore() below)
-  gensym("#X")->s_thing = (struct object*)x;
+  // JWM - I don't know what this does!
+  //gensym("#X")->s_thing = (struct object*)x;
 
   // these are the entry function pointers in to the rtcmixdylib.so lib
   x->rtcmixmain = NULL;
@@ -290,12 +320,41 @@ void *rtcmix_new(long num_inoutputs, long num_additional)
   // setup up inputs and outputs, for audio inputs
   dsp_setup((t_object *)x, x->num_inputs + x->num_pinlets);
 
-  // outputs, right-to-left
-  x->outpointer = outlet_new((t_object *)x, 0); // for bangs (from MAXBANG), values + value lists (from MAXMESSAGE)
+  // JWM: hoo boy this looks ugly, but
+  // I don't think you can specify an arbitrary number of inlets in Pd
+  switch (num_inputs):
+    {
+    default:
+    case 1:
+      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &signal);
+      break;
+    case 2:
+      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &signal, &signal);
+      break;
+    case 3:
+      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &signal, &signal, &signal);
+      break;
+    case 4:
+      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &signal, &signal, &signal, &signal);
+      break;
+    case 5:
+      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &signal, &signal, &signal, &signal, &signal);
+      break;
+    case 6:
+      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &signal, &signal, &signal, &signal, &signal, &signal);
+      break;
+    case 7:
+      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &signal, &signal, &signal, &signal, &signal, &signal, &signal);
+      break;
+    case 8:
+      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &signal, &signal, &signal, &signal, &signal, &signal, &signal, &signal);
+      break;
+    }
 
   for (i = 0; i < x->num_outputs; i++)
     {
-      outlet_new((t_object *)x, "signal");
+      // outputs, right-to-left
+      x->outpointer = outlet_new(&x->x_obj, &s_signal);
     }
 
   // initialize some variables; important to do this!
@@ -306,8 +365,7 @@ void *rtcmix_new(long num_inoutputs, long num_additional)
     }
 
   //occasionally this line is necessary if you are doing weird asynchronous things with the in/out vectors
-  x->x_obj.z_misc = Z_NO_INPLACE;
-
+  //x->x_obj.z_misc = Z_NO_INPLACE;
 
   x->dylibincr = dylibincr++; // keep track of rtcmixdylibN.so for copy/load
 
