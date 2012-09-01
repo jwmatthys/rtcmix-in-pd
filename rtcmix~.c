@@ -21,12 +21,12 @@
 // BGG kept the dlopen() stuff in for future use
 // for the dlopen() loader
 #include <dlfcn.h>
-int dylibincr = 0;
+int dylibincr;
 // for where the rtcmix-dylibs folder is located
 char mpathname[MAXPDSTRING];
 
-#define MAX_INPUTS 20    //switched to 8 for sanity sake (have to contruct manually)
-#define MAX_OUTPUTS 20	//do we ever need more than 8? we'll cross that bridge when we come to it
+#define MAX_INPUTS 8    //switched to 8 for sanity sake (have to contruct manually)
+#define MAX_OUTPUTS 8	//do we ever need more than 8? we'll cross that bridge when we come to it
 #define MAX_SCRIPTS 20	//how many scripts can we store internally
 
 /******* RTcmix stuff *******/
@@ -55,12 +55,11 @@ typedef struct _rtcmix
   float srate;                                        //sample rate
   long num_inputs, num_outputs;       //number of inputs and outputs
   long num_pinlets;				// number of inlets for dynamic PField control
-  float in[MAX_INPUTS];			// values received for dynamic PFields
+  float in[MAX_INPUTS];			//values of input variables
   float in_connected[MAX_INPUTS]; //booleans: true if signals connected to the input in question
   //we use this "connected" boolean so that users can connect *either* signals or floats
   //to the various inputs; sometimes it's easier just to have floats, but other times
   //it's essential to have signals.... but we have to know.
-  //JWM: We'll see if this works in Pd
   t_outlet *outpointer;
 
   /******* RTcmix stuff *******/
@@ -120,14 +119,14 @@ typedef struct _rtcmix
 //setup funcs; this probably won't change, unless you decide to change the number of
 //args that the user can input, in which case rtcmix_new will have to change
 void rtcmix_tilde_setup(void);
-static void *rtcmix_new(t_symbol *s, int argc, t_atom *argv);
+void rtcmix_new(t_symbol *s, int argc, t_atom *argv);
 void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count);
 t_int *rtcmix_perform(t_int *w);
 static void rtcmix_free(t_rtcmix *x);
 
 //for getting floats, ints or bangs at inputs
 void rtcmix_float(t_rtcmix *x, double f);
-//void rtcmix_int(t_rtcmix *x, int i);
+void rtcmix_int(t_rtcmix *x, int i);
 void rtcmix_bang(t_rtcmix *x);
 // JWM: removed this since there's no defer in Pd
 //void rtcmix_dobangout(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv); // for the defer
@@ -175,7 +174,8 @@ void rtcmix_tilde_setup(void)
                             (t_newmethod)rtcmix_new,
                             (t_method)rtcmix_free,
                             sizeof(t_rtcmix),
-                            0, A_GIMME, 0);
+                            CLASS_DEFAULT,
+                            A_GIMME, 0);
 
   //the A_DEFLONG arguments give us the object arguments for the user to set number of ins/outs, etc.
   // JWM: Pd has no long type; presumably it becomes A_DEFFLOAT
@@ -210,9 +210,11 @@ void rtcmix_tilde_setup(void)
   addbang((method)rtcmix_bang);
   */
   class_addlist(rtcmix_class, rtcmix_text);
-  class_addfloat(rtcmix_class, rtcmix_float);
+  // JWM: not sure if float is allowed in multiuse inlet
+  //class_addfloat(rtcmix_class, rtcmix_float);
   // trigger scripts
   class_addbang(rtcmix_class, rtcmix_bang);
+
   //for the text editor and scripts
   //JWM - TODO
   /*addmess ((method)rtcmix_edclose, "edclose", A_CANT, 0);
@@ -228,72 +230,14 @@ void rtcmix_tilde_setup(void)
   // binbuf storage
   //addmess((method)rtcmix_save, "save", A_CANT, 0);
   //addmess((method)rtcmix_restore, "restore", A_GIMME, 0);
-  //class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("save"), A_CANT, 0);
-  //class_addmethod(rtcmix_class,(t_method)rtcmix_restore, gensym("restore"), A_GIMME, 0);
-}
+  class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("save"), A_CANT, 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_restore, gensym("restore"), A_GIMME, 0);
 
+  // find the rtcmix-dylib folder location
+  // JWM: frustrated by Pd's alternative to nameinpath(),
+  // looks for rtcmixdylib/rtcmixdylib.so in same dir as
+  // external
 
-//this gets called when the object is created; everytime the user types in new args, this will get called
-//void rtcmix_new(long num_inoutputs, long num_additional)
-static void *rtcmix_new(t_symbol *s, int argc, t_atom *argv)
-{
-  // creates the object
-  t_rtcmix *x = (t_rtcmix *)pd_new(rtcmix_class);
-  unsigned int i;
-
-  short num_inoutputs = 1;
-  short num_additional = 0;
-  switch(argc)
-    {
-    default:
-    case 2:
-      num_additional = atom_getint(argv+1);
-    case 1:
-      num_inoutputs = atom_getint(argv);
-    }
-  post("creating %d inlets and outlets and %d additional inlets",num_inoutputs,num_additional);
-
-  if (num_inoutputs < 1) num_inoutputs = 1; // no args, use default of 1 channel in/out
-  if ((num_inoutputs + num_additional) > MAX_INPUTS)
-    {
-      num_inoutputs = 1;
-      num_additional = 0;
-      error("sorry, only %d total inlets are allowed!", MAX_INPUTS);
-      //return(NULL);
-    }
-
-  x->num_inputs = num_inoutputs;
-  x->num_outputs = num_inoutputs;
-  x->num_pinlets = num_additional;
-
-  // setup up inputs and outputs, for audio inputs
-  //dsp_setup((t_object *)x, x->num_inputs + x->num_pinlets);
-
-  // JWM: hoo boy this looks ugly, but
-  // I don't think you can specify an arbitrary number of inlets in Pd
-  for (i=0; i < x->num_inputs-1; i++)
-    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
-
-  for (i=0; i< x->num_pinlets; i++)
-    floatinlet_new(&x->x_obj, &x->in[i]);
-
-  for (i = 0; i < x->num_outputs; i++)
-    {
-      // outputs, right-to-left
-      outlet_new(&x->x_obj, gensym("signal"));
-    }
-
-  x->outpointer = (t_outlet *)outlet_new(&x->x_obj, &s_float);
-
-  // initialize some variables; important to do this!
-  for (i = 0; i < (x->num_inputs + x->num_pinlets); i++)
-    {
-      x->in[i] = 0.;
-      x->in_connected[i] = 0;
-    }
-
-  // JWM: YIKES! getcwd() returns path Pd was launched from
-  // Back to the drawing board...
   char temp_path[MAXPDSTRING];
   if (!getcwd(temp_path,MAXPDSTRING))
     error ("can't get cwd()");
@@ -306,10 +250,33 @@ static void *rtcmix_new(t_symbol *s, int argc, t_atom *argv)
 
   // ho ho!
   post("rtcmix~ -- RTcmix music language, v. %s (%s)", VERSION, RTcmixVERSION);
+  //return(1);
+}
 
+
+//this gets called when the object is created; everytime the user types in new args, this will get called
+//void rtcmix_new(long num_inoutputs, long num_additional)
+void rtcmix_new(t_symbol *s, int argc, t_atom *argv)
+{
+  unsigned int i;
+  t_rtcmix *x = (t_rtcmix *)pd_new(rtcmix_class);
+  // creates the object
+  //x = (t_rtcmix *)newobject(rtcmix_class);
+
+  short num_inoutputs = 1;
+  short num_additional = 0;
+  switch(argc)
+    {
+    default:
+    case 2:
+      num_additional = atom_getint(argv+1);
+    case 1:
+      num_inoutputs = atom_getint(argv);
+    }
 
   // BGG kept this in for the dlopen() stuff
   char cp_command[MAXPDSTRING]; // should probably be malloc'd
+
 
   //zero out the struct, to be careful (takk to jkclayton)
   if (x)
@@ -337,6 +304,40 @@ static void *rtcmix_new(t_symbol *s, int argc, t_atom *argv)
   x->flush = NULL;
 
   //constrain number of inputs and outputs
+  if (num_inoutputs < 1) num_inoutputs = 1; // no args, use default of 1 channel in/out
+  if ((num_inoutputs + num_additional) > MAX_INPUTS)
+    {
+      error("sorry, only %d total inlets are allowed!", MAX_INPUTS);
+      //return(NULL);
+    }
+
+  x->num_inputs = num_inoutputs;
+  x->num_outputs = num_inoutputs;
+  x->num_pinlets = num_additional;
+
+  // setup up inputs and outputs, for audio inputs
+  //dsp_setup((t_object *)x, x->num_inputs + x->num_pinlets);
+
+  // JWM: hoo boy this looks ugly, but
+  // I don't think you can specify an arbitrary number of inlets in Pd
+  for (i=0; i < x->num_inputs; i++)
+    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
+
+  for (i = 0; i < x->num_outputs; i++)
+    {
+      // outputs, right-to-left
+      x->outpointer = outlet_new(&x->x_obj, &s_signal);
+    }
+
+  // initialize some variables; important to do this!
+  for (i = 0; i < (x->num_inputs + x->num_pinlets); i++)
+    {
+      x->in[i] = 0.;
+      x->in_connected[i] = 0;
+    }
+
+  //occasionally this line is necessary if you are doing weird asynchronous things with the in/out vectors
+  //x->x_obj.z_misc = Z_NO_INPLACE;
 
   x->dylibincr = dylibincr++; // keep track of rtcmixdylibN.so for copy/load
 
@@ -418,7 +419,8 @@ static void *rtcmix_new(t_symbol *s, int argc, t_atom *argv)
     }
 
   x->flushflag = 0; // [flush] sets flag for call to x->flush() in rtcmix_perform() (after pulltraverse completes)
-  return (x);
+
+  //return (x);
 }
 
 //this gets called everytime audio is started; even when audio is running, if the user
@@ -428,7 +430,7 @@ static void *rtcmix_new(t_symbol *s, int argc, t_atom *argv)
 //where the audio vectors are and how big they are
 void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
 {
-  t_int dsp_add_args [MAX_INPUTS + MAX_OUTPUTS + 2];
+  void *dsp_add_args[MAX_INPUTS + MAX_OUTPUTS + 2];
   int i;
 
   // RTcmix vars
@@ -453,15 +455,14 @@ void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
   for(i = 0; i < (x->num_inputs + x->num_pinlets); i++) x->in_connected[i] = count[i];
 
   // construct the array of vectors and stuff
-  dsp_add_args[0] = (t_int)x; //the object itself
+  dsp_add_args[0] = x; //the object itself
   for(i = 0; i < (x->num_inputs + x->num_pinlets + x->num_outputs); i++)
     { //pointers to the input and output vectors
-      dsp_add_args[i+1] = (t_int)sp[i]->s_vec;
+      dsp_add_args[i+1] = sp[i]->s_vec;
     }
-
-  dsp_add_args[x->num_inputs + x->num_pinlets + x->num_outputs + 1] = (t_int)sp[0]->s_n; //pointer to the vector size
-
-  dsp_addv(rtcmix_perform, (x->num_inputs + x->num_pinlets + x->num_outputs + 2), dsp_add_args); //add them to the signal chain
+  // JWM: TODO
+  //dsp_add_args[x->num_inputs + x->num_pinlets + x->num_outputs + 1] = (void *)sp[0]->s_n; //pointer to the vector size
+  //dsp_addv(rtcmix_perform, (x->num_inputs + x->num_pinlets + x->num_outputs + 2), dsp_add_args); //add them to the signal chain
 
   // reload, this reinits the RTcmix queue, etc.
   dlclose(x->rtcmixdylib);
@@ -633,7 +634,6 @@ t_int *rtcmix_perform(t_int *w)
 
 
 // the deferred bang output
-// JWM: obsolete since no defer; called directly
 /*void rtcmix_dobangout(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   {
   outlet_bang(x->outpointer);
@@ -662,6 +662,7 @@ static void rtcmix_free(t_rtcmix *x)
 // used for the PField control inlets
 void rtcmix_float(t_rtcmix *x, double f)
 {
+
   /*
   int i;
 
@@ -684,7 +685,7 @@ void rtcmix_float(t_rtcmix *x, double f)
 
 //this gets called whenever an int is received at *any* input
 // used for the PField control inlets
-/*void rtcmix_int(t_rtcmix *x, int ival)
+void rtcmix_int(t_rtcmix *x, int ival)
 {
   int i;
 
@@ -705,7 +706,6 @@ void rtcmix_float(t_rtcmix *x, double f)
         }
     }
 }
-*/
 
 
 // bang triggers the current working script
@@ -726,7 +726,7 @@ void rtcmix_bang(t_rtcmix *x)
 // print out the rtcmix~ version
 void rtcmix_version(t_rtcmix *x)
 {
-  post("rtcmix~, v. %s by Joel Matthys (%s)", VERSION, RTcmixVERSION);
+  post("rtcmix~, v. %s by Brad Garton (%s)", VERSION, RTcmixVERSION);
 }
 
 

@@ -1,4 +1,0 @@
-#N canvas 1 85 450 300 12;
-#X obj 125 189 textbuffer;
-#X msg 110 88 list joel is the greatest guy evah.;
-#X connect 1 0 0 0;
