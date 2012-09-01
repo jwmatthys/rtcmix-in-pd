@@ -118,10 +118,10 @@ typedef struct _rtcmix
 
 //setup funcs; this probably won't change, unless you decide to change the number of
 //args that the user can input, in which case rtcmix_new will have to change
+void rtcmix_tilde_setup(void);
 void rtcmix_new(t_symbol *s, int argc, t_atom *argv);
 void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count);
 t_int *rtcmix_perform(t_int *w);
-void rtcmix_assist(t_rtcmix *x, void *b, long m, long a, char *s);
 static void rtcmix_free(t_rtcmix *x);
 
 //for getting floats, ints or bangs at inputs
@@ -168,7 +168,7 @@ void rtcmix_restore(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 /****FUNCTIONS****/
 
 //primary Pd funcs
-void rtcmix_setup(void)
+void rtcmix_tilde_setup(void)
 {
   rtcmix_class = class_new (gensym("rtcmix~"),
                             (t_newmethod)rtcmix_new,
@@ -184,7 +184,8 @@ void rtcmix_setup(void)
 
   //standard messages; don't change these
   //addmess((method)rtcmix_assist,"assist", A_CANT,0);
-  CLASS_MAINSIGNALIN(rtcmix_class,t_rtcmix,f);
+  CLASS_MAINSIGNALIN(rtcmix_class, t_rtcmix, f);
+
   //addmess((method)rtcmix_dsp, "dsp", A_CANT, 0);
   class_addmethod(rtcmix_class, (t_method)rtcmix_dsp, gensym("dsp"), 0);
 
@@ -210,7 +211,7 @@ void rtcmix_setup(void)
   */
   class_addlist(rtcmix_class, rtcmix_text);
   // JWM: not sure if float is allowed in multiuse inlet
-  class_addfloat(rtcmix_class, rtcmix_float);
+  //class_addfloat(rtcmix_class, rtcmix_float);
   // trigger scripts
   class_addbang(rtcmix_class, rtcmix_bang);
 
@@ -319,13 +320,13 @@ void rtcmix_new(t_symbol *s, int argc, t_atom *argv)
 
   // JWM: hoo boy this looks ugly, but
   // I don't think you can specify an arbitrary number of inlets in Pd
-  for (i=0; i<x->num_inputs; i++)
+  for (i=0; i < x->num_inputs; i++)
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
 
   for (i = 0; i < x->num_outputs; i++)
     {
       // outputs, right-to-left
-      x->outpointer = outlet_new(&x->x_obj, gensym("signal"));
+      x->outpointer = outlet_new(&x->x_obj, &s_signal);
     }
 
   // initialize some variables; important to do this!
@@ -341,12 +342,12 @@ void rtcmix_new(t_symbol *s, int argc, t_atom *argv)
   x->dylibincr = dylibincr++; // keep track of rtcmixdylibN.so for copy/load
 
   // full path to the rtcmixdylib.so file
-  sprintf(x->pathname, "%s/rtcmixdylib%d.so", mpathname, x->dylibincr);
+  sprintf(x->pathname, "%srtcmixdylib%d.so", mpathname, x->dylibincr);
 
   // ok, this is fairly insane.  To guarantee a fully-isolated namespace with dlopen(), we need
   // a totally *unique* dylib, so we copy this.  Deleted in rtcmix_free() below
   // RTLD_LOCAL doesn't do it all - probably the global vars in RTcmix
-  sprintf(cp_command, "cp \"%s/BASE_rtcmixdylib.so\" \"%s\"",mpathname,x->pathname);
+  sprintf(cp_command, "cp \"%srtcmixdylib.so\" \"%s\"",mpathname,x->pathname);
   if (system(cp_command)) error("error creating unique dylib copy");
 
   // load the dylib
@@ -628,7 +629,6 @@ t_int *rtcmix_perform(t_int *w)
     }
 
   //return a pointer to the next object in the signal chain.
- out:
   return w + x->num_inputs + x->num_pinlets + x->num_outputs + 3;
 }
 
@@ -638,24 +638,6 @@ t_int *rtcmix_perform(t_int *w)
   {
   outlet_bang(x->outpointer);
   }*/
-
-
-//tells the user about the inputs/outputs when mousing over them
-void rtcmix_assist(t_rtcmix *x, void *b, long m, long a, char *s)
-{
-
-  if (m == 1)
-    {
-      if (a == 0) sprintf(s, "signal/text (score commands) in");
-      else sprintf(s, "signal/pfieldvals in");
-    }
-  if (m == 2)
-    {
-      if (a < x->num_inputs) sprintf(s, "signal out");
-      else sprintf(s, "bang, float or float-list out");
-    }
-}
-
 
 // here's my free function
 static void rtcmix_free(t_rtcmix *x)
@@ -672,6 +654,7 @@ static void rtcmix_free(t_rtcmix *x)
       freeobject((t_object *)x->m_editor);
       x->m_editor = NULL;*/
     //dsp_free((t_object *)x);
+    post ("rtcmix~ DESTROYED!!");
 }
 
 
@@ -1339,8 +1322,9 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
 // the deferred read
 // JWM: This whole routine must be rewritten
-/*void rtcmix_doread(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+void rtcmix_doread(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
+  /*
   char filename[256];
   short err, i, temp = 0;
   long type = 'TEXT';
@@ -1443,8 +1427,8 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   sysfile_close(fh);
 
   return;
+  */
 }
-*/
 
 // this converts the current script to a binbuf format and sets it up to be saved and then restored
 // via the rtcmix_restore() method below

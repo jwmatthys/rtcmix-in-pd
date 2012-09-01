@@ -9,7 +9,7 @@
 
 double m_sin(float p[], int n_args, double pp[])
 {
-	//double val;
+	double val;
 	val = sin(pp[0]);
 	return(val);
 }

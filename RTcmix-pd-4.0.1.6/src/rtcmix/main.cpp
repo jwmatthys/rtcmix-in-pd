@@ -1,6 +1,6 @@
 /* RTcmix  - Copyright (C) 2000  The RTcmix Development Team
-	See ``AUTHORS'' for a list of contributors. See ``LICENSE'' for
-	the license to this software and for a DISCLAIMER OF ALL WARRANTIES.
+        See ``AUTHORS'' for a list of contributors. See ``LICENSE'' for
+        the license to this software and for a DISCLAIMER OF ALL WARRANTIES.
 */
 //#define DBUG
 //#define DENORMAL_CHECK
@@ -94,7 +94,7 @@ rtcmixmain()	// BGG mm -- now called this for max/msp
 int bang_ready = 0;
 
 int check_bang()
-{  
+{
    if (bang_ready == 1) {
       bang_ready = 0;
       return(1);
@@ -108,9 +108,9 @@ int vals_ready = 0;
 float maxmsp_vals[MAXDISPARGS];
 
 int check_vals(float thevals[])
-{  
+{
    int i, tvals;
-   
+
    if (vals_ready > 0) { // vals_ready will contain how many vals to return
       for (i = 0; i < vals_ready; i++) thevals[i] = maxmsp_vals[i];
       tvals = vals_ready;
@@ -141,16 +141,16 @@ int check_error()
 
 void pullTraverse()
 {
-	app->inTraverse(NULL, NULL);
+        app->inTraverse(NULL, NULL);
 }
 
-int maxmsp_rtsetparams(float sr, int nchans, int vecsize, float *mm_inbuf, float *mm_outbuf, char *mm_errbuf)
+int pd_rtsetparams(float sr, int nchans, int vecsize, float *mm_inbuf, float *mm_outbuf, char *mm_errbuf)
 {
-	int status;
+        int status;
 
-	status = (int)app->mm_rtsetparams(sr, nchans, vecsize, mm_inbuf, mm_outbuf, mm_errbuf);
+        status = (int)app->mm_rtsetparams(sr, nchans, vecsize, mm_inbuf, mm_outbuf, mm_errbuf);
 
-	return(status);
+        return(status);
 }
 
 
@@ -161,7 +161,7 @@ float inletvals[20];
 
 void pfield_set(int inlet, float pval)
 {
-	inletvals[inlet-1] = pval;
+        inletvals[inlet-1] = pval;
 }
 
 
@@ -175,50 +175,50 @@ int n_mm_bufs = 0;
 
 void buffer_set(char *bufname, float *bufstart, int nframes, int nchans, int modtime)
 {
-	int i;
-	int foundit;
+        int i;
+        int foundit;
 
 
-	if (strlen(bufname) >= MAX_MM_BUFNAME) { // defined in rtdefs.h
-		warn("bufset", "[buffer~] name has to be < %d chars", MAX_MM_BUFNAME);
-		return;
-	}
+        if (strlen(bufname) >= MAX_MM_BUFNAME) { // defined in rtdefs.h
+                warn("bufset", "[buffer~] name has to be < %d chars", MAX_MM_BUFNAME);
+                return;
+        }
 
-	// check to see if this is already set
-	foundit = 0;
-	for (i = 0; i < n_mm_bufs; i++) {
-			if (strcmp(bufname, mm_bufs[i].name) == 0) {
-				foundit = 1;
-				if (modtime > mm_bufs[i].mm_modtime) { // buffer was modified
-					mm_bufs[i].mm_bufstart = bufstart;
-					mm_bufs[i].mm_buf_nframes = nframes;
-					mm_bufs[i].mm_buf_chans = nchans;
-					mm_bufs[i].mm_modtime = modtime;
-				}
-				break;
-			}
-	}
+        // check to see if this is already set
+        foundit = 0;
+        for (i = 0; i < n_mm_bufs; i++) {
+                        if (strcmp(bufname, mm_bufs[i].name) == 0) {
+                                foundit = 1;
+                                if (modtime > mm_bufs[i].mm_modtime) { // buffer was modified
+                                        mm_bufs[i].mm_bufstart = bufstart;
+                                        mm_bufs[i].mm_buf_nframes = nframes;
+                                        mm_bufs[i].mm_buf_chans = nchans;
+                                        mm_bufs[i].mm_modtime = modtime;
+                                }
+                                break;
+                        }
+        }
 
-	// it's a new one
-	if (foundit == 0) {
-		if (n_mm_bufs >= MAX_MM_BUFS) {
-			warn("bufset", "we can only do %d [buffer~] buffers at present, sorry!", MAX_MM_BUFS);
-			return;
-		}
-		strcpy(mm_bufs[n_mm_bufs].name, bufname);
-		mm_bufs[n_mm_bufs].mm_bufstart = bufstart;
-		mm_bufs[n_mm_bufs].mm_buf_nframes = nframes;
-		mm_bufs[n_mm_bufs].mm_buf_chans = nchans;
-		mm_bufs[n_mm_bufs].mm_modtime = modtime;
-		n_mm_bufs++;
-	}
+        // it's a new one
+        if (foundit == 0) {
+                if (n_mm_bufs >= MAX_MM_BUFS) {
+                        warn("bufset", "we can only do %d [buffer~] buffers at present, sorry!", MAX_MM_BUFS);
+                        return;
+                }
+                strcpy(mm_bufs[n_mm_bufs].name, bufname);
+                mm_bufs[n_mm_bufs].mm_bufstart = bufstart;
+                mm_bufs[n_mm_bufs].mm_buf_nframes = nframes;
+                mm_bufs[n_mm_bufs].mm_buf_chans = nchans;
+                mm_bufs[n_mm_bufs].mm_modtime = modtime;
+                n_mm_bufs++;
+        }
 }
 
 // called for the [flush] message; deletes and reinstantiates the rtQueue
 // and rtHeap, thus flushing all scheduled events in the future
 void flush_sched()
 {
-	app->resetQueueHeap(); // in RTcmixMain.cpp
+        app->resetQueueHeap(); // in RTcmixMain.cpp
 }
 
 

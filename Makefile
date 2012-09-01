@@ -1,6 +1,8 @@
 current: rtcmix~_linux
 
 clean: ; rm -f *.pd_linux *.o
+	- rm rtcmix-dylib/*
+	- rm -r rtcmix-dylib
 
 # ----------------------- NT -----------------------
 
@@ -40,3 +42,6 @@ LINUXCFLAGS = -DPD -O2 -fPIC -funroll-loops -fomit-frame-pointer \
 	ld -shared -o $*.pd_linux $*.o -lc -lm
 	strip --strip-unneeded $*.pd_linux
 	rm $*.o
+	- mkdir rtcmix-dylib
+	cp RTcmix-pd*/src/rtcmix/*.so rtcmix-dylib
+
