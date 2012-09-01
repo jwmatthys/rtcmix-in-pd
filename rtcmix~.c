@@ -118,11 +118,11 @@ typedef struct _rtcmix
 
 //setup funcs; this probably won't change, unless you decide to change the number of
 //args that the user can input, in which case rtcmix_new will have to change
-void rtcmix_new(long num_inoutputs, long num_additional);
+void rtcmix_new(t_symbol *s, int argc, t_atom *argv);
 void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count);
 t_int *rtcmix_perform(t_int *w);
 void rtcmix_assist(t_rtcmix *x, void *b, long m, long a, char *s);
-void rtcmix_free(t_rtcmix *x);
+static void rtcmix_free(t_rtcmix *x);
 
 //for getting floats, ints or bangs at inputs
 void rtcmix_float(t_rtcmix *x, double f);
@@ -172,7 +172,7 @@ void rtcmix_setup(void)
 {
   rtcmix_class = class_new (gensym("rtcmix~"),
                             (t_newmethod)rtcmix_new,
-                            (t_newmethod)rtcmix_free,
+                            (t_method)rtcmix_free,
                             sizeof(t_rtcmix),
                             CLASS_DEFAULT,
                             A_GIMME, 0);
@@ -232,9 +232,6 @@ void rtcmix_setup(void)
   class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("save"), A_CANT, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_restore, gensym("restore"), A_GIMME, 0);
 
-  //gotta have this one....
-  dsp_initclass();
-
   // find the rtcmix-dylib folder location
   // JWM: frustrated by Pd's alternative to nameinpath(),
   // looks for rtcmixdylib/rtcmixdylib.so in same dir as
@@ -252,7 +249,7 @@ void rtcmix_setup(void)
 
   // ho ho!
   post("rtcmix~ -- RTcmix music language, v. %s (%s)", VERSION, RTcmixVERSION);
-  return(1);
+  //return(1);
 }
 
 
@@ -260,7 +257,7 @@ void rtcmix_setup(void)
 //void rtcmix_new(long num_inoutputs, long num_additional)
 void rtcmix_new(t_symbol *s, int argc, t_atom *argv)
 {
-  int i;
+  unsigned int i;
   t_rtcmix *x = (t_rtcmix *)pd_new(rtcmix_class);
   // creates the object
   //x = (t_rtcmix *)newobject(rtcmix_class);
@@ -310,7 +307,7 @@ void rtcmix_new(t_symbol *s, int argc, t_atom *argv)
   if ((num_inoutputs + num_additional) > MAX_INPUTS)
     {
       error("sorry, only %d total inlets are allowed!", MAX_INPUTS);
-      return(NULL);
+      //return(NULL);
     }
 
   x->num_inputs = num_inoutputs;
@@ -318,43 +315,17 @@ void rtcmix_new(t_symbol *s, int argc, t_atom *argv)
   x->num_pinlets = num_additional;
 
   // setup up inputs and outputs, for audio inputs
-  dsp_setup((t_object *)x, x->num_inputs + x->num_pinlets);
+  //dsp_setup((t_object *)x, x->num_inputs + x->num_pinlets);
 
   // JWM: hoo boy this looks ugly, but
   // I don't think you can specify an arbitrary number of inlets in Pd
-  switch (num_inputs):
-    {
-    default:
-    case 1:
-      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &signal);
-      break;
-    case 2:
-      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &signal, &signal);
-      break;
-    case 3:
-      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &signal, &signal, &signal);
-      break;
-    case 4:
-      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &signal, &signal, &signal, &signal);
-      break;
-    case 5:
-      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &signal, &signal, &signal, &signal, &signal);
-      break;
-    case 6:
-      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &signal, &signal, &signal, &signal, &signal, &signal);
-      break;
-    case 7:
-      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &signal, &signal, &signal, &signal, &signal, &signal, &signal);
-      break;
-    case 8:
-      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &signal, &signal, &signal, &signal, &signal, &signal, &signal, &signal);
-      break;
-    }
+  for (i=0; i<x->num_inputs; i++)
+    inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
 
   for (i = 0; i < x->num_outputs; i++)
     {
       // outputs, right-to-left
-      x->outpointer = outlet_new(&x->x_obj, &s_signal);
+      x->outpointer = outlet_new(&x->x_obj, gensym("signal"));
     }
 
   // initialize some variables; important to do this!
@@ -376,7 +347,7 @@ void rtcmix_new(t_symbol *s, int argc, t_atom *argv)
   // a totally *unique* dylib, so we copy this.  Deleted in rtcmix_free() below
   // RTLD_LOCAL doesn't do it all - probably the global vars in RTcmix
   sprintf(cp_command, "cp \"%s/BASE_rtcmixdylib.so\" \"%s\"",mpathname,x->pathname);
-  system(cp_command);
+  if (system(cp_command)) error("error creating unique dylib copy");
 
   // load the dylib
   x->rtcmixdylib = dlopen(x->pathname, RTLD_NOW | RTLD_LOCAL);
@@ -448,7 +419,7 @@ void rtcmix_new(t_symbol *s, int argc, t_atom *argv)
 
   x->flushflag = 0; // [flush] sets flag for call to x->flush() in rtcmix_perform() (after pulltraverse completes)
 
-  return (x);
+  //return (x);
 }
 
 //this gets called everytime audio is started; even when audio is running, if the user
@@ -488,8 +459,9 @@ void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
     { //pointers to the input and output vectors
       dsp_add_args[i+1] = sp[i]->s_vec;
     }
-  dsp_add_args[x->num_inputs + x->num_pinlets + x->num_outputs + 1] = (void *)sp[0]->s_n; //pointer to the vector size
-  dsp_addv(rtcmix_perform, (x->num_inputs + x->num_pinlets + x->num_outputs + 2), dsp_add_args); //add them to the signal chain
+  // JWM: TODO
+  //dsp_add_args[x->num_inputs + x->num_pinlets + x->num_outputs + 1] = (void *)sp[0]->s_n; //pointer to the vector size
+  //dsp_addv(rtcmix_perform, (x->num_inputs + x->num_pinlets + x->num_outputs + 2), dsp_add_args); //add them to the signal chain
 
   // reload, this reinits the RTcmix queue, etc.
   dlclose(x->rtcmixdylib);
@@ -585,7 +557,8 @@ t_int *rtcmix_perform(t_int *w)
   //object itself can be turned off directly. this can be convenient sometimes.
   //in any case, all audio objects should have this
   // BGG -- need to set up to zero the buffers, though
-  if (x->x_obj.z_disabled) goto out;
+  // JWM -- removed for Pd
+  //if (x->x_obj.z_disabled) goto out;
 
   //check to see if we have a signal or float message connected to input
   //then assign the pointer accordingly
@@ -685,20 +658,20 @@ void rtcmix_assist(t_rtcmix *x, void *b, long m, long a, char *s)
 
 
 // here's my free function
-void rtcmix_free(t_rtcmix *x)
+static void rtcmix_free(t_rtcmix *x)
 {
   // BGG kept dlopen() stuff in in case NSLoad gets dropped
     char rm_command[MAXPDSTRING]; // should probably be malloc'd
 
     dlclose(x->rtcmixdylib);
     sprintf(rm_command, "rm -rf \"%s\" ", x->pathname);
-    system(rm_command);
+    if (system(rm_command)) error("error deleting unique dylib");
 
     // close any open editor windows
-    if (x->m_editor)
+    /*if (x->m_editor)
       freeobject((t_object *)x->m_editor);
-    x->m_editor = NULL;
-    dsp_free((t_object *)x);
+      x->m_editor = NULL;*/
+    //dsp_free((t_object *)x);
 }
 
 
@@ -706,6 +679,8 @@ void rtcmix_free(t_rtcmix *x)
 // used for the PField control inlets
 void rtcmix_float(t_rtcmix *x, double f)
 {
+
+  /*
   int i;
 
   //check to see which input the float came in, then set the appropriate variable value
@@ -721,6 +696,7 @@ void rtcmix_float(t_rtcmix *x, double f)
           else x->pfield_set(i - (x->num_inputs-1), f);
         }
     }
+  */
 }
 
 
@@ -733,7 +709,7 @@ void rtcmix_int(t_rtcmix *x, int ival)
   //check to see which input the float came in, then set the appropriate variable value
   for(i = 0; i < (x->num_inputs + x->num_pinlets); i++)
     {
-      if (i == x->x_obj.z_in)
+      if (1) // (i == x->x_obj.z_in) // JWM - need to find this is a sample file
         {
           if (i < x->num_inputs)
             {
@@ -757,8 +733,8 @@ void rtcmix_bang(t_rtcmix *x)
   if (x->flushflag == 1) return; // heap and queue being reset
 
   // JWM - FIXME - no A_LONG in Pd
-  a[0].a_w.w_long = x->current_script;
-  a[0].a_type = A_LONG;
+  a[0].a_w.w_float = x->current_script;
+  a[0].a_type = A_FLOAT;
   //defer_low(x, (method)rtcmix_dogoscript, NULL, 1, a);
   rtcmix_dogoscript(x, NULL, 1, a);
 }
@@ -806,11 +782,11 @@ void rtcmix_dotext(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
           sprintf(xfer, " %lf", argv[i].a_w.w_float);
           break;
         case A_DOLLAR:
-          varnum = argv[i].a_w.w_long;
+          varnum = argv[i].a_w.w_float;
           if ( !(x->var_set[varnum-1]) ) error("variable $%d has not been set yet, using 0.0 as default",varnum);
           sprintf(xfer, " %lf", x->var_array[varnum-1]);
           break;
-        case A_SYMBOLBOL:
+        case A_SYMBOL:
           if (top == 0) { sprintf(xfer, "%s", argv[i].a_w.w_symbol->s_name); top = 1;}
           else sprintf(xfer, " %s", argv[i].a_w.w_symbol->s_name);
           break;
@@ -944,7 +920,7 @@ void rtcmix_var(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
   for (i = 0; i < argc; i += 2)
     {
-      varnum = argv[i].a_w.w_long;
+      varnum = argv[i].a_w.w_float;
       if ( (varnum < 1) || (varnum > NVARS) )
         {
           error("only vars $1 - $9 are allowed");
@@ -994,6 +970,7 @@ void rtcmix_varlist(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 // the "bufset" message allows access to a [buffer~] object.  The only argument is the name of the [buffer~]
 void rtcmix_bufset(t_rtcmix *x, t_symbol *s)
 {
+  /*
   t_buffer *b;
 
   if ((b = (t_buffer *)(s->s_thing)) && ob_sym(b) == ps_buffer)
@@ -1004,6 +981,7 @@ void rtcmix_bufset(t_rtcmix *x, t_symbol *s)
     {
       error("rtcmix~: no buffer~ %s", s->s_name);
     }
+  */
 }
 
 // the "flush" message
@@ -1017,29 +995,34 @@ void rtcmix_flush(t_rtcmix *x)
 // used for rtcmix~ internal buffers
 void rtcmix_edclose (t_rtcmix *x, char **text, long size)
 {
+  /*
   if (x->rtcmix_script[x->current_script])
     {
-      sysmem_freeptr((void *)x->rtcmix_script[x->current_script]);
+      //sysmem_freeptr((void *)x->rtcmix_script[x->current_script]);
+      freebytes((void *)x->rtcmix_script[x->current_script],sizeof(x->rtcmix_script[x->current_script]));
       x->rtcmix_script[x->current_script] = 0;
     }
   x->rtcmix_script_len[x->current_script] = size;
   x->rtcmix_script[x->current_script] = (char *)sysmem_newptr((size+1) * sizeof(char)); // size+1 so we can add '\0' at end
+  x->rtcmix_script[x->current_script] = getbytes(
   strncpy(x->rtcmix_script[x->current_script], *text, size);
   x->rtcmix_script[x->current_script][size] = '\0'; // add the terminating '\0'
   x->m_editor = NULL;
+  */
 }
 
 
 void rtcmix_okclose (t_rtcmix *x, char *prompt, short *result)
 {
-  *result = 3; //don't put up dialog box
-  return;
+  //*result = 3; //don't put up dialog box
+  //return;
 }
 
 
 // open up an ed window on the current buffer
 void rtcmix_dblclick(t_rtcmix *x)
 {
+  /*
   char title[80];
 
   if (x->m_editor)
@@ -1057,6 +1040,7 @@ void rtcmix_dblclick(t_rtcmix *x)
     }
 
   object_attr_setchar(x->m_editor, gensym("visible"), 1);
+  */
 }
 
 
@@ -1139,10 +1123,12 @@ void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
   thebuf[j] = '\0';
 
+  /*
   if ( (sys_getdspstate() == 1) || (strncmp(thebuf, "system", 6) == 0) )
     { // don't send if the dacs aren't turned on, unless it is a system() <------- HACK HACK HACK!
       if (x->parse_score(thebuf, j) != 0) error("problem parsing RTcmix script");
     }
+  */
 }
 
 
@@ -1271,22 +1257,6 @@ void rtcmix_writeas(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     {
       switch (argv[i].a_type)
         {
-          // JWM: FIXME - No A_LONG in PD
-        case A_LONG:
-          temp = (short)argv[i].a_w.w_long;
-          if (temp > MAX_SCRIPTS)
-            {
-              error("rtcmix~: only %d scripts available, setting to script number %d", MAX_SCRIPTS, MAX_SCRIPTS-1);
-              temp = MAX_SCRIPTS-1;
-            }
-          if (temp < 0)
-            {
-              error("rtcmix~: the script number should be > 0!  Resetting to script number 0");
-              temp = 0;
-            }
-          x->current_script = temp;
-          x->s_name[x->current_script][0] = 0;
-          break;
         case A_FLOAT:
           temp = (short)argv[i].a_w.w_float;
           if (temp > MAX_SCRIPTS)
@@ -1317,6 +1287,7 @@ void rtcmix_writeas(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 // deferred from the [save*] messages
 void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
+  /*
   char filename[256];
   t_handle script_handle;
   short err;
@@ -1356,6 +1327,7 @@ void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   sysfile_close(fh);
 
   return;
+  */
 }
 
 // the [read ...] message triggers this
@@ -1366,7 +1338,8 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 }
 
 // the deferred read
-void rtcmix_doread(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+// JWM: This whole routine must be rewritten
+/*void rtcmix_doread(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   char filename[256];
   short err, i, temp = 0;
@@ -1381,8 +1354,8 @@ void rtcmix_doread(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
       switch (argv[i].a_type)
         {
           // JWM: FIXME - No A_LONG in Pd
-        case A_LONG:
-          temp = (short)argv[i].a_w.w_long;
+        case A_FLOAT:
+          temp = (short)argv[i].a_w.w_float;
           if (temp > MAX_SCRIPTS)
             {
               error("rtcmix~: only %d scripts available, setting to script number %d", MAX_SCRIPTS, MAX_SCRIPTS-1);
@@ -1471,12 +1444,13 @@ void rtcmix_doread(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
   return;
 }
-
+*/
 
 // this converts the current script to a binbuf format and sets it up to be saved and then restored
 // via the rtcmix_restore() method below
 void rtcmix_save(t_rtcmix *x, void *w)
 {
+  /*
   char *fptr, *tptr;
   char tbuf[5000]; // max 5's limit on symbol size is 32k, this is totally arbitrary on my part
   //	char *tbuf;
@@ -1511,19 +1485,21 @@ void rtcmix_save(t_rtcmix *x, void *w)
           binbuf_vinsert(w, "ssllls", gensym("#X"), gensym("restore"), i, k, x->rtcmix_script_len[i], gensym(tbuf));
         }
     }
+  */
 }
 
 
 // and this gets the message set up by rtcmix_save()
 void rtcmix_restore(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
+  /*
   int i;
   int bsize, fsize;
   char *fptr; // restore buf pointer is in the struct for repeated calls necessary for larger scripts (symbol size limit, see rtcmix_save())
 
   // script #, current buffer size, final script size, script data
-  x->current_script = argv[0].a_w.w_long;
-  bsize = argv[1].a_w.w_long;
+  x->current_script = argv[0].a_w.w_float;
+  bsize = argv[1].a_w.w_float;
   if (argv[2].a_type == A_SYMBOL)
     { // this is for v1.399 scripts that had the symbol size limit bug
       fsize = bsize;
@@ -1531,7 +1507,7 @@ void rtcmix_restore(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
   else
     {
-      fsize = argv[2].a_w.w_long;
+      fsize = argv[2].a_w.w_float;
       fptr = argv[3].a_w.w_symbol->s_name;
     }
 
@@ -1581,4 +1557,5 @@ void rtcmix_restore(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   x->rtcmix_script[x->current_script][fsize] = '\0'; // the final '\0'
 
   x->current_script = 0; // do this to set script 0 as default
+  */
 }
