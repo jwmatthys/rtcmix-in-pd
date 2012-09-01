@@ -120,10 +120,11 @@ typedef struct _rtcmix
 //setup funcs; this probably won't change, unless you decide to change the number of
 //args that the user can input, in which case rtcmix_new will have to change
 void rtcmix_tilde_setup(void);
-static void *rtcmix_new(t_symbol *s, int argc, t_atom *argv);
+static void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv);
 void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count);
 t_int *rtcmix_perform(t_int *w);
 static void rtcmix_free(t_rtcmix *x);
+static void load_dylib(t_rtcmix* x);
 
 //for getting floats, ints or bangs at inputs
 void rtcmix_float(t_rtcmix *x, double f);
@@ -172,7 +173,7 @@ void rtcmix_restore(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_tilde_setup(void)
 {
   rtcmix_class = class_new (gensym("rtcmix~"),
-                            (t_newmethod)rtcmix_new,
+                            (t_newmethod)rtcmix_tilde_new,
                             (t_method)rtcmix_free,
                             sizeof(t_rtcmix),
                             0, A_GIMME, 0);
@@ -235,10 +236,11 @@ void rtcmix_tilde_setup(void)
 
 //this gets called when the object is created; everytime the user types in new args, this will get called
 //void rtcmix_new(long num_inoutputs, long num_additional)
-static void *rtcmix_new(t_symbol *s, int argc, t_atom *argv)
+static void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
   // creates the object
   t_rtcmix *x = (t_rtcmix *)pd_new(rtcmix_class);
+  load_dylib(x);
   int i;
 
   short num_inoutputs = 1;
@@ -283,8 +285,6 @@ static void *rtcmix_new(t_symbol *s, int argc, t_atom *argv)
       outlet_new(&x->x_obj, gensym("signal"));
     }
 
-  x->outpointer = (t_outlet *)outlet_new(&x->x_obj, &s_float);
-
   // initialize some variables; important to do this!
   for (i = 0; i < (x->num_inputs + x->num_pinlets); i++)
     {
@@ -292,6 +292,35 @@ static void *rtcmix_new(t_symbol *s, int argc, t_atom *argv)
       x->in_connected[i] = 0;
     }
 
+  //ps_buffer = gensym("buffer~"); // for [buffer~]
+
+  // ho ho!
+  post("rtcmix~ -- RTcmix music language, v. %s (%s)", VERSION, RTcmixVERSION);
+
+  // set up for the variable-substitution scheme
+  for(i = 0; i < NVARS; i++)
+    {
+      x->var_set[i] = 0;
+      x->var_array[i] = 0.0;
+    }
+
+  // the text editor
+  x->m_editor = NULL;
+  x->current_script = 0;
+  for (i = 0; i < MAX_SCRIPTS; i++)
+    {
+      x->s_name[i][0] = 0;
+    }
+
+  error("assigning outpointer");
+  x->outpointer = outlet_new(&x->x_obj, &s_bang);
+
+  x->flushflag = 0; // [flush] sets flag for call to x->flush() in rtcmix_perform() (after pulltraverse completes)
+  return (x);
+}
+
+static void load_dylib(t_rtcmix* x)
+{
   // using Pd's open_via_path to find rtcmix~, and from there rtcmixdylib.so
   char temp_path[MAXPDSTRING], *pathptr;
   int fd = -1;
@@ -302,12 +331,6 @@ static void *rtcmix_new(t_symbol *s, int argc, t_atom *argv)
     {
       sprintf(mpathname,"%s/dylib/",temp_path);
     }
-
-  //ps_buffer = gensym("buffer~"); // for [buffer~]
-
-  // ho ho!
-  post("rtcmix~ -- RTcmix music language, v. %s (%s)", VERSION, RTcmixVERSION);
-
 
   // BGG kept this in for the dlopen() stuff
   char cp_command[MAXPDSTRING]; // should probably be malloc'd
@@ -403,24 +426,6 @@ static void *rtcmix_new(t_symbol *s, int argc, t_atom *argv)
   x->flush = dlsym(x->rtcmixdylib, "flush_sched");
   if (!(x->flush))
     error("rtcmix~ could not find flush_sched()");
-
-  // set up for the variable-substitution scheme
-  for(i = 0; i < NVARS; i++)
-    {
-      x->var_set[i] = 0;
-      x->var_array[i] = 0.0;
-    }
-
-  // the text editor
-  x->m_editor = NULL;
-  x->current_script = 0;
-  for (i = 0; i < MAX_SCRIPTS; i++)
-    {
-      x->s_name[i][0] = 0;
-    }
-
-  x->flushflag = 0; // [flush] sets flag for call to x->flush() in rtcmix_perform() (after pulltraverse completes)
-  return (x);
 }
 
 //this gets called everytime audio is started; even when audio is running, if the user
@@ -717,7 +722,7 @@ void rtcmix_bang(t_rtcmix *x)
 
   if (x->flushflag == 1) return; // heap and queue being reset
 
-  // JWM - FIXME - no A_LONG in Pd
+  // JWM - FIXME - no A_LONG in Pd (doesn't seem to be a problem so far...)
   a[0].a_w.w_float = x->current_script;
   a[0].a_type = A_FLOAT;
   //defer_low(x, (method)rtcmix_dogoscript, NULL, 1, a);
@@ -729,6 +734,7 @@ void rtcmix_bang(t_rtcmix *x)
 void rtcmix_version(t_rtcmix *x)
 {
   post("rtcmix~, v. %s by Joel Matthys (%s)", VERSION, RTcmixVERSION);
+  outlet_bang(x->outpointer);
 }
 
 
