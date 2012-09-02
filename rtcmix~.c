@@ -225,6 +225,7 @@ void rtcmix_tilde_setup(void)
   addmess ((method)rtcmix_okclose, "okclose", A_CANT, 0);
   addmess((method)rtcmix_write, "savescript", A_GIMME, 0);
   addmess((method)rtcmix_writeas, "savescriptas", A_GIMME, 0);*/
+  class_addmethod(rtcmix_class,(t_method)rtcmix_dblclick, gensym("dblclick"), A_CANT, 0);
 
   // binbuf storage
   //addmess((method)rtcmix_save, "save", A_CANT, 0);
@@ -1013,6 +1014,7 @@ void rtcmix_okclose (t_rtcmix *x, char *prompt, short *result)
 // open up an ed window on the current buffer
 void rtcmix_dblclick(t_rtcmix *x)
 {
+  post("DOUBLE CLICK!!!");
   /*
   char title[80];
 
