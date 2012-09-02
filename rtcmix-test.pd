@@ -2,7 +2,7 @@
 #X declare -path .;
 #X obj 321 256 declare -path .;
 #X obj 195 202 rtcmix~ 2 0;
-#X obj 219 23 flatgui/entry 450 170 grey70 black;
+#X obj 219 23 rtcmixentry;
 #X obj 220 3 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X obj 201 234 dac~;

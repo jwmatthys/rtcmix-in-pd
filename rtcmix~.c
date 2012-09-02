@@ -225,7 +225,6 @@ void rtcmix_tilde_setup(void)
   addmess ((method)rtcmix_okclose, "okclose", A_CANT, 0);
   addmess((method)rtcmix_write, "savescript", A_GIMME, 0);
   addmess((method)rtcmix_writeas, "savescriptas", A_GIMME, 0);*/
-  class_addmethod(rtcmix_class,(t_method)rtcmix_dblclick, gensym("dblclick"), A_CANT, 0);
 
   // binbuf storage
   //addmess((method)rtcmix_save, "save", A_CANT, 0);
@@ -1116,12 +1115,10 @@ void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
   thebuf[j] = '\0';
 
-  /*
-  if ( (sys_getdspstate() == 1) || (strncmp(thebuf, "system", 6) == 0) )
+  if ( (canvas_dspstate == 1) || (strncmp(thebuf, "system", 6) == 0) )
     { // don't send if the dacs aren't turned on, unless it is a system() <------- HACK HACK HACK!
       if (x->parse_score(thebuf, j) != 0) error("problem parsing RTcmix script");
     }
-  */
 }
 
 
