@@ -116,7 +116,6 @@ static void rtcmixentry_vis(t_gobj *z, t_glist *glist, int vis);
 //static int rtcmixentry_click(t_gobj *z, t_glist *glist, int xpix, int ypix, int shift, int alt, int dbl, int doit);
 static void rtcmixentry_save(t_gobj *z, t_binbuf *b);
 static void rtcmixentry_load(t_rtcmixentry* x,  t_symbol *s);
-long fsize(FILE * file); // load helper
 
 static t_widgetbehavior   rtcmixentry_widgetbehavior = {
  w_getrectfn:  rtcmixentry_getrect,
@@ -487,21 +486,27 @@ static void rtcmixentry_load(t_rtcmixentry* x,  t_symbol *s)
       unsigned char *buffer = malloc(block_size);
       size_t read_bytes = 0;
       size_t last_read;
+
+      // clear buffer
+      sys_vgui("%s delete 0.0 end \n", x->text_id);
+
       while ((last_read = fread(buffer + read_bytes, 1, block_size, file)) > 0)
         {
           read_bytes += last_read;
           unsigned char *buffer2 = malloc(read_bytes + block_size);
           memcpy(buffer2, buffer, read_bytes);
+          sys_vgui("lappend ::%s::list %s \n", x->tcl_namespace, buffer2 );
           free(buffer);
           buffer = buffer2;
         }
       DEBUG(post("loaded contents of %s", filename););
       DEBUG(post("buffer contents: %s", buffer););
 
-      // clear buffer
-      sys_vgui("%s delete 0.0 end \n", x->text_id);
       // load into object
-      sys_vgui("lappend ::%s::list %s \n", x->tcl_namespace, buffer );
+      size_t i = 0;
+      for (i=0; i<read_bytes; i++)
+        {
+        }
       sys_vgui("append ::%s::list \" \"\n", x->tcl_namespace);
       sys_vgui("%s insert end $::%s::list ; unset ::%s::list \n",
                x->text_id, x->tcl_namespace, x->tcl_namespace );
@@ -574,11 +579,20 @@ static void rtcmixentry_bang_output(t_rtcmixentry* x)
 
 static void rtcmixentry_defocus(t_rtcmixentry *x, t_float f)
 {
-  DEBUG(post("rtcmixentry_defocus"););
+        // use f to eliminate unused parameter warning
+  DEBUG(post("rtcmixentry_defocus - %d",f););
 
   sys_vgui("%s configure -bg #bdbddd -state disabled -cursor $cursor_editmode_nothing\n",
            x->text_id);
-  //x->x_selected = 1;
+}
+
+static void rtcmixentry_focus(t_rtcmixentry *x, t_float f)
+{
+        // use f to eliminate unused parameter warning
+  DEBUG(post("rtcmixentry_focus - %d",f););
+
+  sys_vgui("%s configure -bg #bdbddd -state normal -cursor $cursor_editmode_nothing\n",
+           x->text_id);
 }
 
 static void rtcmixentry_keyup(t_rtcmixentry *x, t_float f)
@@ -778,7 +792,7 @@ static void rtcmixentry_free(t_rtcmixentry *x)
 
 static void *rtcmixentry_new(t_symbol *s, int argc, t_atom *argv)
 {
-  DEBUG(post("rtcmixentry_new"););
+  DEBUG(post("rtcmixentry_new - %s",s););
   t_rtcmixentry *x = (t_rtcmixentry *)pd_new(rtcmixentry_class);
   char buf[MAXPDSTRING];
 
@@ -830,6 +844,10 @@ void rtcmixentry_setup(void) {
 
   class_addmethod(rtcmixentry_class, (t_method)rtcmixentry_defocus,
                   gensym("defocus"),
+                  0);
+
+  class_addmethod(rtcmixentry_class, (t_method)rtcmixentry_focus,
+                  gensym("focus"),
                   0);
 
   class_addmethod(rtcmixentry_class, (t_method)rtcmixentry_keyup,

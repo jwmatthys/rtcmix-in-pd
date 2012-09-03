@@ -1,10 +1,14 @@
-#N canvas 598 467 450 300 12;
+#N canvas 596 467 450 300 12;
 #X obj 112 117 rtcmixentry 200 100 lavender black;
 #X msg 105 80 load \$1;
 #X obj 99 51 openpanel;
 #X msg 98 28 bang;
 #X msg 202 43 load testfile.txt;
+#X msg 336 36 defocus;
+#X msg 335 63 focus;
 #X connect 1 0 0 0;
 #X connect 2 0 1 0;
 #X connect 3 0 2 0;
 #X connect 4 0 0 0;
+#X connect 5 0 0 0;
+#X connect 6 0 0 0;
