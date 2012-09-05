@@ -1,0 +1,37 @@
+#N canvas 498 149 450 300 10;
+#X text 94 36 this is an example help file;
+#X obj 191 105 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#N canvas 347 176 494 344 META 0;
+#X text 12 105 HELP_PATCH_AUTHORS "pd meta" information added by Jonathan
+Wilkes for Pd version 0.42.;
+#X text 12 25 LICENSE GPL v2;
+#X text 12 85 AUTHOR Hans Christoph Steiner;
+#X text 12 5 KEYWORDS control;
+#X text 12 45 DESCRIPTION example libdir object class;
+#X text 12 65 INLET_0 float rats;
+#X restore 370 250 pd META;
+#X msg 24 106 clear;
+#X obj 56 54 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 122 131 binbuftest;
+#X msg 197 60 read README.txt;
+#X msg 284 198 read \$1;
+#X obj 280 169 openpanel;
+#X obj 279 144 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X msg 48 158 save newscore.sco;
+#X obj 132 218 print outlet:;
+#X msg 69 84 append the friend of my friend is my enemy;
+#X msg 305 22 read;
+#X connect 1 0 5 0;
+#X connect 3 0 5 0;
+#X connect 4 0 5 0;
+#X connect 5 0 11 0;
+#X connect 6 0 5 0;
+#X connect 7 0 5 0;
+#X connect 8 0 7 0;
+#X connect 9 0 8 0;
+#X connect 10 0 5 0;
+#X connect 12 0 5 0;
+#X connect 13 0 5 0;
