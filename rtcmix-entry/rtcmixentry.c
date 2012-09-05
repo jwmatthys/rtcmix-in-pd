@@ -113,9 +113,10 @@ static void rtcmixentry_select(t_gobj *z, t_glist *glist, int state);
 static void rtcmixentry_activate(t_gobj *z, t_glist *glist, int state);
 static void rtcmixentry_delete(t_gobj *z, t_glist *glist);
 static void rtcmixentry_vis(t_gobj *z, t_glist *glist, int vis);
-//static int rtcmixentry_click(t_gobj *z, t_glist *glist, int xpix, int ypix, int shift, int alt, int dbl, int doit);
 static void rtcmixentry_save(t_gobj *z, t_binbuf *b);
 static void rtcmixentry_load(t_rtcmixentry* x,  t_symbol *s);
+static void rtcmixentry_focus(t_rtcmixentry *x, t_float f);
+static void rtcmixentry_defocus(t_rtcmixentry *x, t_float f);
 
 static t_widgetbehavior   rtcmixentry_widgetbehavior = {
  w_getrectfn:  rtcmixentry_getrect,
@@ -402,6 +403,8 @@ static void rtcmixentry_activate(t_gobj *z, t_glist *glist, int state)
                TKW_HANDLE_WIDTH, TKW_HANDLE_HEIGHT,
                x->handle_id, x->all_tag);
       sys_vgui("raise %s\n", x->handle_id);
+      sys_vgui("bind %s <Button> {pdsend {%s click 1}}\n",
+               x->handle_id, x->x_receive_name->s_name);
       sys_vgui("bind %s <Button> {pdsend {%s resize_click 1}}\n",
                x->handle_id, x->x_receive_name->s_name);
       sys_vgui("bind %s <ButtonRelease> {pdsend {%s resize_click 0}}\n",
@@ -430,22 +433,6 @@ static void rtcmixentry_vis(t_gobj *z, t_glist *glist, int vis)
     rtcmixentry_erase(x, glist);
   }
 }
-
-/*
-//  the clickfn is only called in run mode
-static int rtcmixentry_click(t_gobj *z, t_glist *glist, int xpix, int ypix,
-                             int shift, int alt, int dbl, int doit)
-{
-  t_rtcmixentry *x = (t_rtcmixentry *)z;
-
-  //int x1,y1,x2,y2;
-  //rtcmixentry_getrect(z, glist, &x1, &y1, &x2, &y2);
-  //post("window position: %d %d x %d %d",x1,y1,x2,y2);
-
-  DEBUG(post("rtcmixentry_click x:%d y:%d edit: %d", xpix, ypix, x->x_canvas->gl_edit););
-  return 0;
-}
-*/
 
 static void rtcmixentry_append(t_rtcmixentry* x,  t_symbol *s, int argc, t_atom *argv)
 {
@@ -488,31 +475,31 @@ static void rtcmixentry_load(t_rtcmixentry* x,  t_symbol *s)
       size_t last_read;
 
       // clear buffer
-      sys_vgui("%s delete 0.0 end \n", x->text_id);
+      //sys_vgui("%s delete 0.0 end \n", x->text_id);
 
-      while ((last_read = fread(buffer + read_bytes, 1, block_size, file)) > 0)
+      while ((last_read = fread(buffer, 1, block_size, file)) == block_size)
         {
-          read_bytes += last_read;
-          unsigned char *buffer2 = malloc(read_bytes + block_size);
-          memcpy(buffer2, buffer, read_bytes);
-          sys_vgui("lappend ::%s::list %s \n", x->tcl_namespace, buffer2 );
-          free(buffer);
-          buffer = buffer2;
+          sys_vgui("lappend ::%s::list %s \n", x->tcl_namespace, buffer );
+          post("current chuck: %s",buffer);
         }
+      if (last_read > 0)
+        {
+          unsigned char *tempbuffer = malloc(last_read);
+          memcpy(tempbuffer, buffer, last_read);
+          sys_vgui("lappend ::%s::list %s \n", x->tcl_namespace, tempbuffer );
+          post("last chunk: %s",tempbuffer);
+          free(tempbuffer);
+        }
+      free(buffer);
+
       DEBUG(post("loaded contents of %s", filename););
-      DEBUG(post("buffer contents: %s", buffer););
 
-      // load into object
-      size_t i = 0;
-      for (i=0; i<read_bytes; i++)
-        {
-        }
+      post ("text: %s",x->x_receive_name->s_name);
+
       sys_vgui("append ::%s::list \" \"\n", x->tcl_namespace);
       sys_vgui("%s insert end $::%s::list ; unset ::%s::list \n",
                x->text_id, x->tcl_namespace, x->tcl_namespace );
-      sys_vgui("%s yview end-2char \n", x->text_id );
-
-      free(buffer);
+               sys_vgui("%s yview end-2char \n", x->text_id );
       fclose(file);
     }
   else post("read error");
@@ -572,6 +559,7 @@ static void rtcmixentry_output(t_rtcmixentry* x, t_symbol *s, int argc, t_atom *
 static void rtcmixentry_bang_output(t_rtcmixentry* x)
 {
   /* With "," and ";" escaping thanks to JMZ */
+  //sys_vgui
   sys_vgui("pdsend \"%s output [string map {\",\" \"\\\\,\" \";\" \"\\\\;\"} \
               [%s get 0.0 end]] \"\n",
            x->x_receive_name->s_name, x->text_id);
@@ -914,7 +902,6 @@ void rtcmixentry_setup(void) {
                   gensym("fgcolour"),
                   A_DEFSYMBOL,
                   0);
-
   class_addmethod(rtcmixentry_class, (t_method)rtcmixentry_click_callback,
                   gensym("click"), A_FLOAT, 0);
   class_addmethod(rtcmixentry_class, (t_method)rtcmixentry_resize_click_callback,

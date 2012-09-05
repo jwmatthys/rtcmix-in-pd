@@ -1,4 +1,4 @@
-#N canvas 482 452 788 305 12;
+#N canvas 480 456 788 305 12;
 #X declare -path .;
 #X obj 321 256 declare -path .;
 #X obj 195 202 rtcmix~ 2 0;
@@ -11,6 +11,7 @@
 #X msg 151 150 version;
 #X obj 251 262 print;
 #X obj 78 73 adc~;
+#X msg 257 122 read longsco.sco;
 #X connect 1 0 4 0;
 #X connect 1 1 4 1;
 #X connect 1 2 7 0;
@@ -19,3 +20,4 @@
 #X connect 5 0 1 0;
 #X connect 6 0 1 0;
 #X connect 8 0 1 0;
+#X connect 9 0 1 0;

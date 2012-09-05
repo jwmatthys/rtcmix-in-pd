@@ -152,8 +152,7 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_openscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_doread(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+void rtcmix_read(t_rtcmix *x, t_symbol *s);
 void rtcmix_write(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_writeas(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
@@ -214,6 +213,8 @@ void rtcmix_tilde_setup(void)
   class_addfloat(rtcmix_class, rtcmix_float);
   // trigger scripts
   class_addbang(rtcmix_class, rtcmix_bang);
+
+  class_addmethod(rtcmix_class,(t_method)rtcmix_read, gensym("read"), A_SYMBOL, 0);
   //for the text editor and scripts
   //JWM - TODO
   /*addmess ((method)rtcmix_edclose, "edclose", A_CANT, 0);
@@ -1321,16 +1322,10 @@ void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 }
 
 // the [read ...] message triggers this
-void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+void rtcmix_read(t_rtcmix *x, t_symbol *s)
 {
-  //defer(x, (method)rtcmix_doread, s, argc, argv); // always defer this message
-  rtcmix_doread(x,s,argc,argv);
-}
-
-// the deferred read
-// JWM: This whole routine must be rewritten
-void rtcmix_doread(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
-{
+  post ("filename: %s",s->s_name);
+  t_binbuf *mybuf;
   /*
   char filename[256];
   short err, i, temp = 0;
