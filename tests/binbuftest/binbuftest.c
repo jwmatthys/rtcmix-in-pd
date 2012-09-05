@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#define DEBUG(x)
+//#define DEBUG(x) x
+
     /* the data structure for each copy of "binbuftest".  In this case we
     on;y need pd's obligatory header (of type t_object). */
 typedef struct binbuftest
@@ -25,42 +28,43 @@ static void binbuftest_callback(t_binbuftest* x,  t_symbol *filename);
     number.) */
 void binbuftest_float(t_binbuftest *x, t_floatarg f)
 {
-    post("binbuf\ntest: %f", f);
-    // overwrite text to binbuf:
-    char * temp = "Joel is awesome.";
-    binbuf_text(x->mybuf,temp,strlen(temp));
+  DEBUG(post("binbuftest: %f", f););
+  // JWM: don't lose this! method to overwrite text to binbuf:
+  //char * temp = "Joel is awesome.";
+  //binbuf_text(x->mybuf,temp,strlen(temp));
 }
 
 void binbuftest_bang(t_binbuftest *x)
 {
-  post("binbuftest_bang");
-  //binbuf_print(x->mybuf);
-  //t_symbol *result = atom_getsymbol(binbuf_getvec(x->mybuf));
-  //post("and after: %s",result->s_name);
+  DEBUG(post("binbuftest_bang"););
   char* result = malloc(MAXPDSTRING);
   int n = binbuf_getnatom(x->mybuf);
-  post("natom: %d",n);
+  DEBUG(post("natom: %d",n););
   binbuf_gettext(x->mybuf, &result,&n);
-  post("result: %s",result);
+  DEBUG(post("result: %s",result););
+  // OK, so the text going to the outlet gets truncated at MAXPDSTRING and
+  // characters escaped, but I *think* that it remains uncorrupted in the
+  // binbuf. I hope!
+  outlet_symbol(x->textout,gensym(result));
 }
 
     /* this is called when binbuftest gets the message, "append". */
 void binbuftest_append(t_binbuftest *x, t_symbol *s, int argc, t_atom *argv)
 {
-  post("argc: %d",argc);
+  DEBUG(post("argc: %d",argc););
   binbuf_add(x->mybuf, argc, argv);
-  binbuf_print(x->mybuf);
+  DEBUG(binbuf_print(x->mybuf););
 }
 
 void binbuftest_clear(t_binbuftest *x, t_float f)
 {
-  post ("binbuf clear");
+  DEBUG(post ("binbuf clear"););
   binbuf_clear(x->mybuf);
 }
 
 void binbuftest_read(t_binbuftest* x,  t_symbol *s, int argc, t_atom *argv)
 {
-  post("binbuftest_read");
+  DEBUG(post("binbuftest_read"););
   if (argc==0)
     {
       sys_vgui("pdtk_openpanel {%s} {%s}\n", x->x_s->s_name, x->canvas_path->s_name);
@@ -82,8 +86,7 @@ static void binbuftest_callback(t_binbuftest* x,  t_symbol *filename)
 
 void binbuftest_save(t_binbuftest* x,  t_symbol *filename)
 {
-  post("binbuftest_save");
-
+  DEBUG(post("binbuftest_save"););
   char buf[MAXPDSTRING];
   canvas_makefilename(x->x_canvas, filename->s_name,
                       buf, MAXPDSTRING);
@@ -100,7 +103,7 @@ void *binbuftest_new(void)
 {
     t_binbuftest *x = (t_binbuftest *)pd_new(binbuftest_class);
     x->mybuf = binbuf_new();
-    post("binbuftest_new");
+    DEBUG(post("binbuftest_new"););
     // store ref to this object in x->x_s
     char buf[50];
     sprintf(buf, "d%lx", (t_int)x);
@@ -123,14 +126,14 @@ void binbuftest_free(t_binbuftest *x)
     /* this is called once at setup time, when this code is loaded into Pd. */
 void binbuftest_setup(void)
 {
-    post("binbuftest_setup");
-    binbuftest_class = class_new(gensym("binbuftest"), (t_newmethod)binbuftest_new, (t_method)binbuftest_free, sizeof(t_binbuftest), 0, 0);
-    class_addmethod(binbuftest_class, (t_method)binbuftest_append, gensym("append"), A_GIMME, 0);
-    class_addmethod(binbuftest_class, (t_method)binbuftest_read, gensym("read"), A_GIMME, 0);
-    class_addmethod(binbuftest_class, (t_method)binbuftest_save, gensym("save"), A_SYMBOL, 0);
-    class_addmethod(binbuftest_class, (t_method)binbuftest_clear, gensym("clear"), 0);
-    class_addmethod(binbuftest_class, (t_method)binbuftest_bang, gensym("click"), 0);
-    class_addfloat(binbuftest_class, binbuftest_float);
-    class_addbang(binbuftest_class, binbuftest_bang);
-    class_addmethod(binbuftest_class, (t_method)binbuftest_callback, gensym("callback"), A_SYMBOL, 0);
+  DEBUG(post("binbuftest_setup"););
+  binbuftest_class = class_new(gensym("binbuftest"), (t_newmethod)binbuftest_new, (t_method)binbuftest_free, sizeof(t_binbuftest), 0, 0);
+  class_addmethod(binbuftest_class, (t_method)binbuftest_append, gensym("append"), A_GIMME, 0);
+  class_addmethod(binbuftest_class, (t_method)binbuftest_read, gensym("read"), A_GIMME, 0);
+  class_addmethod(binbuftest_class, (t_method)binbuftest_save, gensym("save"), A_SYMBOL, 0);
+  class_addmethod(binbuftest_class, (t_method)binbuftest_clear, gensym("clear"), 0);
+  class_addmethod(binbuftest_class, (t_method)binbuftest_bang, gensym("click"), 0);
+  class_addfloat(binbuftest_class, binbuftest_float);
+  class_addbang(binbuftest_class, binbuftest_bang);
+  class_addmethod(binbuftest_class, (t_method)binbuftest_callback, gensym("callback"), A_SYMBOL, 0);
 }
