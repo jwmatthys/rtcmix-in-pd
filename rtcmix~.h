@@ -44,8 +44,8 @@ typedef struct _rtcmix
 
   //variables specific to this object
   float srate;                                        //sample rate
-  long num_inputs, num_outputs;       //number of inputs and outputs
-  long num_pinlets;				// number of inlets for dynamic PField control
+  short num_inputs, num_outputs;       //number of inputs and outputs
+  short num_pinlets;				// number of inlets for dynamic PField control
   float in[MAX_INPUTS];			// values received for dynamic PFields
   float in_connected[MAX_INPUTS]; //booleans: true if signals connected to the input in question
   //we use this "connected" boolean so that users can connect *either* signals or floats
@@ -136,7 +136,7 @@ void rtcmix_bang(t_rtcmix *x);
 //for custom messages
 void rtcmix_version(t_rtcmix *x);
 void rtcmix_text(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_dotext(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+//void rtcmix_dotext(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_badquotes(char *cmd, char *buf); // this is to check for 'split' quoted params, called in rtcmix_dotext
 void rtcmix_rtcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_dortcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);

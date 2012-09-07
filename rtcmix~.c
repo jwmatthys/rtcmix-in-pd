@@ -69,6 +69,8 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   // creates the object
   t_rtcmix *x = (t_rtcmix *)pd_new(rtcmix_class);
 
+  load_dylib(x);
+
   int i;
 
   short num_inoutputs = 1;
@@ -94,7 +96,7 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   x->num_inputs = num_inoutputs;
   x->num_outputs = num_inoutputs;
   x->num_pinlets = num_additional;
-
+  post("in new: num_outputs: %d",x->num_outputs);
   // setup up inputs and outputs, for audio inputs
 
   // SIGNAL INLETS
@@ -151,8 +153,6 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
   x->flushflag = 0; // [flush] sets flag for call to x->flush() in rtcmix_perform() (after pulltraverse completes)
 
-  load_dylib(x);
-
   return (x);
 }
 
@@ -164,6 +164,7 @@ static void load_dylib(t_rtcmix* x)
   fd = open_via_path(".","rtcmix~.pd_linux","",temp_path, &pathptr, MAXPDSTRING,1);
   if (fd < 0)
     error ("open_via_path() failed!");
+  // JWM: TODO: add backup which uses canvas path
   else
     {
       sprintf(mpathname,"%s/dylib/",temp_path);
@@ -172,12 +173,18 @@ static void load_dylib(t_rtcmix* x)
   // BGG kept this in for the dlopen() stuff
 
   //zero out the struct, to be careful (takk to jkclayton)
-  if (x)
-    {
-      unsigned int j;
-      for(j=sizeof(t_object);j<sizeof(t_rtcmix);j++)
-        ((char *)x)[j]=0;
-    }
+  // JWM: TROUBLE! somehow this is zeroing out num_output too
+  // I suspect it's because not all of the objects are the
+  // same size; I'm going to disable this and see if it
+  // causes any trouble in the long run...
+  /*
+     if (x)
+     {
+     unsigned int j;
+     for(j=sizeof(t_object);j<sizeof(t_rtcmix);j++)
+     ((char *)x)[j]=0;
+     }
+  */
 
   // these are the entry function pointers in to the rtcmixdylib.so lib
   x->rtcmixmain = NULL;
@@ -210,6 +217,7 @@ static void load_dylib(t_rtcmix* x)
 
   // load the dylib
   x->rtcmixdylib = dlopen(x->pathname, RTLD_NOW | RTLD_LOCAL);
+
   // JWM: for safety (and debugging), added check for load error
   if (!x->rtcmixdylib)
     {
@@ -300,6 +308,10 @@ void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
     }
 
   dsp_add_args[x->num_inputs + x->num_pinlets + x->num_outputs + 1] = (t_int)sp[0]->s_n; //pointer to the vector size
+
+  post("vector size: %d",sp[0]->s_n);
+  // JWM: this is getting zeroed out, and I don't know why
+  post("num outputs: %d",x->num_outputs);
 
   dsp_addv(rtcmix_perform, (x->num_inputs + x->num_pinlets + x->num_outputs + 2), dsp_add_args); //add them to the signal chain
 
@@ -471,15 +483,15 @@ void rtcmix_free(t_rtcmix *x)
     if (system(rm_command)) error("error deleting unique dylib");
 
     free(x->canvas_path);
-    free(x->pd_inbuf);
-    free(x->pd_outbuf);
-    /*int i;
+    //free(x->pd_inbuf);
+    //free(x->pd_outbuf);
+
+    int i;
     for (i=0; i<MAX_SCRIPTS; i++)
       {
         binbuf_free(x->rtcmix_script[i]);
       }
-    */
-    //binbuf_free(x->rtcmix_script);
+
     free(x->pathname);
     free(rm_command);
     post ("rtcmix~ DESTROYED!");
@@ -516,10 +528,6 @@ void rtcmix_bang(t_rtcmix *x)
 
   if (x->flushflag == 1) return; // heap and queue being reset
 
-  // JWM - FIXME - no A_LONG in Pd (doesn't seem to be a problem so far...)
-  //a[0].a_w.w_float = x->current_script;
-  //a[0].a_type = A_FLOAT;
-  //defer_low(x, (method)rtcmix_dogoscript, NULL, 1, a);
   rtcmix_dogoscript(x, NULL, 1, a);
 }
 
@@ -528,22 +536,13 @@ void rtcmix_bang(t_rtcmix *x)
 void rtcmix_version(t_rtcmix *x)
 {
   post("rtcmix~, v. %s by Joel Matthys (%s)", VERSION, RTcmixVERSION);
-  outlet_bang(x->outpointer);
+  //outlet_bang(x->outpointer);
 }
 
-// see the note for rtcmix_dotext() below
+// JWM: In Pd, this comes from [entry] as a list
 void rtcmix_text(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   if (x->flushflag == 1) return; // heap and queue being reset
-  rtcmix_dotext(x, s, argc, argv); // always defer this message
-}
-
-
-// what to do when we get the message "text"
-// Max rtcmix~ scores come from the [textedit] object this way
-// JWM: In Pd, this comes from [entry] as a list
-void rtcmix_dotext(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
-{
   short i, varnum;
   char thebuf[MAXPDSTRING]; // should #define these probably
   char xfer[MAXPDSTRING];
@@ -846,7 +845,6 @@ void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
       temp = 0;
     }
 
-  /*
   x->current_script = temp;
 
   short j;
@@ -887,7 +885,6 @@ char *thebuf = malloc(MAXSCRIPTSIZE);
 
       }
   free(thebuf);
-  */
 }
 
 

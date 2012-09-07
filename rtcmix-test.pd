@@ -1,23 +1,26 @@
-#N canvas 439 367 788 305 12;
-#X declare -path .;
-#X obj 321 256 declare -path .;
-#X obj 195 202 rtcmix~ 2 0;
+#N canvas 140 261 788 305 12;
 #X obj 201 234 dac~;
 #X obj 174 56 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
 #X msg 151 150 version;
-#X obj 251 262 print;
-#X obj 78 73 adc~;
+#X obj 125 94 adc~;
 #X msg 244 75 read;
 #X msg 399 33 \; pd dsp 1;
 #X msg 212 30 save;
 #X msg 257 122 read longchain.sco;
-#X connect 1 0 2 0;
-#X connect 1 1 2 1;
-#X connect 1 2 5 0;
-#X connect 3 0 1 0;
-#X connect 4 0 1 0;
-#X connect 6 0 1 0;
-#X connect 7 0 1 0;
-#X connect 9 0 1 0;
-#X connect 10 0 1 0;
+#X obj 409 89 entry 223 90 grey70 black;
+#X obj 367 84 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 195 202 rtcmix~ 2 1;
+#X obj 266 237 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X connect 1 0 10 0;
+#X connect 2 0 10 0;
+#X connect 4 0 10 0;
+#X connect 6 0 10 0;
+#X connect 7 0 10 0;
+#X connect 8 0 10 0;
+#X connect 9 0 8 0;
+#X connect 10 0 0 0;
+#X connect 10 1 0 1;
+#X connect 10 2 11 0;
