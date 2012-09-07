@@ -8,6 +8,13 @@
 #define VERSION "0.01"
 #define RTcmixVERSION "RTcmix-pd-4.0.1.6"
 
+// JWM: since Tk's openpanel & savepanel both use callback(),
+// I use a flag to indicate whether we're loading or writing
+#define RTcmixREADFLAG 0
+#define RTcmixWRITEFLAG 1
+// Flag for carriage return translation for binbufs
+#define CRFLAG 1 // 0 for no CR, 1 for semis?
+
 // JWM - Pd headers
 #include "m_pd.h"
 #include <string.h>
@@ -82,7 +89,7 @@ typedef struct _rtcmix
   int dylibincr;
   void *rtcmixdylib;
   // for the full path to the rtcmixdylib.so file
-  char *pathname = malloc(MAXPDSTRING);
+  char pathname[MAXPDSTRING];
 
   // space for these malloc'd in rtcmix_dsp()
   float *pd_outbuf;
@@ -116,6 +123,12 @@ typedef struct _rtcmix
   // JWM: changing to binbufs for all internal scores
   t_binbuf *rtcmix_script[MAX_SCRIPTS];
   unsigned short current_script;
+  short rw_flag;
+
+  // JWM : canvas objects for callback addressing
+  t_canvas *x_canvas;
+  t_symbol *canvas_path;
+  t_symbol *x_s;
 
   // for flushing all events on the queue/heap (resets to new ones inside RTcmix)
   int flushflag;
@@ -128,46 +141,46 @@ typedef struct _rtcmix
 //args that the user can input, in which case rtcmix_new will have to change
 void rtcmix_tilde_setup(void);
 static void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv);
-void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count);
+static void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count);
 t_int *rtcmix_perform(t_int *w);
 static void rtcmix_free(t_rtcmix *x);
 static void load_dylib(t_rtcmix* x);
 
 //for getting floats, ints or bangs at inputs
-void rtcmix_float(t_rtcmix *x, double f);
+static void rtcmix_float(t_rtcmix *x, double f);
 //void rtcmix_int(t_rtcmix *x, int i);
-void rtcmix_bang(t_rtcmix *x);
+static void rtcmix_bang(t_rtcmix *x);
 // JWM: removed this since there's no defer in Pd
 //void rtcmix_dobangout(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv); // for the defer
 
 //for custom messages
-void rtcmix_version(t_rtcmix *x);
-void rtcmix_text(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_dotext(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_badquotes(char *cmd, char *buf); // this is to check for 'split' quoted params, called in rtcmix_dotext
-void rtcmix_rtcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_dortcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_var(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_varlist(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_bufset(t_rtcmix *x, t_symbol *s);
-void rtcmix_flush(t_rtcmix *x);
+static void rtcmix_version(t_rtcmix *x);
+static void rtcmix_text(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+static void rtcmix_dotext(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+static void rtcmix_badquotes(char *cmd, char *buf); // this is to check for 'split' quoted params, called in rtcmix_dotext
+static void rtcmix_rtcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+static void rtcmix_dortcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+static void rtcmix_var(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+static void rtcmix_varlist(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+static void rtcmix_bufset(t_rtcmix *x, t_symbol *s);
+static void rtcmix_flush(t_rtcmix *x);
 
 //for the text editor
-void rtcmix_edclose (t_rtcmix *x, char **text, long size);
-void rtcmix_dblclick(t_rtcmix *x);
-void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_openscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_read(t_rtcmix *x, t_symbol *s);
-void rtcmix_write(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_writeas(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_okclose (t_rtcmix *x, char *prompt, short *result);
+static void rtcmix_edclose (t_rtcmix *x, char **text, long size);
+static void rtcmix_dblclick(t_rtcmix *x);
+static void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+static void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+static void rtcmix_openscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+static void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+static void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+static void rtcmix_write(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+static void rtcmix_writeas(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+static void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+static void rtcmix_okclose (t_rtcmix *x, char *prompt, short *result);
 
 //for binbuf storage of scripts
-void rtcmix_save(t_rtcmix *x, void *w);
-void rtcmix_restore(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+static void rtcmix_save(t_rtcmix *x, void *w);
+static void rtcmix_callback(t_rtcmix *x, t_symbol *s);
 
 // JWM: TODO - attach to table?
 //t_symbol *ps_buffer; // for [buffer~]
@@ -221,7 +234,7 @@ void rtcmix_tilde_setup(void)
   // trigger scripts
   class_addbang(rtcmix_class, rtcmix_bang);
 
-  class_addmethod(rtcmix_class,(t_method)rtcmix_read, gensym("read"), A_SYMBOL, 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_read, gensym("read"), A_GIMME, 0);
   //for the text editor and scripts
   //JWM - TODO
   /*addmess ((method)rtcmix_edclose, "edclose", A_CANT, 0);
@@ -238,7 +251,8 @@ void rtcmix_tilde_setup(void)
   //addmess((method)rtcmix_save, "save", A_CANT, 0);
   //addmess((method)rtcmix_restore, "restore", A_GIMME, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("save"), A_CANT, 0);
-  class_addmethod(rtcmix_class,(t_method)rtcmix_restore, gensym("restore"), A_GIMME, 0);
+
+  class_addmethod(rtcmix_class,(t_method)rtcmix_callback, gensym("callback"), A_SYMBOL, 0);
 }
 
 
@@ -319,15 +333,18 @@ static void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
     }
 
   // the text editor
-  x->m_editor = NULL;
   x->current_script = 0;
-  for (i = 0; i < MAX_SCRIPTS; i++)
-    {
-      x->s_name[i][0] = 0;
-    }
+  x->rw_flag = RTcmixREADFLAG;
 
-  error("assigning outpointer");
   x->outpointer = outlet_new(&x->x_obj, &s_bang);
+
+  // This nasty looking stuff is to bind the object's ID
+  // to x_s to facilitate callbacks
+  char *buf = malloc(50);
+  sprintf(buf, "d%lx", (t_int)x);
+  x->x_s = gensym(buf);
+  pd_bind(&x->x_obj.ob_pd, x->x_s);
+  free(buf);
 
   x->flushflag = 0; // [flush] sets flag for call to x->flush() in rtcmix_perform() (after pulltraverse completes)
   return (x);
@@ -357,11 +374,6 @@ static void load_dylib(t_rtcmix* x)
       for(j=sizeof(t_object);j<sizeof(t_rtcmix);j++)
         ((char *)x)[j]=0;
     }
-
-  // binbuf storage
-  // this sends the 'restore' message (rtcmix_restore() below)
-  // JWM - I don't know what this does!
-  //gensym("#X")->s_thing = (struct object*)x;
 
   // these are the entry function pointers in to the rtcmixdylib.so lib
   x->rtcmixmain = NULL;
@@ -453,7 +465,7 @@ static void load_dylib(t_rtcmix* x)
 //then on again, calling this func.
 //this adds the "perform" method to the DSP chain, and also tells us
 //where the audio vectors are and how big they are
-void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
+static void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
 {
   t_int dsp_add_args [MAX_INPUTS + MAX_OUTPUTS + 2];
   int i;
@@ -679,10 +691,10 @@ static void rtcmix_free(t_rtcmix *x)
 
     free(x->pd_inbuf);
     free(x->pd_outbuf);
-
+    int i;
     for (i=0; i<MAX_SCRIPTS; i++)
       {
-        x->rtcmix_script[i]=binbuf_free();
+        binbuf_free(x->rtcmix_script[i]);
       }
 
     free(x->pathname);
@@ -693,7 +705,7 @@ static void rtcmix_free(t_rtcmix *x)
 
 //this gets called whenever a float is received at *any* input
 // used for the PField control inlets
-void rtcmix_float(t_rtcmix *x, double f)
+static void rtcmix_float(t_rtcmix *x, double f)
 {
   /*
   int i;
@@ -715,7 +727,7 @@ void rtcmix_float(t_rtcmix *x, double f)
 }
 
 // bang triggers the current working script
-void rtcmix_bang(t_rtcmix *x)
+static void rtcmix_bang(t_rtcmix *x)
 {
   t_atom a[1];
 
@@ -730,14 +742,14 @@ void rtcmix_bang(t_rtcmix *x)
 
 
 // print out the rtcmix~ version
-void rtcmix_version(t_rtcmix *x)
+static void rtcmix_version(t_rtcmix *x)
 {
   post("rtcmix~, v. %s by Joel Matthys (%s)", VERSION, RTcmixVERSION);
   outlet_bang(x->outpointer);
 }
 
 // see the note for rtcmix_dotext() below
-void rtcmix_text(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+static void rtcmix_text(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   if (x->flushflag == 1) return; // heap and queue being reset
   rtcmix_dotext(x, s, argc, argv); // always defer this message
@@ -747,7 +759,7 @@ void rtcmix_text(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 // what to do when we get the message "text"
 // Max rtcmix~ scores come from the [textedit] object this way
 // JWM: In Pd, this comes from [entry] as a list
-void rtcmix_dotext(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+static void rtcmix_dotext(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i, varnum;
   char thebuf[8192]; // should #define these probably
@@ -805,7 +817,7 @@ void rtcmix_dotext(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
 
 // see the note in rtcmix_dotext() about why I have to do this
-void rtcmix_badquotes(char *cmd, char *thebuf)
+static void rtcmix_badquotes(char *cmd, char *thebuf)
 {
   int i;
   char *rtinputptr;
@@ -867,7 +879,7 @@ void rtcmix_badquotes(char *cmd, char *thebuf)
 
 
 // see the note for rtcmix_dortcmix() below
-void rtcmix_rtcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+static void rtcmix_rtcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   if (x->flushflag == 1) return; // heap and queue being reset
   //defer_low(x, (method)rtcmix_dortcmix, s, argc, argv); // always defer this message
@@ -877,7 +889,7 @@ void rtcmix_rtcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
 // what to do when we get the message "rtcmix"
 // used for single-shot RTcmix scorefile commands
-void rtcmix_dortcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+static void rtcmix_dortcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i;
   double p[1024]; // should #define this probably
@@ -904,7 +916,7 @@ void rtcmix_dortcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
 
 // the "var" message allows us to set $n variables imbedded in a scorefile with varnum value messages
-void rtcmix_var(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+static void rtcmix_var(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i, varnum;
 
@@ -931,7 +943,7 @@ void rtcmix_var(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
 
 // the "varlist" message allows us to set $n variables imbedded in a scorefile with a list of positional vars
-void rtcmix_varlist(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+static void rtcmix_varlist(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i;
 
@@ -958,7 +970,7 @@ void rtcmix_varlist(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
 
 // the "bufset" message allows access to a [buffer~] object.  The only argument is the name of the [buffer~]
-void rtcmix_bufset(t_rtcmix *x, t_symbol *s)
+static void rtcmix_bufset(t_rtcmix *x, t_symbol *s)
 {
   /*
   t_buffer *b;
@@ -975,7 +987,7 @@ void rtcmix_bufset(t_rtcmix *x, t_symbol *s)
 }
 
 // the "flush" message
-void rtcmix_flush(t_rtcmix *x)
+static void rtcmix_flush(t_rtcmix *x)
 {
   x->flushflag = 1; // set a flag, the flush will happen in perform after pulltraverse()
 }
@@ -983,7 +995,7 @@ void rtcmix_flush(t_rtcmix *x)
 
 // here is the text-editor buffer stuff, go dan trueman go!
 // used for rtcmix~ internal buffers
-void rtcmix_edclose (t_rtcmix *x, char **text, long size)
+static void rtcmix_edclose (t_rtcmix *x, char **text, long size)
 {
   /*
   if (x->rtcmix_script[x->current_script])
@@ -1002,7 +1014,7 @@ void rtcmix_edclose (t_rtcmix *x, char **text, long size)
 }
 
 
-void rtcmix_okclose (t_rtcmix *x, char *prompt, short *result)
+static void rtcmix_okclose (t_rtcmix *x, char *prompt, short *result)
 {
   //*result = 3; //don't put up dialog box
   //return;
@@ -1010,7 +1022,7 @@ void rtcmix_okclose (t_rtcmix *x, char *prompt, short *result)
 
 
 // open up an ed window on the current buffer
-void rtcmix_dblclick(t_rtcmix *x)
+static void rtcmix_dblclick(t_rtcmix *x)
 {
   post("DOUBLE CLICK!!!");
   // JWM - eventually open an editor here
@@ -1037,7 +1049,7 @@ void rtcmix_dblclick(t_rtcmix *x)
 
 
 // see the note for rtcmix_goscript() below
-void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+static void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   if (x->flushflag == 1) return; // heap and queue being reset
   //defer_low(x, (method)rtcmix_dogoscript, s, argc, argv); // always defer this message
@@ -1046,9 +1058,9 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
 
 // the [goscript N] message will cause buffer N to be sent to the RTcmix parser
-void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+static void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
-  short temp;
+  short temp,i;
   if (argc == 0)
     {
       error("rtcmix~: goscript needs a buffer number [0-19]");
@@ -1073,14 +1085,16 @@ void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
   x->current_script = temp;
 
-  if (x->rtcmix_script_len[x->current_script] == 0)
-    post("rtcmix~: you are triggering a 0-length script!");
 
-  short i,j;
+  short j;
   int tval;
   char *thebuf = malloc(MAXSCRIPTSIZE);
   int natoms = binbuf_getnatom(x->rtcmix_script[x->current_script]);
+
   binbuf_gettext(x->rtcmix_script[x->current_script], &thebuf, &natoms);
+
+  if (natoms==0)
+    error("rtcmix~: you are triggering a 0-length script!");
 
   int buflen = strlen(thebuf);
 
@@ -1088,12 +1102,11 @@ void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   // plus the substitution of \n for those annoying ^M thingies
   for (i = 0, j = 0; i < buflen; i++)
     {
-      thebuf[j] = *(x->rtcmix_script[x->current_script]+i);
       if ((int)thebuf[j] == 13) thebuf[j] = '\n'; // RTcmix wants newlines, not <cr>'s
       // ok, here's where we substitute the $vars
       if (thebuf[j] == '$')
         {
-          sscanf(x->rtcmix_script[x->current_script]+i+1, "%d", &tval);
+          sscanf(thebuf+i+1, "%d", &tval);
           if ( !(x->var_set[tval-1]) ) error("variable $%d has not been set yet, using 0.0 as default", tval);
           sprintf(thebuf+j, "%f", x->var_array[tval-1]);
           j = strlen(thebuf)-1;
@@ -1112,7 +1125,7 @@ void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
 
 // [openscript N] will open a buffer N
-void rtcmix_openscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+static void rtcmix_openscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i,temp = 0;
 
@@ -1145,7 +1158,7 @@ void rtcmix_openscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
 
 // [setscript N] will set the currently active script to N
-void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+static void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i,temp = 0;
 
@@ -1184,7 +1197,7 @@ void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
 
 // the [savescript] message triggers this
-void rtcmix_write(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+static void rtcmix_write(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i, temp = 0;
 
@@ -1214,8 +1227,9 @@ void rtcmix_write(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
 
 // the [savescriptas] message triggers this
-void rtcmix_writeas(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+static void rtcmix_writeas(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
+  /*
   short i, temp = 0;
 
   for (i=0; i < argc; i++)
@@ -1235,10 +1249,10 @@ void rtcmix_writeas(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
               temp = 0;
             }
           x->current_script = temp;
-          x->s_name[x->current_script][0] = 0;
+          //x->s_name[x->current_script][0] = 0;
           break;
         case A_SYMBOL://this doesn't work yet
-          strcpy(x->s_name[x->current_script], argv[i].a_w.w_symbol->s_name);
+          //strcpy(x->s_name[x->current_script], argv[i].a_w.w_symbol->s_name);
           post("rtcmix~: writing file %s",x->s_name[x->current_script]);
         }
     }
@@ -1246,11 +1260,12 @@ void rtcmix_writeas(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
   //defer(x, (method)rtcmix_dowrite, s, argc, argv); // always defer this message
   rtcmix_dowrite(x,s,argc,argv);
+  */
 }
 
 
 // deferred from the [save*] messages
-void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+static void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   /*
   char filename[256];
@@ -1296,226 +1311,65 @@ void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 }
 
 // the [read ...] message triggers this
-void rtcmix_read(t_rtcmix *x, t_symbol *s)
+static void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
-  post ("filename: %s",s->s_name);
-  t_binbuf *mybuf;
-  /*
-  char filename[256];
-  short err, i, temp = 0;
-  long type = 'TEXT';
-  long size;
-  long outtype;
-  t_filehandle fh;
-  t_handle script_handle;
-
-  for (i = 0; i < argc; i++)
+  int i;
+  int temp = 0;
+  t_symbol *filename = NULL;
+  for (i=0; i<argc; i++)
     {
       switch (argv[i].a_type)
         {
-          // JWM: FIXME - No A_LONG in Pd
         case A_FLOAT:
           temp = (short)argv[i].a_w.w_float;
-          if (temp > MAX_SCRIPTS)
-            {
-              error("rtcmix~: only %d scripts available, setting to script number %d", MAX_SCRIPTS, MAX_SCRIPTS-1);
-              temp = MAX_SCRIPTS-1;
-            }
-          if (temp < 0)
-            {
-              error("rtcmix~: the script number should be > 0!  Resetting to script number 0");
-              temp = 0;
-            }
-          x->current_script = temp;
-          x->s_name[x->current_script][0] = 0;
-          break;
-        case A_FLOAT:
-          if (temp > MAX_SCRIPTS)
-            {
-              error("rtcmix~: only %d scripts available, setting to script number %d", MAX_SCRIPTS, MAX_SCRIPTS-1);
-              temp = MAX_SCRIPTS-1;
-            }
-          if (temp < 0)
-            {
-              error("rtcmix~: the script number should be > 0!  Resetting to script number 0");
-              temp = 0;
-            }
-          x->current_script = temp;
-          temp = (short)argv[i].a_w.w_float;
-          x->s_name[x->current_script][0] = 0;
           break;
         case A_SYMBOL:
-          strcpy(filename, argv[i].a_w.w_symbol->s_name);
-          strcpy(x->s_name[x->current_script], filename);
-        }
-    }
-
-
-  if(!x->s_name[x->current_script][0])
-    {
-      //		if (open_dialog(filename, &path, &outtype, &type, 1))
-      if (open_dialog(filename,  &x->path[x->current_script], &outtype, 0L, 0)) // allow all types of files
-
-        return; //user cancelled
-    }
-  else
-    {
-      if (locatefile_extended(filename, &x->path[x->current_script], &outtype, &type, 1))
-        {
-          error("rtcmix~: error opening file: can't find file");
-          x->s_name[x->current_script][0] = 0;
-          return; //not found
-        }
-    }
-
-  //we should have a valid filename at this point
-  err = path_opensysfile(filename, x->path[x->current_script], &fh, READ_PERM);
-  if (err)
-    {
-      fh = 0;
-      error("error %d opening file", err);
-      return;
-    }
-
-  strcpy(x->s_name[x->current_script], filename);
-
-  sysfile_geteof(fh, &size);
-  if (x->rtcmix_script[x->current_script])
-    {
-      sysmem_freeptr((void *)x->rtcmix_script[x->current_script]);
-      x->rtcmix_script[x->current_script] = 0;
-    }
-  // BGG size+1 in max5 to add the terminating '\0'
-  if (!(x->rtcmix_script[x->current_script] = (char *)sysmem_newptr(size+1)) || !(script_handle = sysmem_newhandle(size+1)))
-    {
-      error("rtcmix~: %s too big to read", filename);
-      return;
-    }
-  else
-    {
-      x->rtcmix_script_len[x->current_script] = size;
-      sysfile_readtextfile(fh, script_handle, size, TEXT_LB_NATIVE);
-      strcpy(x->rtcmix_script[x->current_script], *script_handle);
-    }
-  x->rtcmix_script[x->current_script][size] = '\0'; // the max5 text editor apparently needs this
-  // BGG for some reason mach-o doesn't like this one... the memory hit should be small
-  //	sysmem_freehandle(*script_handle);
-  sysfile_close(fh);
-
-  return;
-  */
-}
-
-// this converts the current script to a binbuf format and sets it up to be saved and then restored
-// via the rtcmix_restore() method below
-void rtcmix_save(t_rtcmix *x, void *w)
-{
-  /*
-  char *fptr, *tptr;
-  char tbuf[5000]; // max 5's limit on symbol size is 32k, this is totally arbitrary on my part
-  //	char *tbuf;
-  int i,j,k;
-
-
-  // insert the command to recreate the rtcmix~ object, with any additional vars
-  binbuf_vinsert(w, "ssll", gensym("#N"), gensym("rtcmix~"), x->num_inputs, x->num_pinlets);
-
-  for (i = 0; i < MAX_SCRIPTS; i++)
-    {
-      if (x->rtcmix_script[i] && (x->rtcmix_script_len[i] > 0))
-        { // there is a script...
-          // the reason I do this 'chunking' of restore messages is because of the 32k limit
-          // I still wish Cycling had a generic, *untouched* buffer type.
-          fptr = x->rtcmix_script[i];
-          tptr = tbuf;
-          k = 0;
-          for (j = 0; j < x->rtcmix_script_len[i]; j++)
-            {
-              *tptr++ = *fptr++;
-              if (++k >= 5000) { // 'serialize' the script
-                // the 'restore' message contains script #, current buffer length, final buffer length, symbol with buffer contents
-                *tptr = '\0';
-                binbuf_vinsert(w, "ssllls", gensym("#X"), gensym("restore"), i, k, x->rtcmix_script_len[i], gensym(tbuf));
-                tptr = tbuf;
-                k = 0;
-              }
-            }
-          // do the final one (or the only one in cases where scripts < 5000)
-          *tptr = '\0';
-          binbuf_vinsert(w, "ssllls", gensym("#X"), gensym("restore"), i, k, x->rtcmix_script_len[i], gensym(tbuf));
-        }
-    }
-  */
-}
-
-
-// and this gets the message set up by rtcmix_save()
-void rtcmix_restore(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
-{
-  /*
-  int i;
-  int bsize, fsize;
-  char *fptr; // restore buf pointer is in the struct for repeated calls necessary for larger scripts (symbol size limit, see rtcmix_save())
-
-  // script #, current buffer size, final script size, script data
-  x->current_script = argv[0].a_w.w_float;
-  bsize = argv[1].a_w.w_float;
-  if (argv[2].a_type == A_SYMBOL)
-    { // this is for v1.399 scripts that had the symbol size limit bug
-      fsize = bsize;
-      fptr = argv[2].a_w.w_symbol->s_name;
-    }
-  else
-    {
-      fsize = argv[2].a_w.w_float;
-      fptr = argv[3].a_w.w_symbol->s_name;
-    }
-
-  if (!x->rtcmix_script[x->current_script])
-    { // if the script isn't being restored already
-      if (!(x->rtcmix_script[x->current_script] = (char *)sysmem_newptr(fsize+1)))
-        { // fsize+1 for the '\0
-          error("rtcmix~: problem allocating memory for restored script");
-          return;
-        }
-      x->rtcmix_script_len[x->current_script] = fsize;
-      x->restore_buf_ptr = x->rtcmix_script[x->current_script];
-    }
-
-  // this happy little for-loop is for older (max 4.x) rtcmix scripts.  The older version of max had some
-  // serious parsing issues for saved text.  Now it all seems fixed in 5 -- yay!
-  // convert the xRTCMIX_XXx tokens to their real equivalents
-  for (i = 0; i < bsize; i++)
-    {
-      switch (*fptr)
-        {
-        case 'x':
-          if (strncmp(fptr, "xRTCMIX_CRx", 11) == 0)
-            {
-              sprintf(x->restore_buf_ptr, "\r");
-              fptr += 11;
-              x->restore_buf_ptr++;
-              break;
-            }
-          else if (strncmp(fptr, "xRTCMIX_DQx", 11) == 0)
-            {
-              sprintf(x->restore_buf_ptr, "\"");
-              fptr += 11;
-              x->restore_buf_ptr++;
-              break;
-            }
-          else
-            {
-              *x->restore_buf_ptr++ = *fptr++;
-              break;
-            }
+          filename = argv[i].a_w.w_symbol;
+          break;
         default:
-          *x->restore_buf_ptr++ = *fptr++;
+          break;
         }
     }
+  if (filename=NULL)
+    {
+      x->rw_flag = RTcmixREADFLAG;
+      sys_vgui("pdtk_openpanel {%s} {%s}\n", x->x_s->s_name, x->canvas_path->s_name);
+    }
 
-  x->rtcmix_script[x->current_script][fsize] = '\0'; // the final '\0'
+  if (temp<0)
+    {
+      error("rtcmix~: the script number must be [0-19]. Setting to 0.");
+      temp = 0;
+    }
+  if (temp>(MAX_SCRIPTS-1))
+    {
+      error("rtcmix~: the script number must be [0-19]. Setting to 19.");
+      temp = (int)(MAX_SCRIPTS-1);
+    }
+  x->current_script = temp;
 
-  x->current_script = 0; // do this to set script 0 as default
-  */
+  rtcmix_callback(x,filename);
+}
+
+static void rtcmix_save(t_rtcmix *x, void *w)
+{
+  x->rw_flag = RTcmixWRITEFLAG;
+  sys_vgui("pdtk_savepanel {%s} {%s}\n", x->x_s->s_name, x->canvas_path->s_name);
+}
+
+static void rtcmix_callback(t_rtcmix *x, t_symbol *filename)
+{
+  if (x->rw_flag == RTcmixWRITEFLAG)
+    {
+      char *buf = malloc(MAXPDSTRING);
+      canvas_makefilename(x->x_canvas, filename->s_name,
+                          buf, MAXPDSTRING);
+      if (binbuf_write(x->rtcmix_script[x->current_script], buf, "", CRFLAG))
+        error("%s: write failed", buf);
+    }
+  else
+    {
+      if (binbuf_read_via_canvas(x->rtcmix_script[x->current_script], filename->s_name, x->x_canvas, CRFLAG))
+        error("%s: read failed", filename->s_name);
+    }
 }
