@@ -292,8 +292,6 @@ static void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   // setup up inputs and outputs, for audio inputs
   //dsp_setup((t_object *)x, x->num_inputs + x->num_pinlets);
 
-  // JWM: hoo boy this looks ugly, but
-  // I don't think you can specify an arbitrary number of inlets in Pd
   for (i=0; i < x->num_inputs-1; i++)
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
 
@@ -317,12 +315,12 @@ static void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
     {
       x->rtcmix_script[i]=binbuf_new();
     }
+
   x->current_script = 0;
 
   //ps_buffer = gensym("buffer~"); // for [buffer~]
 
   // ho ho!
-  post("rtcmix~ -- RTcmix music language, v. %s (%s)", VERSION, RTcmixVERSION);
 
   // set up for the variable-substitution scheme
   for(i = 0; i < NVARS; i++)
@@ -349,6 +347,8 @@ static void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
 
   x->flushflag = 0; // [flush] sets flag for call to x->flush() in rtcmix_perform() (after pulltraverse completes)
+
+
   return (x);
 }
 
@@ -473,7 +473,7 @@ void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
   int i;
 
   // RTcmix vars
-
+  char pathname[1000];
   // these are the entry function pointers in to the rtcmixdylib.so lib
   x->rtcmixmain = NULL;
   x->pd_rtsetparams = NULL;
