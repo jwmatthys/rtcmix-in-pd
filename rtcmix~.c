@@ -340,11 +340,14 @@ static void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
   // This nasty looking stuff is to bind the object's ID
   // to x_s to facilitate callbacks
-  char *buf = malloc(50);
+  char buf[50];
   sprintf(buf, "d%lx", (t_int)x);
   x->x_s = gensym(buf);
   pd_bind(&x->x_obj.ob_pd, x->x_s);
-  free(buf);
+  x->x_canvas = canvas_getcurrent();
+  x->canvas_path = malloc(MAXPDSTRING);
+  x->canvas_path = canvas_getdir(x->x_canvas);
+
 
   x->flushflag = 0; // [flush] sets flag for call to x->flush() in rtcmix_perform() (after pulltraverse completes)
   return (x);
@@ -688,7 +691,8 @@ static void rtcmix_free(t_rtcmix *x)
     sprintf(rm_command, "rm -rf \"%s\" ", x->pathname);
     if (system(rm_command)) error("error deleting unique dylib");
     free(rm_command);
-
+    free(x->canvas_path);
+    freebytes(x->x_canvas, sizeof(x->x_canvas));
     free(x->pd_inbuf);
     free(x->pd_outbuf);
     int i;
@@ -1118,8 +1122,10 @@ static void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv
 
   if ( (canvas_dspstate == 1) || (strncmp(thebuf, "system", 6) == 0) )
     { // don't send if the dacs aren't turned on, unless it is a system() <------- HACK HACK HACK!
-      if (x->parse_score(thebuf, j) != 0) error("problem parsing RTcmix script");
-    }
+
+     if (x->parse_score(thebuf, j) != 0) error("problem parsing RTcmix script");
+
+      }
   free(thebuf);
 }
 
@@ -1170,15 +1176,8 @@ static void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
   for (i = 0; i < argc; i++)
     {
-      switch (argv[i].a_type)
-        {
-          // JWM - No A_LONG in Pd
-          //case A_LONG:
-          //temp = (short)argv[i].a_w.w_long;
-          //break;
-        case A_FLOAT:
+      if (argv[i].a_type == A_FLOAT)
           temp = (short)argv[i].a_w.w_float;
-        }
     }
 
   if (temp > MAX_SCRIPTS)
@@ -1315,7 +1314,9 @@ static void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   int i;
   int temp = 0;
-  t_symbol *filename = NULL;
+  t_symbol *filename = gensym("foobar");
+  post("filename: %s",filename->s_name);
+  int fnflag = 0;
   for (i=0; i<argc; i++)
     {
       switch (argv[i].a_type)
@@ -1325,17 +1326,10 @@ static void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
           break;
         case A_SYMBOL:
           filename = argv[i].a_w.w_symbol;
-          break;
-        default:
+          fnflag = 1;
           break;
         }
     }
-  if (filename=NULL)
-    {
-      x->rw_flag = RTcmixREADFLAG;
-      sys_vgui("pdtk_openpanel {%s} {%s}\n", x->x_s->s_name, x->canvas_path->s_name);
-    }
-
   if (temp<0)
     {
       error("rtcmix~: the script number must be [0-19]. Setting to 0.");
@@ -1348,7 +1342,17 @@ static void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
   x->current_script = temp;
 
+  if (!fnflag)
+    {
+      //post("openpanel signaled");
+      x->rw_flag = RTcmixREADFLAG;
+      //post("x->x_s->s_name: %s, x->canvas_path->s_name: %s",x->x_s->s_name, x->canvas_path->s_name);
+      sys_vgui("pdtk_openpanel {%s} {%s}\n", x->x_s->s_name, x->canvas_path->s_name);
+    }
+  else
+    {
   rtcmix_callback(x,filename);
+    }
 }
 
 static void rtcmix_save(t_rtcmix *x, void *w)
@@ -1359,17 +1363,21 @@ static void rtcmix_save(t_rtcmix *x, void *w)
 
 static void rtcmix_callback(t_rtcmix *x, t_symbol *filename)
 {
-  if (x->rw_flag == RTcmixWRITEFLAG)
+  post("callback! flag = %d",x->rw_flag);
+
+  char *buf = malloc(MAXPDSTRING);
+  switch (x->rw_flag)
     {
-      char *buf = malloc(MAXPDSTRING);
+    case RTcmixWRITEFLAG:
       canvas_makefilename(x->x_canvas, filename->s_name,
                           buf, MAXPDSTRING);
       if (binbuf_write(x->rtcmix_script[x->current_script], buf, "", CRFLAG))
         error("%s: write failed", buf);
-    }
-  else
-    {
+      break;
+    case RTcmixREADFLAG:
+    default:
       if (binbuf_read_via_canvas(x->rtcmix_script[x->current_script], filename->s_name, x->x_canvas, CRFLAG))
         error("%s: read failed", filename->s_name);
     }
+  free(buf);
 }
