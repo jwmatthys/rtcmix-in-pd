@@ -1,0 +1,5 @@
+hammerfile editor - NOTES
+
+- probably don't need sic.*
+- base functions seem to be in file.c
+- text stored in binbuf
