@@ -230,8 +230,8 @@ void rtcmix_tilde_setup(void)
   // binbuf storage
   //addmess((method)rtcmix_save, "save", A_CANT, 0);
   //addmess((method)rtcmix_restore, "restore", A_GIMME, 0);
-  //class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("save"), A_CANT, 0);
-  //class_addmethod(rtcmix_class,(t_method)rtcmix_restore, gensym("restore"), A_GIMME, 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("save"), A_CANT, 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_restore, gensym("restore"), A_GIMME, 0);
 }
 
 
@@ -1436,7 +1436,6 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s)
 // via the rtcmix_restore() method below
 void rtcmix_save(t_rtcmix *x, void *w)
 {
-  /*
   char *fptr, *tptr;
   char tbuf[5000]; // max 5's limit on symbol size is 32k, this is totally arbitrary on my part
   //	char *tbuf;
@@ -1471,14 +1470,12 @@ void rtcmix_save(t_rtcmix *x, void *w)
           binbuf_vinsert(w, "ssllls", gensym("#X"), gensym("restore"), i, k, x->rtcmix_script_len[i], gensym(tbuf));
         }
     }
-  */
 }
 
 
 // and this gets the message set up by rtcmix_save()
 void rtcmix_restore(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
-  /*
   int i;
   int bsize, fsize;
   char *fptr; // restore buf pointer is in the struct for repeated calls necessary for larger scripts (symbol size limit, see rtcmix_save())
@@ -1543,5 +1540,4 @@ void rtcmix_restore(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   x->rtcmix_script[x->current_script][fsize] = '\0'; // the final '\0'
 
   x->current_script = 0; // do this to set script 0 as default
-  */
 }
