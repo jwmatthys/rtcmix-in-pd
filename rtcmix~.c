@@ -28,6 +28,7 @@ char mpathname[MAXPDSTRING];
 #define MAX_INPUTS 20    //switched to 8 for sanity sake (have to contruct manually)
 #define MAX_OUTPUTS 20	//do we ever need more than 8? we'll cross that bridge when we come to it
 #define MAX_SCRIPTS 20	//how many scripts can we store internally
+#define MAXSCRIPTSIZE 16384
 
 /******* RTcmix stuff *******/
 typedef int (*rtcmixmainFunctionPtr)();
@@ -81,7 +82,7 @@ typedef struct _rtcmix
   int dylibincr;
   void *rtcmixdylib;
   // for the full path to the rtcmixdylib.so file
-  char pathname[MAXPDSTRING];
+  char *pathname = malloc(MAXPDSTRING);
 
   // space for these malloc'd in rtcmix_dsp()
   float *pd_outbuf;
@@ -104,11 +105,17 @@ typedef struct _rtcmix
   char theerror[MAXPDSTRING];
 
   // editor stuff
+  // JWM: TODO: will try to implement custom editor later
+  /*
   t_object m_obj;
   t_object *m_editor;
   char *rtcmix_script[MAX_SCRIPTS], s_name[MAX_SCRIPTS][256];
   long rtcmix_script_len[MAX_SCRIPTS];
   short current_script, path[MAX_SCRIPTS];
+  */
+  // JWM: changing to binbufs for all internal scores
+  t_binbuf *rtcmix_script[MAX_SCRIPTS];
+  unsigned short current_script;
 
   // for flushing all events on the queue/heap (resets to new ones inside RTcmix)
   int flushflag;
@@ -293,6 +300,12 @@ static void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
       x->in_connected[i] = 0;
     }
 
+  for (i=0; i<MAX_SCRIPTS; i++)
+    {
+      x->rtcmix_script[i]=binbuf_new();
+    }
+  x->current_script = 0;
+
   //ps_buffer = gensym("buffer~"); // for [buffer~]
 
   // ho ho!
@@ -323,7 +336,8 @@ static void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
 static void load_dylib(t_rtcmix* x)
 {
   // using Pd's open_via_path to find rtcmix~, and from there rtcmixdylib.so
-  char temp_path[MAXPDSTRING], *pathptr;
+  char *temp_path, *pathptr;
+  temp_path = malloc(MAXPDSTRING);
   int fd = -1;
   fd = open_via_path(".","rtcmix~.pd_linux","",temp_path, &pathptr, MAXPDSTRING,1);
   if (fd < 0)
@@ -332,9 +346,9 @@ static void load_dylib(t_rtcmix* x)
     {
       sprintf(mpathname,"%s/dylib/",temp_path);
     }
+  free(temp_path);
 
   // BGG kept this in for the dlopen() stuff
-  char cp_command[MAXPDSTRING]; // should probably be malloc'd
 
   //zero out the struct, to be careful (takk to jkclayton)
   if (x)
@@ -369,11 +383,16 @@ static void load_dylib(t_rtcmix* x)
   // full path to the rtcmixdylib.so file
   sprintf(x->pathname, "%srtcmixdylib%d.so", mpathname, x->dylibincr);
 
+
+  char *cp_command = malloc(MAXPDSTRING); // should probably be malloc'd
+
   // ok, this is fairly insane.  To guarantee a fully-isolated namespace with dlopen(), we need
   // a totally *unique* dylib, so we copy this.  Deleted in rtcmix_free() below
   // RTLD_LOCAL doesn't do it all - probably the global vars in RTcmix
   sprintf(cp_command, "cp \"%srtcmixdylib.so\" \"%s\"",mpathname,x->pathname);
   if (system(cp_command)) error("error creating unique dylib copy");
+
+  free(cp_command);
 
   // load the dylib
   x->rtcmixdylib = dlopen(x->pathname, RTLD_NOW | RTLD_LOCAL);
@@ -651,18 +670,24 @@ t_int *rtcmix_perform(t_int *w)
 static void rtcmix_free(t_rtcmix *x)
 {
   // BGG kept dlopen() stuff in in case NSLoad gets dropped
-    char rm_command[MAXPDSTRING]; // should probably be malloc'd
+  char* rm_command = malloc(MAXPDSTRING);
 
     dlclose(x->rtcmixdylib);
     sprintf(rm_command, "rm -rf \"%s\" ", x->pathname);
     if (system(rm_command)) error("error deleting unique dylib");
+    free(rm_command);
 
-    // close any open editor windows
-    /*if (x->m_editor)
-      freeobject((t_object *)x->m_editor);
-      x->m_editor = NULL;*/
-    //dsp_free((t_object *)x);
-    post ("rtcmix~ DESTROYED!!");
+    free(x->pd_inbuf);
+    free(x->pd_outbuf);
+
+    for (i=0; i<MAX_SCRIPTS; i++)
+      {
+        x->rtcmix_script[i]=binbuf_free();
+      }
+
+    free(x->pathname);
+
+    error ("rtcmix~ DESTROYED!");
 }
 
 
@@ -689,33 +714,6 @@ void rtcmix_float(t_rtcmix *x, double f)
   */
 }
 
-
-//this gets called whenever an int is received at *any* input
-// used for the PField control inlets
-/*void rtcmix_int(t_rtcmix *x, int ival)
-{
-  int i;
-
-  //check to see which input the float came in, then set the appropriate variable value
-  for(i = 0; i < (x->num_inputs + x->num_pinlets); i++)
-    {
-      if (1) // (i == x->x_obj.z_in) // JWM - need to find this is a sample file
-        {
-          if (i < x->num_inputs)
-            {
-              x->in[i] = (float)ival;
-              post("rtcmix~: setting in[%d] =  %f, but rtcmix~ doesn't use this", i, (float)ival);
-            }
-          else
-            {
-              x->pfield_set(i - (x->num_inputs-1), (float)ival);
-            }
-        }
-    }
-}
-*/
-
-
 // bang triggers the current working script
 void rtcmix_bang(t_rtcmix *x)
 {
@@ -738,7 +736,6 @@ void rtcmix_version(t_rtcmix *x)
   outlet_bang(x->outpointer);
 }
 
-
 // see the note for rtcmix_dotext() below
 void rtcmix_text(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
@@ -748,7 +745,8 @@ void rtcmix_text(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
 
 // what to do when we get the message "text"
-// rtcmix~ scores come from the [textedit] object this way
+// Max rtcmix~ scores come from the [textedit] object this way
+// JWM: In Pd, this comes from [entry] as a list
 void rtcmix_dotext(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i, varnum;
@@ -1015,6 +1013,7 @@ void rtcmix_okclose (t_rtcmix *x, char *prompt, short *result)
 void rtcmix_dblclick(t_rtcmix *x)
 {
   post("DOUBLE CLICK!!!");
+  // JWM - eventually open an editor here
   /*
   char title[80];
 
@@ -1049,12 +1048,7 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 // the [goscript N] message will cause buffer N to be sent to the RTcmix parser
 void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
-  short i,j,temp = 0;
-  int tval;
-  int buflen;
-#define MAXSCRIPTSIZE 16384
-  char thebuf[MAXSCRIPTSIZE]; // should probably by dyn-alloced, or at least set to coordinate with RTcmix (if necessary)
-
+  short temp;
   if (argc == 0)
     {
       error("rtcmix~: goscript needs a buffer number [0-19]");
@@ -1063,15 +1057,8 @@ void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
   for (i = 0; i < argc; i++)
     {
-      switch (argv[i].a_type)
-        {
-          // JWM: No A_LONG in Pd
-          //case A_LONG:
-          //temp = (short)argv[i].a_w.w_long;
-          //break;
-        case A_FLOAT:
-          temp = (short)argv[i].a_w.w_float;
-        }
+      if (argv[i].a_type == A_FLOAT)
+        temp = (short)argv[i].a_w.w_float;
     }
 
   if (temp > MAX_SCRIPTS)
@@ -1089,12 +1076,13 @@ void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   if (x->rtcmix_script_len[x->current_script] == 0)
     post("rtcmix~: you are triggering a 0-length script!");
 
-  buflen = x->rtcmix_script_len[x->current_script];
-  if (buflen >= MAXSCRIPTSIZE)
-    {
-      error("rtcmix~ script %d is too large!", x->current_script);
-      return;
-    }
+  short i,j;
+  int tval;
+  char *thebuf = malloc(MAXSCRIPTSIZE);
+  int natoms = binbuf_getnatom(x->rtcmix_script[x->current_script]);
+  binbuf_gettext(x->rtcmix_script[x->current_script], &thebuf, &natoms);
+
+  int buflen = strlen(thebuf);
 
   // probably don't need to transfer to a new buffer, but I want to be sure there's room for the \0,
   // plus the substitution of \n for those annoying ^M thingies
@@ -1102,7 +1090,6 @@ void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     {
       thebuf[j] = *(x->rtcmix_script[x->current_script]+i);
       if ((int)thebuf[j] == 13) thebuf[j] = '\n'; // RTcmix wants newlines, not <cr>'s
-
       // ok, here's where we substitute the $vars
       if (thebuf[j] == '$')
         {
@@ -1120,6 +1107,7 @@ void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     { // don't send if the dacs aren't turned on, unless it is a system() <------- HACK HACK HACK!
       if (x->parse_score(thebuf, j) != 0) error("problem parsing RTcmix script");
     }
+  free(thebuf);
 }
 
 
@@ -1136,15 +1124,8 @@ void rtcmix_openscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
   for (i = 0; i < argc; i++)
     {
-      switch (argv[i].a_type)
-        {
-          // JWM: No A_LONG in Pd
-          //case A_LONG:
-          //temp = (short)argv[i].a_w.w_long;
-          //break;
-        case A_FLOAT:
-          temp = (short)argv[i].a_w.w_float;
-        }
+      if (argv[i].a_type == A_FLOAT)
+        temp = (short)argv[i].a_w.w_float;
     }
 
   if (temp > MAX_SCRIPTS)
@@ -1209,15 +1190,8 @@ void rtcmix_write(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
   for (i = 0; i < argc; i++)
     {
-      switch (argv[i].a_type)
-        {
-          //JWM: No A_LONG in Pd
-          //case A_LONG:
-          //temp = (short)argv[i].a_w.w_long;
-          //break;
-        case A_FLOAT:
-          temp = (short)argv[i].a_w.w_float;
-        }
+      if (argv[i].a_type)
+        temp = (short)argv[i].a_w.w_float;
     }
 
   if (temp > MAX_SCRIPTS)
@@ -1436,6 +1410,7 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s)
 // via the rtcmix_restore() method below
 void rtcmix_save(t_rtcmix *x, void *w)
 {
+  /*
   char *fptr, *tptr;
   char tbuf[5000]; // max 5's limit on symbol size is 32k, this is totally arbitrary on my part
   //	char *tbuf;
@@ -1470,12 +1445,14 @@ void rtcmix_save(t_rtcmix *x, void *w)
           binbuf_vinsert(w, "ssllls", gensym("#X"), gensym("restore"), i, k, x->rtcmix_script_len[i], gensym(tbuf));
         }
     }
+  */
 }
 
 
 // and this gets the message set up by rtcmix_save()
 void rtcmix_restore(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
+  /*
   int i;
   int bsize, fsize;
   char *fptr; // restore buf pointer is in the struct for repeated calls necessary for larger scripts (symbol size limit, see rtcmix_save())
@@ -1540,4 +1517,5 @@ void rtcmix_restore(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   x->rtcmix_script[x->current_script][fsize] = '\0'; // the final '\0'
 
   x->current_script = 0; // do this to set script 0 as default
+  */
 }
