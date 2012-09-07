@@ -122,8 +122,7 @@ typedef struct _rtcmix
   */
   // JWM: changing to binbufs for all internal scores
   t_binbuf *rtcmix_script[MAX_SCRIPTS];
-  unsigned short current_script;
-  short rw_flag;
+  short current_script, rw_flag;
 
   // JWM : canvas objects for callback addressing
   t_canvas *x_canvas;
@@ -141,7 +140,7 @@ typedef struct _rtcmix
 //args that the user can input, in which case rtcmix_new will have to change
 void rtcmix_tilde_setup(void);
 static void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv);
-static void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count);
+void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count);
 t_int *rtcmix_perform(t_int *w);
 static void rtcmix_free(t_rtcmix *x);
 static void load_dylib(t_rtcmix* x);
@@ -468,7 +467,7 @@ static void load_dylib(t_rtcmix* x)
 //then on again, calling this func.
 //this adds the "perform" method to the DSP chain, and also tells us
 //where the audio vectors are and how big they are
-static void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
+void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
 {
   t_int dsp_add_args [MAX_INPUTS + MAX_OUTPUTS + 2];
   int i;
@@ -685,14 +684,13 @@ t_int *rtcmix_perform(t_int *w)
 static void rtcmix_free(t_rtcmix *x)
 {
   // BGG kept dlopen() stuff in in case NSLoad gets dropped
-  char* rm_command = malloc(MAXPDSTRING);
+  char rm_command[MAXPDSTRING];
 
     dlclose(x->rtcmixdylib);
     sprintf(rm_command, "rm -rf \"%s\" ", x->pathname);
     if (system(rm_command)) error("error deleting unique dylib");
-    free(rm_command);
+
     free(x->canvas_path);
-    freebytes(x->x_canvas, sizeof(x->x_canvas));
     free(x->pd_inbuf);
     free(x->pd_outbuf);
     int i;
@@ -700,8 +698,6 @@ static void rtcmix_free(t_rtcmix *x)
       {
         binbuf_free(x->rtcmix_script[i]);
       }
-
-    free(x->pathname);
 
     error ("rtcmix~ DESTROYED!");
 }
