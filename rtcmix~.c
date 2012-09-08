@@ -15,6 +15,9 @@
 #include <math.h>
 #include <dlfcn.h>
 
+//#define DEBUG(x) // debug off
+#define DEBUG(x) x
+
 /*** PD EXTERNAL SETUP ---------------------------------------------------------------------------***/
 void rtcmix_tilde_setup(void)
 {
@@ -38,13 +41,25 @@ void rtcmix_tilde_setup(void)
 
   //so we know what to do with floats that we receive at the inputs
   class_addlist(rtcmix_class, rtcmix_text); // text from [entry] comes in as list
-  class_addfloat(rtcmix_class, rtcmix_float);
+  //class_addfloat(rtcmix_class, rtcmix_float);
   class_addbang(rtcmix_class, rtcmix_bang); // trigger scripts
 
   class_addmethod(rtcmix_class,(t_method)rtcmix_read, gensym("read"), A_GIMME, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("save"), A_CANT, 0);
   // openpanel and savepanel return their messages through "callback"
   class_addmethod(rtcmix_class,(t_method)rtcmix_callback, gensym("callback"), A_SYMBOL, 0);
+
+  class_addmethod(rtcmix_class, (t_method)rtcmix_inletp9, gensym("pinlet9"), A_FLOAT, 0);
+  class_addmethod(rtcmix_class, (t_method)rtcmix_inletp8, gensym("pinlet8"), A_FLOAT, 0);
+  class_addmethod(rtcmix_class, (t_method)rtcmix_inletp7, gensym("pinlet7"), A_FLOAT, 0);
+  class_addmethod(rtcmix_class, (t_method)rtcmix_inletp6, gensym("pinlet6"), A_FLOAT, 0);
+  class_addmethod(rtcmix_class, (t_method)rtcmix_inletp5, gensym("pinlet5"), A_FLOAT, 0);
+  class_addmethod(rtcmix_class, (t_method)rtcmix_inletp4, gensym("pinlet4"), A_FLOAT, 0);
+  class_addmethod(rtcmix_class, (t_method)rtcmix_inletp3, gensym("pinlet3"), A_FLOAT, 0);
+  class_addmethod(rtcmix_class, (t_method)rtcmix_inletp2, gensym("pinlet2"), A_FLOAT, 0);
+  class_addmethod(rtcmix_class, (t_method)rtcmix_inletp1, gensym("pinlet1"), A_FLOAT, 0);
+  class_addmethod(rtcmix_class, (t_method)rtcmix_inletp0, gensym("pinlet0"), A_FLOAT, 0);
+
   //for the text editor and scripts
   //JWM - TODO
   /*addmess ((method)rtcmix_edclose, "edclose", A_CANT, 0);
@@ -69,6 +84,8 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   // creates the object
   t_rtcmix *x = (t_rtcmix *)pd_new(rtcmix_class);
 
+  load_dylib(x);
+
   int i;
 
   short num_inoutputs = 1;
@@ -81,7 +98,7 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
     case 1:
       num_inoutputs = atom_getint(argv);
     }
-  post("creating %d inlets and outlets and %d additional inlets",num_inoutputs,num_additional);
+  DEBUG(post("creating %d inlets and outlets and %d additional inlets",num_inoutputs,num_additional););
 
   if (num_inoutputs < 1) num_inoutputs = 1; // no args, use default of 1 channel in/out
   if ((num_inoutputs + num_additional) > MAX_INPUTS)
@@ -90,11 +107,14 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
       num_additional = 0;
       error("sorry, only %d total inlets are allowed!", MAX_INPUTS);
     }
+  // JWM: limiting num_additional to 10
+  if (num_additional > 10)
+    num_additional = 10;
 
   x->num_inputs = num_inoutputs;
   x->num_outputs = num_inoutputs;
   x->num_pinlets = num_additional;
-  post("in new: num_outputs: %d",x->num_outputs);
+
   // setup up inputs and outputs, for audio inputs
 
   // SIGNAL INLETS
@@ -102,8 +122,17 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_signal, &s_signal);
 
   // FLOAT INLETS (for pfields)
+  // JWM: This is a hack, since I couldn't find a way to identify a float
+  // passed to a single method by inlet id. So I'm limiting the number of
+  // inlets to 10 (not sure why we'd need more anyway) and passing each to
+  // gensym "pinlet0", "pinlet1", etc.
+  char* inletname = malloc(8);
   for (i=0; i< x->num_pinlets; i++)
-    floatinlet_new(&x->x_obj, &x->in[i]);
+    {
+      sprintf(inletname, "pinlet%d", i);
+      inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_float, gensym(inletname));
+    }
+  free(inletname);
 
   // SIGNAL OUTLETS
   for (i = 0; i < x->num_outputs; i++)
@@ -123,6 +152,8 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
     }
 
   // set up for the variable-substitution scheme
+  x->var_array = malloc(NVARS * sizeof(float));
+  x->var_set = malloc(NVARS * sizeof(short));
   for(i = 0; i < NVARS; i++)
     {
       x->var_set[i] = 0;
@@ -151,13 +182,12 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
   x->flushflag = 0; // [flush] sets flag for call to x->flush() in rtcmix_perform() (after pulltraverse completes)
 
-  // UGH, why do have to pass these vals?
-  load_dylib(x, x->num_inputs, x->num_outputs, x->num_pinlets);
+  post("rtcmix~ -- RTcmix music language, v. %s (%s)", VERSION, RTcmixVERSION);
 
   return (x);
 }
 
-static void load_dylib(t_rtcmix* x, short num_in, short num_out, short num_p_in)
+static void load_dylib(t_rtcmix* x)
 {
   // using Pd's open_via_path to find rtcmix~, and from there rtcmixdylib.so
   char temp_path[MAXPDSTRING], *pathptr;
@@ -179,22 +209,12 @@ static void load_dylib(t_rtcmix* x, short num_in, short num_out, short num_p_in)
   // same size; I'm going to disable this and see if it
   // causes any trouble in the long run...
 
-  post("pathname: %s",x->pathname);
-
      if (x)
      {
      unsigned int j;
      for(j=sizeof(t_object);j<sizeof(t_rtcmix);j++)
      ((char *)x)[j]=0;
      }
-
-     //  x->num_inputs = ni;
-  x->num_outputs = num_out;
-  //  x->num_pinlets = npi;
-
-  post("172: num_outputs: %d",x->num_outputs);
-  post("num_pinlets %d:, num_inputs: %d",x->num_pinlets, x->num_inputs);
-  post("pathname: %s",x->pathname);
 
   // these are the entry function pointers in to the rtcmixdylib.so lib
   x->rtcmixmain = NULL;
@@ -319,9 +339,9 @@ void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
 
   dsp_add_args[x->num_inputs + x->num_pinlets + x->num_outputs + 1] = (t_int)sp[0]->s_n; //pointer to the vector size
 
-  post("vector size: %d",sp[0]->s_n);
+  DEBUG(post("vector size: %d",sp[0]->s_n););
   // JWM: this is getting zeroed out, and I don't know why
-  post("num outputs: %d",x->num_outputs);
+  DEBUG(post("num outputs: %d",x->num_outputs););
 
   dsp_addv(rtcmix_perform, (x->num_inputs + x->num_pinlets + x->num_outputs + 2), dsp_add_args); //add them to the signal chain
 
@@ -493,8 +513,10 @@ void rtcmix_free(t_rtcmix *x)
     if (system(rm_command)) error("error deleting unique dylib");
 
     free(x->canvas_path);
-    //free(x->pd_inbuf);
-    //free(x->pd_outbuf);
+    free(x->pd_inbuf);
+    free(x->pd_outbuf);
+    free(x->var_array);
+    free(x->var_set);
 
     int i;
     for (i=0; i<MAX_SCRIPTS; i++)
@@ -504,31 +526,7 @@ void rtcmix_free(t_rtcmix *x)
 
     free(x->pathname);
     free(rm_command);
-    post ("rtcmix~ DESTROYED!");
-}
-
-
-//this gets called whenever a float is received at *any* input
-// used for the PField control inlets
-void rtcmix_float(t_rtcmix *x, double f)
-{
-  /*
-  int i;
-
-  //check to see which input the float came in, then set the appropriate variable value
-  for(i = 0; i < (x->num_inputs + x->num_pinlets); i++)
-    {
-      if (i == x->x_obj.z_in)
-        {
-          if (i < x->num_inputs)
-            {
-              x->in[i] = f;
-              post("rtcmix~: setting in[%d] =  %f, but rtcmix~ doesn't use this", i, f);
-            }
-          else x->pfield_set(i - (x->num_inputs-1), f);
-        }
-    }
-  */
+    DEBUG(post ("rtcmix~ DESTROYED!"););
 }
 
 // bang triggers the current working script
@@ -546,7 +544,7 @@ void rtcmix_bang(t_rtcmix *x)
 void rtcmix_version(t_rtcmix *x)
 {
   post("rtcmix~, v. %s by Joel Matthys (%s)", VERSION, RTcmixVERSION);
-  //outlet_bang(x->outpointer);
+  outlet_bang(x->outpointer);
 }
 
 // JWM: In Pd, this comes from [entry] as a list
@@ -706,7 +704,7 @@ void rtcmix_var(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
   for (i = 0; i < argc; i += 2)
     {
-      varnum = argv[i].a_w.w_float;
+      varnum = (short)argv[i].a_w.w_float;
       if ( (varnum < 1) || (varnum > NVARS) )
         {
           error("only vars $1 - $9 are allowed");
@@ -716,6 +714,17 @@ void rtcmix_var(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
       if (argv[i+1].a_type == A_FLOAT)
           x->var_array[varnum-1] = argv[i+1].a_w.w_float;
     }
+  DEBUG( post("vars: %f %f %f %f %f %f %f %f %f",
+              (float)(x->var_array[0]),
+              (float)(x->var_array[1]),
+              (float)(x->var_array[2]),
+              (float)(x->var_array[3]),
+              (float)(x->var_array[4]),
+              (float)(x->var_array[5]),
+              (float)(x->var_array[6]),
+              (float)(x->var_array[7]),
+              (float)(x->var_array[8])););
+
 }
 
 
@@ -794,7 +803,7 @@ void rtcmix_okclose (t_rtcmix *x, char *prompt, short *result)
 // open up an ed window on the current buffer
 void rtcmix_dblclick(t_rtcmix *x)
 {
-  post("DOUBLE CLICK!!!");
+  DEBUG(post("DOUBLE CLICK!!!"););
   // JWM - eventually open an editor here
   /*
   char title[80];
@@ -991,7 +1000,7 @@ void rtcmix_write(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
 
   x->current_script = temp;
-  post("rtcmix: current script is %d", temp);
+  DEBUG(post("rtcmix: current script is %d", temp););
 
   //defer(x, (method)rtcmix_dowrite, s, argc, argv); // always defer this message
   rtcmix_dowrite(x,s,argc,argv);
@@ -1086,11 +1095,9 @@ void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 // the [read ...] message triggers this
 void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
-  /*
   int i;
   int temp = 0;
-  t_symbol *filename = gensym("foobar");
-  post("filename: %s",filename->s_name);
+  t_symbol *filename = malloc(MAXPDSTRING);
   int fnflag = 0;
   for (i=0; i<argc; i++)
     {
@@ -1128,7 +1135,7 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     {
   rtcmix_callback(x,filename);
     }
-  */
+  free(filename);
 }
 
 void rtcmix_save(t_rtcmix *x, void *w)
@@ -1141,7 +1148,7 @@ void rtcmix_save(t_rtcmix *x, void *w)
 
 void rtcmix_callback(t_rtcmix *x, t_symbol *filename)
 {
-  post("callback!"); // flag = %d",x->rw_flag);
+  DEBUG(post("callback! flag = %d",x->rw_flag););
   /*
   char *buf = malloc(MAXPDSTRING);
   switch (x->rw_flag)
@@ -1159,4 +1166,67 @@ void rtcmix_callback(t_rtcmix *x, t_symbol *filename)
     }
   free(buf);
   */
+}
+
+static void rtcmix_inletp0(t_rtcmix *x, t_float f)
+{
+  DEBUG(post("received %f at pinlet 0",f););
+  rtcmix_float(x,0,f);
+}
+
+static void rtcmix_inletp1(t_rtcmix *x, t_float f)
+{
+  DEBUG(post("received %f at pinlet 1",f););
+  rtcmix_float(x,1,f);
+}
+static void rtcmix_inletp2(t_rtcmix *x, t_float f)
+{
+  DEBUG(post("received %f at pinlet 2",f););
+  rtcmix_float(x,2,f);
+}
+static void rtcmix_inletp3(t_rtcmix *x, t_float f)
+{
+  DEBUG(post("received %f at pinlet 3",f););
+  rtcmix_float(x,3,f);
+}
+static void rtcmix_inletp4(t_rtcmix *x, t_float f)
+{
+  DEBUG(post("received %f at pinlet 4",f););
+  rtcmix_float(x,4,f);
+}
+static void rtcmix_inletp5(t_rtcmix *x, t_float f)
+{
+  DEBUG(post("received %f at pinlet 5",f););
+  rtcmix_float(x,5,f);
+}
+static void rtcmix_inletp6(t_rtcmix *x, t_float f)
+{
+  DEBUG(post("received %f at pinlet 6",f););
+  rtcmix_float(x,6,f);
+}
+static void rtcmix_inletp7(t_rtcmix *x, t_float f)
+{
+  DEBUG(post("received %f at pinlet 7",f););
+  rtcmix_float(x,7,f);
+}
+static void rtcmix_inletp8(t_rtcmix *x, t_float f)
+{
+  DEBUG(post("received %f at pinlet 8",f););
+  rtcmix_float(x,8,f);
+}
+static void rtcmix_inletp9(t_rtcmix *x, t_float f)
+{
+  DEBUG(post("received %f at pinlet 9",f););
+  rtcmix_float(x,9,f);
+}
+
+static void rtcmix_float(t_rtcmix *x, short inlet, t_float f)
+{
+  //check to see which input the float came in, then set the appropriate variable value
+  if (inlet >= x->num_inputs)
+    {
+      x->in[inlet] = f;
+      post("rtcmix~: setting in[%d] =  %f, but rtcmix~ doesn't use this", inlet, f);
+    }
+  else x->pfield_set(inlet+1, f);
 }

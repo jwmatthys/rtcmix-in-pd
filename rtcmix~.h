@@ -83,8 +83,8 @@ typedef struct _rtcmix
 
   // for the rtmix_var() and rtcmix_varlist() $n variable scheme
 #define NVARS 9
-  float var_array[NVARS];
-  int var_set[NVARS];
+  float *var_array;
+  short *var_set;
 
   // stuff for check_vals
 #define MAXDISPARGS 1024 // from RTcmix H/maxdispargs.h
@@ -127,11 +127,11 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv);
 void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count);
 t_int *rtcmix_perform(t_int *w);
 void rtcmix_free(t_rtcmix *x);
-static void load_dylib(t_rtcmix* x, short ni, short no, short npi);
+static void load_dylib(t_rtcmix* x);
 
-//for getting floats, ints or bangs at inputs
-void rtcmix_float(t_rtcmix *x, double f);
+// JWM: for getting bang at left inlet only
 void rtcmix_bang(t_rtcmix *x);
+// JWM: float inlets are rewritten (in a horrible embarassing way) below
 
 //for custom messages
 void rtcmix_version(t_rtcmix *x);
@@ -161,3 +161,16 @@ void rtcmix_okclose (t_rtcmix *x, char *prompt, short *result);
 //for binbuf storage of scripts
 void rtcmix_save(t_rtcmix *x, void *w);
 void rtcmix_callback(t_rtcmix *x, t_symbol *s);
+
+// for receiving pfields from inlets
+static void rtcmix_float(t_rtcmix *x, short inlet, t_float f);
+static void rtcmix_inletp0(t_rtcmix *x, t_float f);
+static void rtcmix_inletp1(t_rtcmix *x, t_float f);
+static void rtcmix_inletp2(t_rtcmix *x, t_float f);
+static void rtcmix_inletp3(t_rtcmix *x, t_float f);
+static void rtcmix_inletp4(t_rtcmix *x, t_float f);
+static void rtcmix_inletp5(t_rtcmix *x, t_float f);
+static void rtcmix_inletp6(t_rtcmix *x, t_float f);
+static void rtcmix_inletp7(t_rtcmix *x, t_float f);
+static void rtcmix_inletp8(t_rtcmix *x, t_float f);
+static void rtcmix_inletp9(t_rtcmix *x, t_float f);
