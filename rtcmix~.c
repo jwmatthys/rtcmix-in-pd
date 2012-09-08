@@ -245,59 +245,8 @@ static void load_dylib(t_rtcmix* x)
   sprintf(cp_command, "cp \"%srtcmixdylib.so\" \"%s\"",mpathname,x->pathname);
   if (system(cp_command)) error("error creating unique dylib copy");
 
-  // load the dylib
-  x->rtcmixdylib = dlopen(x->pathname, RTLD_NOW | RTLD_LOCAL);
+  rtcmix_dlopen_and_errorcheck(x);
 
-  // JWM: for safety (and debugging), added check for load error
-  if (!x->rtcmixdylib)
-    {
-      error("dlopen error loading dylib");
-    }
-
-  // find the main entry to be sure we're cool...
-  x->rtcmixmain = dlsym(x->rtcmixdylib, "rtcmixmain");
-  if (x->rtcmixmain)	x->rtcmixmain();
-  else error("rtcmix~ could not call rtcmixmain()");
-
-  x->pd_rtsetparams = dlsym(x->rtcmixdylib, "pd_rtsetparams");
-  if (!(x->pd_rtsetparams))
-    error("rtcmix~ could not find pd_rtsetparams()");
-
-  x->parse_score = dlsym(x->rtcmixdylib, "parse_score");
-  if (!(x->parse_score))
-    error("rtcmix~ could not find parse_score()");
-
-  x->pullTraverse = dlsym(x->rtcmixdylib, "pullTraverse");
-  if (!(x->pullTraverse))
-    error("rtcmix~ could not find pullTraverse()");
-
-  x->check_bang = dlsym(x->rtcmixdylib, "check_bang");
-  if (!(x->check_bang))
-    error("rtcmix~ could not find check_bang()");
-
-  x->check_vals = dlsym(x->rtcmixdylib, "check_vals");
-  if (!(x->check_vals))
-    error("rtcmix~ could not find check_vals()");
-
-  x->parse_dispatch = dlsym(x->rtcmixdylib, "parse_dispatch");
-  if (!(x->parse_dispatch))
-    error("rtcmix~ could not find parse_dispatch()");
-
-  x->check_error = dlsym(x->rtcmixdylib, "check_error");
-  if (!(x->check_error))
-    error("rtcmix~ could not find check_error()");
-
-  x->pfield_set = dlsym(x->rtcmixdylib, "pfield_set");
-  if (!(x->pfield_set))
-    error("rtcmix~ could not find pfield_set()");
-
-  x->buffer_set = dlsym(x->rtcmixdylib, "buffer_set");
-  if (!(x->buffer_set))
-    error("rtcmix~ could not find buffer_set()");
-
-  x->flush = dlsym(x->rtcmixdylib, "flush_sched");
-  if (!(x->flush))
-    error("rtcmix~ could not find flush_sched()");
 }
 
 //this gets called everytime audio is started; even when audio is running, if the user
@@ -305,9 +254,12 @@ static void load_dylib(t_rtcmix* x)
 //then on again, calling this func.
 //this adds the "perform" method to the DSP chain, and also tells us
 //where the audio vectors are and how big they are
-void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
+void rtcmix_dsp(t_rtcmix *x, t_signal **sp)
 {
-  t_int dsp_add_args [MAX_INPUTS + MAX_OUTPUTS + 2];
+  // This is 2 because (for some totally crazy reason) the
+  // signal vector starts at 1, not 0
+  t_int dsp_add_args [x->num_inputs + x->num_outputs + 2];
+  t_int vector_size = sp[0]->s_n;
   int i;
 
   // RTcmix vars
@@ -325,93 +277,43 @@ void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count)
   x->flush = NULL;
 
   // set sample rate
-  x->srate = sp[0]->s_sr;
+  x->srate = sys_getsr();
 
   // check to see if there are signals connected to the various inputs
-  for(i = 0; i < (x->num_inputs + x->num_pinlets); i++) x->in_connected[i] = count[i];
+  // JWM: AFAIK, this isn't possible with Pd.
+  //for(i = 0; i < (x->num_inputs + x->num_pinlets); i++) x->in_connected[i] = count[i];
 
   // construct the array of vectors and stuff
   dsp_add_args[0] = (t_int)x; //the object itself
-  for(i = 0; i < (x->num_inputs + x->num_pinlets + x->num_outputs); i++)
+  for(i = 0; i < (x->num_inputs + x->num_outputs); i++)
     { //pointers to the input and output vectors
       dsp_add_args[i+1] = (t_int)sp[i]->s_vec;
     }
 
-  dsp_add_args[x->num_inputs + x->num_pinlets + x->num_outputs + 1] = (t_int)sp[0]->s_n; //pointer to the vector size
+  dsp_add_args[x->num_inputs + x->num_outputs + 1] = vector_size; //pointer to the vector size
 
-  DEBUG(post("vector size: %d",sp[0]->s_n););
-  // JWM: this is getting zeroed out, and I don't know why
-  DEBUG(post("num outputs: %d",x->num_outputs););
+  DEBUG(post("vector size: %d",vector_size););
+  //DEBUG(post("num inputs: %i, num outputs: %i", x->num_inputs, x->num_outputs););
 
-  dsp_addv(rtcmix_perform, (x->num_inputs + x->num_pinlets + x->num_outputs + 2), dsp_add_args); //add them to the signal chain
+  dsp_addv(rtcmix_perform, (x->num_inputs  + x->num_outputs + 2),(t_int*)dsp_add_args); //add them to the signal chain
 
   // reload, this reinits the RTcmix queue, etc.
   dlclose(x->rtcmixdylib);
 
   // load the dylib
-
-  x->rtcmixdylib = dlopen(x->pathname,  RTLD_NOW | RTLD_LOCAL);
-  if (!x->rtcmixdylib)
-    {
-      error("dlopen error loading dylib");
-    }
-
-  // find the main entry to be sure we're cool...
-  x->rtcmixmain = dlsym(x->rtcmixdylib, "rtcmixmain");
-  if (x->rtcmixmain)	x->rtcmixmain();
-  else error("rtcmix~ could not call rtcmixmain()");
-
-  x->pd_rtsetparams = dlsym(x->rtcmixdylib, "pd_rtsetparams");
-  if (!(x->pd_rtsetparams))
-    error("rtcmix~ could not find pd_rtsetparams()");
-
-  x->parse_score = dlsym(x->rtcmixdylib, "parse_score");
-  if (!(x->parse_score))
-    error("rtcmix~ could not find parse_score()");
-
-  x->pullTraverse = dlsym(x->rtcmixdylib, "pullTraverse");
-  if (!(x->pullTraverse))
-    error("rtcmix~ could not find pullTraverse()");
-
-  x->check_bang = dlsym(x->rtcmixdylib, "check_bang");
-  if (!(x->check_bang))
-    error("rtcmix~ could not find check_bang()");
-
-  x->check_vals = dlsym(x->rtcmixdylib, "check_vals");
-  if (!(x->check_vals))
-    error("rtcmix~ could not find check_vals()");
-
-  x->parse_dispatch = dlsym(x->rtcmixdylib, "parse_dispatch");
-  if (!(x->parse_dispatch))
-    error("rtcmix~ could not find parse_dispatch()");
-
-  x->check_error = dlsym(x->rtcmixdylib, "check_error");
-  if (!(x->check_error))
-    error("rtcmix~ could not find check_error()");
-
-  x->pfield_set = dlsym(x->rtcmixdylib, "pfield_set");
-  if (!(x->pfield_set))
-    error("rtcmix~ could not find pfield_set()");
-
-  x->buffer_set = dlsym(x->rtcmixdylib, "buffer_set");
-  if (!(x->buffer_set))
-    error("rtcmix~ could not find buffer_set()");
-
-  x->flush = dlsym(x->rtcmixdylib, "flush_sched");
-  if (!(x->flush))
-    error("rtcmix~ could not find flush_sched()");
+  rtcmix_dlopen_and_errorcheck(x);
 
   // allocate the RTcmix i/o transfer buffers
-  x->pd_inbuf = malloc(sizeof(float) * sp[0]->s_n * x->num_inputs);
-  x->pd_outbuf = malloc(sizeof(float) * sp[0]->s_n * x->num_outputs);
+  x->pd_inbuf = malloc(sizeof(float) * vector_size * x->num_inputs);
+  x->pd_outbuf = malloc(sizeof(float) * vector_size * x->num_outputs);
 
   // zero out these buffers for UB
-  for (i = 0; i < (sp[0]->s_n * x->num_inputs); i++) x->pd_inbuf[i] = 0.0;
-  for (i = 0; i < (sp[0]->s_n * x->num_outputs); i++) x->pd_outbuf[i] = 0.0;
+  for (i = 0; i < (vector_size * x->num_inputs); i++) x->pd_inbuf[i] = 0.0;
+  for (i = 0; i < (vector_size * x->num_outputs); i++) x->pd_outbuf[i] = 0.0;
 
   if (x->pd_rtsetparams)
     {
-      x->pd_rtsetparams(x->srate, x->num_outputs, sp[0]->s_n, x->pd_inbuf, x->pd_outbuf, x->theerror);
+      x->pd_rtsetparams(x->srate, x->num_outputs, vector_size, x->pd_inbuf, x->pd_outbuf, x->theerror);
     }
 }
 
@@ -425,7 +327,7 @@ t_int *rtcmix_perform(t_int *w)
   float *in[MAX_INPUTS];          //pointers to the input vectors
   float *out[MAX_OUTPUTS];	//pointers to the output vectors
 
-  long n = w[x->num_inputs + x->num_pinlets + x->num_outputs + 2];	//number of samples per vector
+  t_int n = w[x->num_inputs + x->num_outputs + 2]; //number of samples per vector
 
   //random local vars
   int i, j, k;
@@ -434,28 +336,29 @@ t_int *rtcmix_perform(t_int *w)
   int valflag;
   int errflag;
 
-  //check to see if we have a signal or float message connected to input
+  //BGG: check to see if we have a signal or float message connected to input
   //then assign the pointer accordingly
+  // JWM: for now at least, all sig inlets and only sig inlets are assigned
   for (i = 0; i < (x->num_inputs + x->num_pinlets); i++)
     {
-      in[i] = x->in_connected[i] ? (float *)(w[i+2]) : &x->in[i];
+      in[i] = (float *)(w[i+2]);
     }
 
   //assign the output vectors
   for (i = 0; i < x->num_outputs; i++)
     {
-      out[i] = (float *)(w[x->num_inputs+x->num_pinlets+i+2]);
+      // this results in reversed L-R image but I'm
+      // guessing it's the same in Max
+      out[i] = (float *)( w[x->num_inputs + i + 2 ]);
     }
 
   j = 0;
   k = 0;
+
   while (n--)
     {	//this is where the action happens.....
       for(i = 0; i < x->num_inputs; i++)
-        if (x->in_connected[i])
-          (x->pd_inbuf)[k++] = *in[i]++;
-        else
-          (x->pd_inbuf)[k++] = *in[i];
+        (x->pd_inbuf)[k++] = *in[i]++;
 
       for(i = 0; i < x->num_outputs; i++)
         *out[i]++ = (x->pd_outbuf)[j++];
@@ -499,7 +402,7 @@ t_int *rtcmix_perform(t_int *w)
     }
 
   //return a pointer to the next object in the signal chain.
-  return w + x->num_inputs + x->num_pinlets + x->num_outputs + 3;
+  return w + x->num_inputs + x->num_outputs + 3;
 }
 
 // here's my free function
@@ -1229,4 +1132,58 @@ static void rtcmix_float(t_rtcmix *x, short inlet, t_float f)
       post("rtcmix~: setting in[%d] =  %f, but rtcmix~ doesn't use this", inlet, f);
     }
   else x->pfield_set(inlet+1, f);
+}
+
+static void rtcmix_dlopen_and_errorcheck(t_rtcmix *x)
+{
+  x->rtcmixdylib = dlopen(x->pathname,  RTLD_NOW | RTLD_LOCAL);
+  if (!x->rtcmixdylib)
+    {
+      error("dlopen error loading dylib");
+    }
+
+  // find the main entry to be sure we're cool...
+  x->rtcmixmain = dlsym(x->rtcmixdylib, "rtcmixmain");
+  if (x->rtcmixmain)	x->rtcmixmain();
+  else error("rtcmix~ could not call rtcmixmain()");
+
+  x->pd_rtsetparams = dlsym(x->rtcmixdylib, "pd_rtsetparams");
+  if (!(x->pd_rtsetparams))
+    error("rtcmix~ could not find pd_rtsetparams()");
+
+  x->parse_score = dlsym(x->rtcmixdylib, "parse_score");
+  if (!(x->parse_score))
+    error("rtcmix~ could not find parse_score()");
+
+  x->pullTraverse = dlsym(x->rtcmixdylib, "pullTraverse");
+  if (!(x->pullTraverse))
+    error("rtcmix~ could not find pullTraverse()");
+
+  x->check_bang = dlsym(x->rtcmixdylib, "check_bang");
+  if (!(x->check_bang))
+    error("rtcmix~ could not find check_bang()");
+
+  x->check_vals = dlsym(x->rtcmixdylib, "check_vals");
+  if (!(x->check_vals))
+    error("rtcmix~ could not find check_vals()");
+
+  x->parse_dispatch = dlsym(x->rtcmixdylib, "parse_dispatch");
+  if (!(x->parse_dispatch))
+    error("rtcmix~ could not find parse_dispatch()");
+
+  x->check_error = dlsym(x->rtcmixdylib, "check_error");
+  if (!(x->check_error))
+    error("rtcmix~ could not find check_error()");
+
+  x->pfield_set = dlsym(x->rtcmixdylib, "pfield_set");
+  if (!(x->pfield_set))
+    error("rtcmix~ could not find pfield_set()");
+
+  x->buffer_set = dlsym(x->rtcmixdylib, "buffer_set");
+  if (!(x->buffer_set))
+    error("rtcmix~ could not find buffer_set()");
+
+  x->flush = dlsym(x->rtcmixdylib, "flush_sched");
+  if (!(x->flush))
+    error("rtcmix~ could not find flush_sched()");
 }

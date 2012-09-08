@@ -124,10 +124,11 @@ typedef struct _rtcmix
 //args that the user can input, in which case rtcmix_new will have to change
 void rtcmix_tilde_setup(void);
 void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv);
-void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count);
+void rtcmix_dsp(t_rtcmix *x, t_signal **sp); //, short *count);
 t_int *rtcmix_perform(t_int *w);
 void rtcmix_free(t_rtcmix *x);
 static void load_dylib(t_rtcmix* x);
+static void rtcmix_dlopen_and_errorcheck(t_rtcmix *x);
 
 // JWM: for getting bang at left inlet only
 void rtcmix_bang(t_rtcmix *x);
