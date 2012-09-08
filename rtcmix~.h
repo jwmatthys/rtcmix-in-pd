@@ -127,7 +127,7 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv);
 void rtcmix_dsp(t_rtcmix *x, t_signal **sp, short *count);
 t_int *rtcmix_perform(t_int *w);
 void rtcmix_free(t_rtcmix *x);
-static void load_dylib(t_rtcmix* x);
+static void load_dylib(t_rtcmix* x, short ni, short no, short npi);
 
 //for getting floats, ints or bangs at inputs
 void rtcmix_float(t_rtcmix *x, double f);

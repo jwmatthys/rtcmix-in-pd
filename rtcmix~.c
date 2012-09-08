@@ -69,8 +69,6 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   // creates the object
   t_rtcmix *x = (t_rtcmix *)pd_new(rtcmix_class);
 
-  load_dylib(x);
-
   int i;
 
   short num_inoutputs = 1;
@@ -153,10 +151,13 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
   x->flushflag = 0; // [flush] sets flag for call to x->flush() in rtcmix_perform() (after pulltraverse completes)
 
+  // UGH, why do have to pass these vals?
+  load_dylib(x, x->num_inputs, x->num_outputs, x->num_pinlets);
+
   return (x);
 }
 
-static void load_dylib(t_rtcmix* x)
+static void load_dylib(t_rtcmix* x, short num_in, short num_out, short num_p_in)
 {
   // using Pd's open_via_path to find rtcmix~, and from there rtcmixdylib.so
   char temp_path[MAXPDSTRING], *pathptr;
@@ -177,14 +178,23 @@ static void load_dylib(t_rtcmix* x)
   // I suspect it's because not all of the objects are the
   // same size; I'm going to disable this and see if it
   // causes any trouble in the long run...
-  /*
+
+  post("pathname: %s",x->pathname);
+
      if (x)
      {
      unsigned int j;
      for(j=sizeof(t_object);j<sizeof(t_rtcmix);j++)
      ((char *)x)[j]=0;
      }
-  */
+
+     //  x->num_inputs = ni;
+  x->num_outputs = num_out;
+  //  x->num_pinlets = npi;
+
+  post("172: num_outputs: %d",x->num_outputs);
+  post("num_pinlets %d:, num_inputs: %d",x->num_pinlets, x->num_inputs);
+  post("pathname: %s",x->pathname);
 
   // these are the entry function pointers in to the rtcmixdylib.so lib
   x->rtcmixmain = NULL;
