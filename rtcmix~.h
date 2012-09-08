@@ -150,16 +150,15 @@ void rtcmix_flush(t_rtcmix *x);
 void rtcmix_edclose (t_rtcmix *x, char **text, long size);
 void rtcmix_dblclick(t_rtcmix *x);
 void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_openscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_write(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_writeas(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_okclose (t_rtcmix *x, char *prompt, short *result);
+//void rtcmix_write(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+//void rtcmix_writeas(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+//void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 
 //for binbuf storage of scripts
+void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_save(t_rtcmix *x, void *w);
 void rtcmix_callback(t_rtcmix *x, t_symbol *s);
 

@@ -44,6 +44,7 @@ void rtcmix_tilde_setup(void)
   //class_addfloat(rtcmix_class, rtcmix_float);
   class_addbang(rtcmix_class, rtcmix_bang); // trigger scripts
 
+  class_addmethod(rtcmix_class,(t_method)rtcmix_setscript, gensym("setscript"), A_GIMME, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_read, gensym("read"), A_GIMME, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("save"), A_CANT, 0);
   // openpanel and savepanel return their messages through "callback"
@@ -439,7 +440,7 @@ void rtcmix_bang(t_rtcmix *x)
 
   if (x->flushflag == 1) return; // heap and queue being reset
 
-  rtcmix_dogoscript(x, NULL, 1, a);
+  rtcmix_goscript(x, NULL, 1, a);
 }
 
 
@@ -729,18 +730,8 @@ void rtcmix_dblclick(t_rtcmix *x)
   */
 }
 
-
-// see the note for rtcmix_goscript() below
-void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
-{
-  if (x->flushflag == 1) return; // heap and queue being reset
-  //defer_low(x, (method)rtcmix_dogoscript, s, argc, argv); // always defer this message
-  rtcmix_dogoscript(x, s, argc, argv);
-}
-
-
 // the [goscript N] message will cause buffer N to be sent to the RTcmix parser
-void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   short i;
   short temp = 0;
@@ -772,20 +763,23 @@ void rtcmix_dogoscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   short j;
   int tval;
 
-char *thebuf = malloc(MAXSCRIPTSIZE);
+  char *thebuf = malloc(MAXSCRIPTSIZE);
+  char *origbuf = malloc(MAXSCRIPTSIZE);
   int natoms = binbuf_getnatom(x->rtcmix_script[x->current_script]);
 
-  binbuf_gettext(x->rtcmix_script[x->current_script], &thebuf, &natoms);
+  binbuf_gettext(x->rtcmix_script[x->current_script], &origbuf, &natoms);
 
   if (natoms==0)
     error("rtcmix~: you are triggering a 0-length script!");
 
-  int buflen = strlen(thebuf);
+  int buflen = strlen(origbuf);
+  DEBUG(post("buffer length: %i",buflen););
 
   // probably don't need to transfer to a new buffer, but I want to be sure there's room for the \0,
   // plus the substitution of \n for those annoying ^M thingies
   for (i = 0, j = 0; i < buflen; i++)
     {
+      thebuf[j] = *(origbuf+i);
       if ((int)thebuf[j] == 13) thebuf[j] = '\n'; // RTcmix wants newlines, not <cr>'s
       // ok, here's where we substitute the $vars
       if (thebuf[j] == '$')
@@ -807,13 +801,13 @@ char *thebuf = malloc(MAXSCRIPTSIZE);
 
       }
   free(thebuf);
+  free(origbuf);
 }
 
-
 // [openscript N] will open a buffer N
+// JWM: this will requires the hammereditor
 void rtcmix_openscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
-  /*
   short i,temp = 0;
 
   if (argc == 0)
@@ -840,7 +834,6 @@ void rtcmix_openscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
 
   x->current_script = temp;
-  */
   rtcmix_dblclick(x);
 }
 
@@ -848,7 +841,6 @@ void rtcmix_openscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 // [setscript N] will set the currently active script to N
 void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
-  /*
   short i,temp = 0;
 
   if (argc == 0)
@@ -875,7 +867,6 @@ void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
 
   x->current_script = temp;
-  */
 }
 
 
@@ -1027,11 +1018,13 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
   x->current_script = temp;
 
+  x->rtcmix_script[x->current_script] = binbuf_new();
+
   if (!fnflag)
     {
-      //post("openpanel signaled");
+      DEBUG(post("openpanel signaled"););
       x->rw_flag = RTcmixREADFLAG;
-      //post("x->x_s->s_name: %s, x->canvas_path->s_name: %s",x->x_s->s_name, x->canvas_path->s_name);
+      DEBUG(post("x->x_s->s_name: %s, x->canvas_path->s_name: %s",x->x_s->s_name, x->canvas_path->s_name););
       sys_vgui("pdtk_openpanel {%s} {%s}\n", x->x_s->s_name, x->canvas_path->s_name);
     }
   else
@@ -1043,16 +1036,15 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
 void rtcmix_save(t_rtcmix *x, void *w)
 {
-  /*
+  DEBUG(post("savepanel signaled"););
   x->rw_flag = RTcmixWRITEFLAG;
   sys_vgui("pdtk_savepanel {%s} {%s}\n", x->x_s->s_name, x->canvas_path->s_name);
-  */
 }
 
 void rtcmix_callback(t_rtcmix *x, t_symbol *filename)
 {
   DEBUG(post("callback! flag = %d",x->rw_flag););
-  /*
+
   char *buf = malloc(MAXPDSTRING);
   switch (x->rw_flag)
     {
@@ -1066,9 +1058,12 @@ void rtcmix_callback(t_rtcmix *x, t_symbol *filename)
     default:
       if (binbuf_read_via_canvas(x->rtcmix_script[x->current_script], filename->s_name, x->x_canvas, CRFLAG))
         error("%s: read failed", filename->s_name);
+      t_atom eof;
+      t_symbol *eof_marker = gensym("\0");
+      SETSYMBOL(&eof,eof_marker);
+      binbuf_add(x->rtcmix_script[x->current_script], 1,&eof );
     }
   free(buf);
-  */
 }
 
 static void rtcmix_inletp0(t_rtcmix *x, t_float f)

@@ -1,9 +1,5 @@
-/* This score makes a wavetable synth riff and feeds it through 3 effects
-in series: flange -> delay -> reverb        -JGG, 6/17/00, rev. 7/12/05
-   JWM: rewritten because of trouble with commenting */
-
-print_off()
 rtsetparams(44100, 2)
+print_off();
 load("WAVETABLE")
 load("FLANGE")
 load("JDELAY")
@@ -21,18 +17,16 @@ atk = 2; dcy = 4
 pitchtab = { 5.00, 5.001, 5.02, 5.03, 5.05, 5.07, 5.069, 5.10, 6.00 }
 numnotes = len(pitchtab)
 
-transposition = 2.00   /* try 7.00 also, for some cool aliasing... */
+transposition = 2.00   // try 7.00 also, for some cool aliasing...
 srand(2)
 
-
-/* ---------------------------------------------------------------- synth */
 notedur = 0.10
 incr = notedur + 0.015
 
 maxampdb = 92
 minampdb = 75
 
-control_rate(20000)     /* need high control rate for short synth notes */
+control_rate(20000)     // need high control rate for short synth notes
 env = maketable("line", 10000, 0,0, 1,1, 20,0)
 wavet = maketable("wave", 10000, 1, .9, .7, .5, .3, .2, .1, .05, .02)
 
@@ -45,11 +39,9 @@ for (st = 0; st < totdur; st += incr) {
 }
 
 
-/* for the rest*/
 reset(500)
 amp = masteramp
 
-/* --------------------------------------------------------------- flange */
 resonance = 0.3
 lowpitch = 5.00
 moddepth = 90
@@ -72,7 +64,6 @@ FLANGE(st=0, insk=0, totdur, amp, resonance, maxdelay, moddepth, modspeed,
        wetdrymix, flangetype, inchan=1, pan=0, ringdur=0, wavet)
 
 
-/* ---------------------------------------------------------------- delay */
 deltime = notedur * 2.2
 regen = 0.70
 wetdry = 0.12
@@ -86,8 +77,6 @@ JDELAY(st=0, insk=0, totdur, amp * env, deltime, regen, ringdur, cutoff,
 JDELAY(st=0.02, insk=0, totdur, amp * env, deltime, regen, ringdur, cutoff,
                 wetdry, inchan=1, pan=0)
 
-
-/* --------------------------------------------------------------- reverb */
 revtime = 1.0
 revpct = 0.3
 rtchandel = 0.05

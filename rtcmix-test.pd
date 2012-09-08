@@ -1,4 +1,4 @@
-#N canvas 529 451 788 305 12;
+#N canvas 525 459 788 305 12;
 #X obj 201 234 dac~;
 #X obj 174 56 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
@@ -21,6 +21,8 @@
 #X obj 21 172 vu 15 120 empty empty -1 -8 0 10 -66577 -1 1 0;
 #X obj 65 172 vu 15 120 empty empty -1 -8 0 10 -66577 -1 1 0;
 #X obj 408 98 flatgui/entry 357 151 grey70 black;
+#X msg 159 9 setscript 3;
+#X msg 256 16 setscript 0;
 #X connect 1 0 9 0;
 #X connect 2 0 9 0;
 #X connect 4 0 9 0;
@@ -38,3 +40,5 @@
 #X connect 14 0 16 0;
 #X connect 15 0 17 0;
 #X connect 18 0 9 0;
+#X connect 19 0 9 0;
+#X connect 20 0 9 0;
