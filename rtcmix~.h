@@ -104,7 +104,8 @@ typedef struct _rtcmix
   */
   // JWM: changing to binbufs for all internal scores
   t_binbuf *rtcmix_script[MAX_SCRIPTS];
-  short current_script, rw_flag;
+  char s_name[MAX_SCRIPTS][256];
+  t_int current_script, rw_flag;
 
   // JWM : canvas objects for callback addressing
   t_canvas *x_canvas;

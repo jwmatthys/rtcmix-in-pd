@@ -55,6 +55,7 @@ static void binbuftest_bang(t_binbuftest *x)
   char* result = malloc(MAXPDSTRING);
   int n = binbuf_getnatom(x->mybuf[x->current_buffer]);
   DEBUG(post("natom: %d",n););
+  n=0;
   binbuf_gettext(x->mybuf[x->current_buffer], &result,&n);
   DEBUG(post("result: %s",result););
   // OK, so the text going to the outlet gets truncated at MAXPDSTRING and
@@ -148,7 +149,6 @@ void *binbuftest_new(void)
 {
     t_binbuftest *x = (t_binbuftest *)pd_new(binbuftest_class);
 
-    x->mybuf[x->current_buffer] = binbuf_new();
     int i;
     for (i=0; i<NUMBUFFERS; i++)
       {
