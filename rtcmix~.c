@@ -774,15 +774,9 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   int tval;
 
   int buflen = strlen(x->rtcmix_script[x->current_script]);
-  char *thebuf = malloc(buflen+10);
-  //int natoms = binbuf_getnatom(x->rtcmix_script[x->current_script]);
+  char *thebuf = malloc(MAXSCRIPTSIZE);
 
-  //binbuf_gettext(x->rtcmix_script[x->current_script], &origbuf, &n);
-
-  // JWM: skip trailing ;<newline> and whatever crazy byte binbuf adds at end
-  //int buflen = strlen(origbuf) - 3;
-
-  DEBUG(post("buflen: %i, size: %i",buflen););
+  DEBUG(post("buflen: %i",buflen););
 
   // probably don't need to transfer to a new buffer, but I want to be sure there's room for the \0,
   // plus the substitution of \n for those annoying ^M thingies
@@ -791,7 +785,6 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
       error("rtcmix~: you are triggering a 0-length script!");
       return;
     }
-  //DEBUG(post("buffer length: %i",buflen););
 
   for (i = 0, j = 0; i < buflen; i++)
     {
@@ -811,6 +804,26 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
       j++;
     }
   thebuf[j] = '\0';
+
+  /*
+  i = 0;
+  while (i < j)
+    {
+      if (j - i >= 10)
+        {
+          post("chars: %c %c %c %c %c %c %c %c %c %c",
+               thebuf[i], thebuf[i+1], thebuf[i+2],
+               thebuf[i+3], thebuf[i+4], thebuf[i+5],
+               thebuf[i+6], thebuf[i+7], thebuf[i+8],
+               thebuf[i+9]);
+          i += 10;
+        }
+      else
+        {
+          post("chars: %c", thebuf[i++]);
+        }
+    }
+  */
 
   if ( (canvas_dspstate == 1) || (strncmp(thebuf, "system", 6) == 0) )
     { // don't send if the dacs aren't turned on, unless it is a system() <------- HACK HACK HACK!
@@ -1012,7 +1025,7 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   int i;
   int temp = x->current_script;
-  t_symbol *filename = malloc(MAXPDSTRING);
+  t_symbol *filename;
   int fnflag = 0;
   for (i=0; i<argc; i++)
     {
@@ -1039,8 +1052,8 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
   x->current_script = (t_int)temp;
 
-  free(x->rtcmix_script[x->current_script]);
-  x->rtcmix_script[x->current_script] = malloc(MAXSCRIPTSIZE);
+  for (i=0; i<MAXSCRIPTSIZE; i++)
+    x->rtcmix_script[x->current_script][i] = 0;
 
   if (!fnflag)
     {
@@ -1053,7 +1066,6 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     {
   rtcmix_callback(x,filename);
     }
-  free(filename);
 }
 
 void rtcmix_save(t_rtcmix *x, void *w)
@@ -1068,7 +1080,7 @@ void rtcmix_callback(t_rtcmix *x, t_symbol *filename)
 DEBUG(post("callback! flag = %d",x->rw_flag););
   DEBUG(post("current script: %i",x->current_script););
     char *buf = malloc(MAXPDSTRING);
-      memcpy(x->s_name[x->current_script], filename->s_name, 256);
+    sprintf(x->s_name[x->current_script], "%s",filename->s_name);
         switch (x->rw_flag)
           {
  case RTcmixWRITEFLAG:
@@ -1099,10 +1111,16 @@ DEBUG(post("callback! flag = %d",x->rw_flag););
 static void rtcmix_doread(t_rtcmix *x, char* filename)
 {
   FILE *fp = fopen ( filename , "rb" );
+
   long lSize;
   short abortFlag = 0;
   char buffer[MAXSCRIPTSIZE];
-    if( fp )
+  if( fp == NULL)
+    {
+      error("rtcmix~: error reading \"%s\"",filename);
+      return;
+    }
+  else
     {
       fseek( fp , 0L , SEEK_END);
       lSize = ftell( fp );
@@ -1111,27 +1129,21 @@ static void rtcmix_doread(t_rtcmix *x, char* filename)
       if (lSize>MAXSCRIPTSIZE)
         {
           error("rtcmix~: error: file is longer than MAXSCRIPTSIZE");
-          abortFlag = 1;
+          fclose(fp);
+          return;
         }
 
-      /* copy the file into the buffer */
-      if( 1!=fread( buffer , lSize, 1 , fp) )
+      if( 1!=fread( buffer , lSize-1, 1 , fp) )
         {
           abortFlag = 1;
-          error("entire read fails");
-            }
+          error("rtcmix~: failed to read file");
+        }
     }
-  else
-    {
-      error("rtcmix~: error reading \"%s\"",filename);
-      abortFlag = 1;
-    }
-  /* do your work here, buffer is a string contains the whole text */
 
+  sprintf(x->rtcmix_script[x->current_script], "%s",buffer);
   fclose(fp);
-  if (!abortFlag)
-    memcpy(x->rtcmix_script[x->current_script], buffer, MAXSCRIPTSIZE);
-    }
+
+}
 
 static void rtcmix_dosave(t_rtcmix *x, char* filename)
 {
