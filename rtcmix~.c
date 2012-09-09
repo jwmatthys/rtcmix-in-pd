@@ -483,7 +483,7 @@ void rtcmix_text(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
           break;
         case A_DOLLAR:
           varnum = argv[i].a_w.w_float;
-          if ( !(x->var_set[varnum-1]) ) error("variable $%d has not been set yet, using 0.0 as default",varnum);
+          if ( x->var_set[varnum-1]==0 ) error("variable $%d has not been set yet, using 0.0 as default",varnum);
           sprintf(xfer, " %lf", x->var_array[varnum-1]);
           break;
         case A_SYMBOL:
@@ -789,10 +789,10 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   for (i = 0, j = 0; i < buflen; i++)
     {
       thebuf[j] = *(x->rtcmix_script[x->current_script]+i);
-      if ((int)thebuf[j] == 13) thebuf[j] = '\n'; // RTcmix wants newlines, not <cr>'s
+      if ((int)thebuf[j] == 13) thebuf[j] = 10; // RTcmix wants newlines, not <cr>'s
 
       // ok, here's where we substitute the $vars
-      if (thebuf[j] == '$')
+      if ((int)thebuf[j] == 36)
         {
           sscanf(x->rtcmix_script[x->current_script]+i+1, "%d", &tval);
           if ( !(x->var_set[tval-1]) )
@@ -805,6 +805,7 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
   thebuf[j] = '\0';
 
+  // HEAVY DUTY BUFFER DEBUGGER
   /*
   i = 0;
   while (i < j)
@@ -812,6 +813,7 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
       if (j - i >= 10)
         {
           post("chars: %c %c %c %c %c %c %c %c %c %c",
+          //post("chars: %i %i %i %i %i %i %i %i %i %i",
                thebuf[i], thebuf[i+1], thebuf[i+2],
                thebuf[i+3], thebuf[i+4], thebuf[i+5],
                thebuf[i+6], thebuf[i+7], thebuf[i+8],
