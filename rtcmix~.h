@@ -103,7 +103,8 @@ typedef struct _rtcmix
   short current_script, path[MAX_SCRIPTS];
   */
   // JWM: changing to binbufs for all internal scores
-  t_binbuf *rtcmix_script[MAX_SCRIPTS];
+  //t_binbuf *rtcmix_script[MAX_SCRIPTS];
+  char **rtcmix_script;
   char s_name[MAX_SCRIPTS][256];
   t_int current_script, rw_flag;
 
@@ -162,6 +163,8 @@ void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_save(t_rtcmix *x, void *w);
 void rtcmix_callback(t_rtcmix *x, t_symbol *s);
+static void rtcmix_doread(t_rtcmix *x, char* filename);
+static void rtcmix_dosave(t_rtcmix *x, char* filename);
 
 // for receiving pfields from inlets
 static void rtcmix_float(t_rtcmix *x, short inlet, t_float f);

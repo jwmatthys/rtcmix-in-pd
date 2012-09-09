@@ -1,4 +1,4 @@
-#N canvas 519 468 788 305 12;
+#N canvas 165 248 788 305 12;
 #X obj 201 234 dac~;
 #X obj 174 56 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
@@ -24,8 +24,8 @@
 #X msg 256 16 setscript 0;
 #X obj 391 8 loadbang;
 #X msg 257 122 read longchain.sco;
-#X msg 267 48 read WAVETABLE \, bang;
 #X msg 65 13 setscript 19;
+#X msg 267 48 read semitest.sco \, bang;
 #X connect 1 0 8 0;
 #X connect 2 0 8 0;
 #X connect 4 0 8 0;

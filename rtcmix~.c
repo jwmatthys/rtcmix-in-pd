@@ -167,12 +167,13 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   x->current_script = 0;
   x->rw_flag = RTcmixREADFLAG;
 
+  x->rtcmix_script = malloc(MAX_SCRIPTS * sizeof(char *));
+
   t_binbuf *temp = binbuf_new();
 
   for (i=0; i<MAX_SCRIPTS; i++)
     {
-      //x->rtcmix_script[i] = malloc(sizeof(temp));
-      x->rtcmix_script[i] = binbuf_new();
+      x->rtcmix_script[i] = malloc(MAXSCRIPTSIZE);
       sprintf(x->s_name[i],"temp script %i",i);
     }
 
@@ -430,11 +431,11 @@ void rtcmix_free(t_rtcmix *x)
     int i;
     for (i=0; i<MAX_SCRIPTS; i++)
       {
-        binbuf_free(x->rtcmix_script[i]);
-        //free(x->rtcmix_script[i]);
+        free(x->rtcmix_script[i]);
         sprintf(x->s_name[i],"0");
       }
 
+    free(x->rtcmix_script);
     free(x->pathname);
     free(rm_command);
     DEBUG(post ("rtcmix~ DESTROYED!"););
@@ -772,17 +773,19 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   short j;
   int tval;
 
-  char *thebuf = malloc(MAXSCRIPTSIZE);
-  char *origbuf = malloc(MAXSCRIPTSIZE);
+  int buflen = strlen(x->rtcmix_script[x->current_script]);
+  char *thebuf = malloc(buflen+10);
   //int natoms = binbuf_getnatom(x->rtcmix_script[x->current_script]);
-  int n = 0;
-  binbuf_gettext(x->rtcmix_script[x->current_script], &origbuf, &n);
+
+  //binbuf_gettext(x->rtcmix_script[x->current_script], &origbuf, &n);
 
   // JWM: skip trailing ;<newline> and whatever crazy byte binbuf adds at end
-  int buflen = strlen(origbuf) - 3;
+  //int buflen = strlen(origbuf) - 3;
 
-  DEBUG(post("buflen: %i, size: %i",buflen, sizeof(&origbuf)););
+  DEBUG(post("buflen: %i, size: %i",buflen););
 
+  // probably don't need to transfer to a new buffer, but I want to be sure there's room for the \0,
+  // plus the substitution of \n for those annoying ^M thingies
   if (buflen<=0)
     {
       error("rtcmix~: you are triggering a 0-length script!");
@@ -790,81 +793,35 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
   //DEBUG(post("buffer length: %i",buflen););
 
-  // probably don't need to transfer to a new buffer, but I want to be sure there's room for the \0,
-  // plus the substitution of \n for those annoying ^M thingies
   for (i = 0, j = 0; i < buflen; i++)
     {
-      thebuf[j] = *(origbuf+i);
-      if ((int)thebuf[j] == 9)
-        thebuf[j] = 32;
-      // stops at EOF signal; also prevents binbuf garbage
-      if ((int)thebuf[j] != 10 && (int)thebuf[j]<32)
-        {
-          DEBUG(post("breaking at %i",j););
-          thebuf[j++] = 10;
-          break;
-        }
-      if ((int)thebuf[j] == 13)
-        {
-          DEBUG(post("found a 13 at char: %i",j););
-          thebuf[j] = '\n'; // RTcmix wants newlines, not <cr>'s
-        }
-      // JWM: binbufs place a semi at the end of every line. This screws up
-      // two cases: empty lines and multiline commands. This converts
-      // that semi into a space
-      if ((int)thebuf[j] == 59 && (int)origbuf[i+1] == 10)
-        {
-          thebuf[j] = 32;
-        }
+      thebuf[j] = *(x->rtcmix_script[x->current_script]+i);
+      if ((int)thebuf[j] == 13) thebuf[j] = '\n'; // RTcmix wants newlines, not <cr>'s
+
       // ok, here's where we substitute the $vars
       if (thebuf[j] == '$')
         {
-          sscanf(thebuf+i+1, "%d", &tval);
-          if ( !(x->var_set[tval-1]) ) error("variable $%d has not been set yet, using 0.0 as default", tval);
+          sscanf(x->rtcmix_script[x->current_script]+i+1, "%d", &tval);
+          if ( !(x->var_set[tval-1]) )
+            error("variable $%d has not been set yet, using 0.0 as default", tval);
           sprintf(thebuf+j, "%f", x->var_array[tval-1]);
           j = strlen(thebuf)-1;
           i++; // skip over the var number in input
         }
       j++;
     }
-  DEBUG(post("buffer length: %i",buflen););
-  thebuf[j++] = 32;
+  thebuf[j] = '\0';
 
-  free(origbuf);
-  origbuf = malloc(j);
-  memcpy(origbuf,thebuf,j);
-
-  // PRINT CHARACTERS FOR HARDCORE DEBUG
-  /*
-  i=0;
-  while(i<j)
-    {
-      if (j-i >= 10)
-        {
-          post ("chars: %i %i %i %i %i %i %i %i %i %i",
-                (int)origbuf[i], (int)origbuf[i+1],
-                (int)origbuf[i+2], (int)origbuf[i+3],
-                (int)origbuf[i+4], (int)origbuf[i+5],
-                (int)origbuf[i+6], (int)origbuf[i+7],
-                (int)origbuf[i+8], (int)origbuf[i+9]);
-          i += 10;
-        }
-      else
-        post ("chars: %i", (int)origbuf[i++]);
-    }
-  */
-
-  if ( (canvas_dspstate == 1) || (strncmp(origbuf, "system", 6) == 0) )
+  if ( (canvas_dspstate == 1) || (strncmp(thebuf, "system", 6) == 0) )
     { // don't send if the dacs aren't turned on, unless it is a system() <------- HACK HACK HACK!
 
       post ("rtcmix~: parsing script %i: \"%s\"",x->current_script,x->s_name[x->current_script]);
 
-      if (x->parse_score(origbuf, j) != 0)
+      if (x->parse_score(thebuf, j) != 0)
         error("possible problem parsing RTcmix script");
 
       }
   free(thebuf);
-  free(origbuf);
 }
 
 // [openscript N] will open a buffer N
@@ -1082,7 +1039,8 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
   x->current_script = (t_int)temp;
 
-  x->rtcmix_script[x->current_script] = binbuf_new();
+  free(x->rtcmix_script[x->current_script]);
+  x->rtcmix_script[x->current_script] = malloc(MAXSCRIPTSIZE);
 
   if (!fnflag)
     {
@@ -1107,33 +1065,96 @@ void rtcmix_save(t_rtcmix *x, void *w)
 
 void rtcmix_callback(t_rtcmix *x, t_symbol *filename)
 {
-  DEBUG(post("callback! flag = %d",x->rw_flag););
+DEBUG(post("callback! flag = %d",x->rw_flag););
   DEBUG(post("current script: %i",x->current_script););
-  char *buf = malloc(MAXPDSTRING);
-  memcpy(x->s_name[x->current_script], filename->s_name, strlen(filename->s_name));
-  switch (x->rw_flag)
-    {
-    case RTcmixWRITEFLAG:
-      canvas_makefilename(x->x_canvas, filename->s_name,
-                          buf, MAXPDSTRING);
-      if (binbuf_write(x->rtcmix_script[x->current_script], buf, "", CRFLAG))
+    char *buf = malloc(MAXPDSTRING);
+      memcpy(x->s_name[x->current_script], filename->s_name, 256);
+        switch (x->rw_flag)
+          {
+ case RTcmixWRITEFLAG:
+   canvas_makefilename(x->x_canvas, filename->s_name,
+                         buf, MAXPDSTRING);
+     rtcmix_dosave(x,buf);
+      /*if (binbuf_write(x->rtcmix_script[x->current_script], buf, "", CRFLAG))
         error("rtcmix~: %s: write failed", buf);
       else
-        post("rtcmix~: wrote script %i to \"%s\"",x->current_script,buf);
+      post("rtcmix~: wrote script %i to \"%s\"",x->current_script,buf);*/
       break;
     case RTcmixREADFLAG:
     default:
-      DEBUG(post("loading into binbuf %i:", x->current_script););
+      rtcmix_doread(x,filename->s_name);
+      /*DEBUG(post("loading into binbuf %i:", x->current_script););
       if (binbuf_read_via_canvas(x->rtcmix_script[x->current_script], filename->s_name, x->x_canvas, CRFLAG))
         error("rtcmix~: %s: read failed", filename->s_name);
       else
         post("rtcmix~: read \"%s\" into script %i",filename->s_name,x->current_script);
-      //t_atom eof;
-      //t_symbol *eof_marker = gensym("\0");
-      //SETSYMBOL(&eof,eof_marker);
-      //binbuf_add(x->rtcmix_script[x->current_script], 1,&eof );
+      t_atom eof;
+      t_symbol *eof_marker = gensym("\0");
+      SETSYMBOL(&eof,eof_marker);
+      binbuf_add(x->rtcmix_script[x->current_script], 1,&eof );*/
     }
   free(buf);
+    }
+
+static void rtcmix_doread(t_rtcmix *x, char* filename)
+{
+  FILE *fp = fopen ( filename , "rb" );
+  long lSize;
+  short abortFlag = 0;
+  char buffer[MAXSCRIPTSIZE];
+    if( fp )
+    {
+      fseek( fp , 0L , SEEK_END);
+      lSize = ftell( fp );
+      rewind( fp );
+
+      if (lSize>MAXSCRIPTSIZE)
+        {
+          error("rtcmix~: error: file is longer than MAXSCRIPTSIZE");
+          abortFlag = 1;
+        }
+
+      /* copy the file into the buffer */
+      if( 1!=fread( buffer , lSize, 1 , fp) )
+        {
+          abortFlag = 1;
+          error("entire read fails");
+            }
+    }
+  else
+    {
+      error("rtcmix~: error reading \"%s\"",filename);
+      abortFlag = 1;
+    }
+  /* do your work here, buffer is a string contains the whole text */
+
+  fclose(fp);
+  if (!abortFlag)
+    memcpy(x->rtcmix_script[x->current_script], buffer, MAXSCRIPTSIZE);
+    }
+
+static void rtcmix_dosave(t_rtcmix *x, char* filename)
+{
+  FILE *pfile = NULL;
+
+  pfile = fopen(filename,"w");
+  if(pfile == NULL)
+    {
+      error("rtcmix~: error opening \"&s\" for writing");
+      fclose(pfile);
+      return;
+    }
+
+  unsigned int i;
+  for (i=0; i<sizeof(*x->rtcmix_script[x->current_script]); i++)
+    {
+      fwrite(x->rtcmix_script[x->current_script],
+             1,
+             strlen(x->rtcmix_script[x->current_script]),
+             pfile);
+    }
+  post("rtcmix~: wrote script %i to %s",x->current_script,filename);
+  fclose(pfile);
 }
 
 static void rtcmix_inletp0(t_rtcmix *x, t_float f)
