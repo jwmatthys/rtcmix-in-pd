@@ -79,7 +79,7 @@ void rtcmix_tilde_setup(void)
 }
 
 //this gets called when the object is created; everytime the user types in new args, this will get called
-//void rtcmix_new(long num_inoutputs, long num_additional)
+
 void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
 {
   // creates the object
@@ -153,8 +153,6 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
     }
 
   // set up for the variable-substitution scheme
-  x->var_array = malloc(NVARS * sizeof(float));
-  x->var_set = malloc(NVARS * sizeof(short));
   for(i = 0; i < NVARS; i++)
     {
       x->var_set[i] = 0;
@@ -207,7 +205,6 @@ static void load_dylib(t_rtcmix* x)
     {
       sprintf(mpathname,"%s/dylib/",temp_path);
     }
-
   // BGG kept this in for the dlopen() stuff
 
   //zero out the struct, to be careful (takk to jkclayton)
@@ -242,7 +239,7 @@ static void load_dylib(t_rtcmix* x)
 
   x->pathname = malloc(MAXPDSTRING);
   // full path to the rtcmixdylib.so file
-  sprintf(x->pathname, "%srtcmixdylib%d.so", mpathname, x->dylibincr);
+  sprintf(x->pathname, "%srtcmixdylib.%d.so", mpathname, x->dylibincr);
 
   char cp_command[MAXPDSTRING];
 
@@ -418,26 +415,22 @@ void rtcmix_free(t_rtcmix *x)
   // BGG kept dlopen() stuff in in case NSLoad gets dropped
   char *rm_command = malloc(MAXPDSTRING);
 
-    dlclose(x->rtcmixdylib);
-    sprintf(rm_command, "rm -rf \"%s\" ", x->pathname);
-    if (system(rm_command)) error("error deleting unique dylib");
+  dlclose(x->rtcmixdylib);
+  sprintf(rm_command, "rm -rf \"%s/rtcmixdylib.*\"", x->pathname);
+  if (system(rm_command)) error("error deleting unique dylib");
 
-    free(x->canvas_path);
     free(x->pd_inbuf);
     free(x->pd_outbuf);
-    free(x->var_array);
-    free(x->var_set);
+    free(rm_command);
 
     int i;
     for (i=0; i<MAX_SCRIPTS; i++)
       {
         free(x->rtcmix_script[i]);
-        sprintf(x->s_name[i],"0");
       }
 
     free(x->rtcmix_script);
     free(x->pathname);
-    free(rm_command);
     DEBUG(post ("rtcmix~ DESTROYED!"););
 }
 

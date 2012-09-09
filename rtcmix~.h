@@ -83,8 +83,8 @@ typedef struct _rtcmix
 
   // for the rtmix_var() and rtcmix_varlist() $n variable scheme
 #define NVARS 9
-  float *var_array;
-  short *var_set;
+  float var_array[NVARS];
+  short var_set[NVARS];
 
   // stuff for check_vals
 #define MAXDISPARGS 1024 // from RTcmix H/maxdispargs.h
