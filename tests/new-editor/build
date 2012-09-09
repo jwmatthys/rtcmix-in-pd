@@ -1,2 +1,0 @@
-make clean; make; puredata editor-test.pd
-
