@@ -1,0 +1,14 @@
+#N canvas 380 320 450 300 12;
+#X obj 95 162 rtcmix~ 2 2;
+#X obj 95 223 dac~;
+#X msg 55 62 version;
+#X msg 125 91 save;
+#X msg 124 62 read;
+#X obj 91 99 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X connect 0 0 1 0;
+#X connect 0 1 1 1;
+#X connect 2 0 0 0;
+#X connect 3 0 0 0;
+#X connect 4 0 0 0;
+#X connect 5 0 0 0;

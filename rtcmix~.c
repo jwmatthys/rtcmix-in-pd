@@ -43,10 +43,13 @@ void rtcmix_tilde_setup(void)
   class_addlist(rtcmix_class, rtcmix_text); // text from [entry] comes in as list
   //class_addfloat(rtcmix_class, rtcmix_float);
   class_addbang(rtcmix_class, rtcmix_bang); // trigger scripts
+  class_addmethod(rtcmix_class,(t_method)rtcmix_bang, gensym("click"), 0);
 
   class_addmethod(rtcmix_class,(t_method)rtcmix_setscript, gensym("setscript"), A_GIMME, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_read, gensym("read"), A_GIMME, 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_read, gensym("load"), A_GIMME, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("save"), A_CANT, 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("write"), A_CANT, 0);
   // openpanel and savepanel return their messages through "callback"
   class_addmethod(rtcmix_class,(t_method)rtcmix_callback, gensym("callback"), A_SYMBOL, 0);
 
@@ -790,6 +793,7 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     {
       thebuf[j] = *(x->rtcmix_script[x->current_script]+i);
       if ((int)thebuf[j] == 13) thebuf[j] = 10; // RTcmix wants newlines, not <cr>'s
+      if ((int)thebuf[j] == 9) thebuf[j] = 32; // turn tab into space
 
       // ok, here's where we substitute the $vars
       if ((int)thebuf[j] == 36)

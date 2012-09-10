@@ -1,0 +1,5 @@
+#N canvas 369 366 450 300 12;
+#X obj 218 94 capture;
+#X obj 218 50 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X connect 1 0 0 0;

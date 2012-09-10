@@ -15,6 +15,8 @@ void hammereditor_open(t_hammerfile *f, char *title, char *owner);
 void hammereditor_close(t_hammerfile *f, int ask);
 void hammereditor_append(t_hammerfile *f, char *contents);
 void hammereditor_setdirty(t_hammerfile *f, int flag);
+t_binbuf *hammereditor_getbinbuf(t_hammerfile *f);
+
 void hammerpanel_open(t_hammerfile *f, t_symbol *inidir);
 void hammerpanel_setopendir(t_hammerfile *f, t_symbol *dir);
 t_symbol *hammerpanel_getopendir(t_hammerfile *f);
@@ -26,8 +28,8 @@ int hammerfile_isloading(t_hammerfile *f);
 int hammerfile_ispasting(t_hammerfile *f);
 void hammerfile_free(t_hammerfile *f);
 t_hammerfile *hammerfile_new(t_pd *master, t_hammerembedfn embedfn,
-			     t_hammerfilefn readfn, t_hammerfilefn writefn,
-			     t_hammerfilefn updatefn);
+                             t_hammerfilefn readfn, t_hammerfilefn writefn,
+                             t_hammerfilefn updatefn);
 void hammerfile_setup(t_class *c, int embeddable);
 
 #endif
