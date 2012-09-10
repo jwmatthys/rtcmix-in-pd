@@ -93,6 +93,7 @@ typedef struct _rtcmix
 
   // buffer for error-reporting
   char theerror[MAXPDSTRING];
+  short tempbuffer_flag;
   /*
   // editor stuff
   // JWM: TODO: will try to implement custom editor later
@@ -159,6 +160,7 @@ void rtcmix_okclose (t_rtcmix *x, char *prompt, short *result);
 //void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 
 //for binbuf storage of scripts
+static void rtcmix_openeditor(t_rtcmix *x);
 void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_save(t_rtcmix *x, void *w);

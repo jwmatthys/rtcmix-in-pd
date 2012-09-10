@@ -43,7 +43,7 @@ void rtcmix_tilde_setup(void)
   class_addlist(rtcmix_class, rtcmix_text); // text from [entry] comes in as list
   //class_addfloat(rtcmix_class, rtcmix_float);
   class_addbang(rtcmix_class, rtcmix_bang); // trigger scripts
-  class_addmethod(rtcmix_class,(t_method)rtcmix_bang, gensym("click"), 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_openeditor, gensym("click"), 0);
 
   class_addmethod(rtcmix_class,(t_method)rtcmix_setscript, gensym("setscript"), A_GIMME, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_read, gensym("read"), A_GIMME, 0);
@@ -192,6 +192,13 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
   x->flushflag = 0; // [flush] sets flag for call to x->flush() in rtcmix_perform() (after pulltraverse completes)
 
+  // JWM: since Pd has no decent text editor, I created a simple Text GUI object in
+  // Python. It reads temp.sco and rewrites when it's altered. [rtcmix~] reads that
+  // temp.sco file, so we need to be sure it exists.
+  if (system("touch temp.sco"))
+    error("error creating temp.sco");
+  x->tempbuffer_flag = 0;
+
   post("rtcmix~ -- RTcmix music language, v. %s (%s)", VERSION, RTcmixVERSION);
 
   return (x);
@@ -256,7 +263,6 @@ static void load_dylib(t_rtcmix* x)
   if (system(cp_command)) error("error creating unique dylib copy");
 
   rtcmix_dlopen_and_errorcheck(x);
-
 }
 
 //this gets called everytime audio is started; even when audio is running, if the user
@@ -423,7 +429,8 @@ void rtcmix_free(t_rtcmix *x)
 
     dlclose(x->rtcmixdylib);
     sprintf(rm_command, "rm -rf \"%s\" ", x->pathname);
-    if (system(rm_command)) error("error deleting unique dylib");
+    if (system(rm_command))
+      error("error deleting unique dylib");
 
     free(x->canvas_path);
     free(x->pd_inbuf);
@@ -441,7 +448,24 @@ void rtcmix_free(t_rtcmix *x)
     free(x->rtcmix_script);
     free(x->pathname);
     free(rm_command);
+    if (system("rm -rf temp.sco"))
+      error("error deleting temp.sco");
     DEBUG(post ("rtcmix~ DESTROYED!"););
+}
+
+static void rtcmix_openeditor(t_rtcmix *x)
+{
+  x->tempbuffer_flag = 1;
+  rtcmix_dosave(x, "temp.sco");
+  char *openeditor_cmd = malloc(MAXPDSTRING);
+  sprintf(openeditor_cmd, "python rtcmix_scripteditor.py temp.sco");
+  DEBUG(post("cmd: %s",openeditor_cmd););
+  if (system(openeditor_cmd))
+    error("rtcmix~: can't open rtcmix script editor");
+  free(openeditor_cmd);
+  // JWM: Ugh, I'm not fond of this. It basically just surpresses a
+  // few error messages
+  rtcmix_doread(x,"temp.sco");
 }
 
 // bang triggers the current working script
@@ -1119,12 +1143,12 @@ static void rtcmix_doread(t_rtcmix *x, char* filename)
   FILE *fp = fopen ( filename , "rb" );
 
   long lSize;
-  short abortFlag = 0;
   char buffer[MAXSCRIPTSIZE];
   if( fp == NULL)
     {
-      error("rtcmix~: error reading \"%s\"",filename);
-      return;
+      if (x->tempbuffer_flag==0)
+        error("rtcmix~: error reading \"%s\"",filename);
+      goto out;
     }
   else
     {
@@ -1136,17 +1160,21 @@ static void rtcmix_doread(t_rtcmix *x, char* filename)
         {
           error("rtcmix~: error: file is longer than MAXSCRIPTSIZE");
           fclose(fp);
-          return;
+          goto out;
         }
 
       if( 1!=fread( buffer , lSize-1, 1 , fp) )
         {
-          abortFlag = 1;
-          error("rtcmix~: failed to read file");
+          if (x->tempbuffer_flag==0)
+            error("rtcmix~: failed to read file");
+          goto out;
         }
     }
 
   sprintf(x->rtcmix_script[x->current_script], "%s",buffer);
+
+ out:
+  x->tempbuffer_flag = 0;
   fclose(fp);
 
 }
@@ -1171,7 +1199,8 @@ static void rtcmix_dosave(t_rtcmix *x, char* filename)
              strlen(x->rtcmix_script[x->current_script]),
              pfile);
     }
-  post("rtcmix~: wrote script %i to %s",x->current_script,filename);
+  if (x->tempbuffer_flag==0)
+    post("rtcmix~: wrote script %i to %s",x->current_script,filename);
   fclose(pfile);
 }
 
