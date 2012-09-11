@@ -870,6 +870,8 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
           if (x->parse_score(thebuf, j) != 0)
             error("possible problem parsing RTcmix script");
         }
+      else
+        error ("rtcmix~: can't parse score with DSP off");
     }
 }
 
