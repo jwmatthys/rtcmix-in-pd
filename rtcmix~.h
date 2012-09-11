@@ -21,8 +21,8 @@ char mpathname[MAXPDSTRING];
 // which reads temp.sco, modifies it, and rewrites it. If <modified>, rtcmix_goscript() rereads the
 // temp file so we're sure to have the most recent edit. Modified also supresses some unnecessary
 // messages in the doread and dosave functions.
-#define UNMODIFIED 0
-#define MODIFIED 1
+#define UNEDITED_SCRIPT 0
+#define EDITED_SCRIPT 1
 
 
 /*** RTcmix stuff ---------------------------------------------------------------------------***/
@@ -101,21 +101,12 @@ typedef struct _rtcmix
   // buffer for error-reporting
   char theerror[MAXPDSTRING];
   short editor_flag;
-  /*
-  // editor stuff
-  // JWM: TODO: will try to implement custom editor later
-  t_object m_obj;
-  t_object *m_editor;
-  char *rtcmix_script[MAX_SCRIPTS], s_name[MAX_SCRIPTS][256];
-  long rtcmix_script_len[MAX_SCRIPTS];
-  short current_script, path[MAX_SCRIPTS];
-  */
-  // JWM: changing to binbufs for all internal scores
-  //t_binbuf *rtcmix_script[MAX_SCRIPTS];
-  char **rtcmix_script;
-  char s_name[MAX_SCRIPTS][256];
-  t_int current_script, rw_flag;
 
+  // editor stuff
+  char **rtcmix_script;
+  char script_name[MAX_SCRIPTS][256];
+  t_int script_size[MAX_SCRIPTS];
+  t_int current_script, rw_flag;
   // JWM : canvas objects for callback addressing
   t_canvas *x_canvas;
   t_symbol *canvas_path;
@@ -159,20 +150,13 @@ void rtcmix_bufset(t_rtcmix *x, t_symbol *s);
 void rtcmix_flush(t_rtcmix *x);
 
 //for the text editor
-void rtcmix_edclose (t_rtcmix *x, char **text, long size);
 void rtcmix_dblclick(t_rtcmix *x);
 void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_openscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_okclose (t_rtcmix *x, char *prompt, short *result);
-//void rtcmix_write(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-//void rtcmix_writeas(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-//void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-
-//for binbuf storage of scripts
 static void rtcmix_openeditor(t_rtcmix *x);
 void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
-void rtcmix_save(t_rtcmix *x, void *w);
+void rtcmix_save(t_rtcmix *x);
+void rtcmix_saveas(t_rtcmix *x);
 void rtcmix_callback(t_rtcmix *x, t_symbol *s);
 static void rtcmix_doread(t_rtcmix *x, char* filename);
 static void rtcmix_dosave(t_rtcmix *x, char* filename);

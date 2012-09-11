@@ -17,4 +17,3 @@ cf = 1000
 setline(0,0, 1,1, 9,1, 10,0)
 
 REVERBIT(st=0, insk=0, dur, amp, revtime, revpct, rtchandel, cf)
-

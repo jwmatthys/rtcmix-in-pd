@@ -3,6 +3,7 @@ current: rtcmix~_linux
 clean: ; rm -f *.pd_linux *.o
 	- rm dylib/*
 	- rmdir dylib
+	- rm temp.sco
 
 # ----------------------- NT -----------------------
 

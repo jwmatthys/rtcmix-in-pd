@@ -36,20 +36,20 @@ void rtcmix_tilde_setup(void)
   class_addmethod(rtcmix_class,(t_method)rtcmix_rtcmix, gensym("rtcmix"), A_GIMME, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_var, gensym("var"), A_GIMME, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_varlist, gensym("varlist"), A_GIMME, 0);
-  class_addmethod(rtcmix_class,(t_method)rtcmix_bufset, gensym("bufset"), A_SYMBOL, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_flush, gensym("flush"), 0);
 
   //so we know what to do with floats that we receive at the inputs
   class_addlist(rtcmix_class, rtcmix_text); // text from [entry] comes in as list
   class_addfloat(rtcmix_class, rtcmix_float);
   class_addbang(rtcmix_class, rtcmix_bang); // trigger scripts
+  class_addmethod(rtcmix_class,(t_method)rtcmix_goscript, gensym("goscript"), A_GIMME, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_openeditor, gensym("click"), 0);
-
   class_addmethod(rtcmix_class,(t_method)rtcmix_setscript, gensym("setscript"), A_GIMME, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_read, gensym("read"), A_GIMME, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_read, gensym("load"), A_GIMME, 0);
-  class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("save"), A_CANT, 0);
-  class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("write"), A_CANT, 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("save"), 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_saveas, gensym("saveas"), 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("write"), 0);
   // openpanel and savepanel return their messages through "callback"
   class_addmethod(rtcmix_class,(t_method)rtcmix_callback, gensym("callback"), A_SYMBOL, 0);
 
@@ -63,22 +63,6 @@ void rtcmix_tilde_setup(void)
   class_addmethod(rtcmix_class, (t_method)rtcmix_inletp2, gensym("pinlet2"), A_FLOAT, 0);
   class_addmethod(rtcmix_class, (t_method)rtcmix_inletp1, gensym("pinlet1"), A_FLOAT, 0);
   class_addmethod(rtcmix_class, (t_method)rtcmix_inletp0, gensym("pinlet0"), A_FLOAT, 0);
-
-  //for the text editor and scripts
-  //JWM - TODO
-  /*addmess ((method)rtcmix_edclose, "edclose", A_CANT, 0);
-  addmess((method)rtcmix_dblclick,	"dblclick",	A_CANT, 0);
-  addmess((method)rtcmix_goscript, "goscript", A_GIMME, 0);
-  addmess((method)rtcmix_openscript, "openscript", A_GIMME, 0);
-  addmess((method)rtcmix_setscript, "setscript", A_GIMME, 0);
-  addmess((method)rtcmix_read, "read", A_GIMME, 0);
-  addmess ((method)rtcmix_okclose, "okclose", A_CANT, 0);
-  addmess((method)rtcmix_write, "savescript", A_GIMME, 0);
-  addmess((method)rtcmix_writeas, "savescriptas", A_GIMME, 0);*/
-
-  // binbuf storage
-  //addmess((method)rtcmix_save, "save", A_CANT, 0);
-  //addmess((method)rtcmix_restore, "restore", A_GIMME, 0);
 }
 
 //this gets called when the object is created; everytime the user types in new args, this will get called
@@ -165,19 +149,15 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
     }
 
   // the text editor
-
-  // JWM: internal script storage is handled with binbufs
   x->current_script = 0;
   x->rw_flag = RTcmixREADFLAG;
 
   x->rtcmix_script = malloc(MAX_SCRIPTS * sizeof(char *));
 
-  t_binbuf *temp = binbuf_new();
-
   for (i=0; i<MAX_SCRIPTS; i++)
     {
       x->rtcmix_script[i] = malloc(MAXSCRIPTSIZE);
-      sprintf(x->s_name[i],"temp script %i",i);
+      sprintf(x->script_name[i],"temp script %i",i);
     }
 
   // This nasty looking stuff is to bind the object's ID
@@ -195,9 +175,13 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   // JWM: since Pd has no decent text editor, I created a simple Text GUI object in
   // Python. It reads temp.sco and rewrites when it's altered. [rtcmix~] reads that
   // temp.sco file, so we need to be sure it exists.
-  if (system("touch temp.sco"))
-    error("error creating temp.sco");
-  x->editor_flag = UNMODIFIED;
+  if (system("touch temp.sco")) {} // 'if' is only there to prevent an error for not using return value
+  if (system("rm temp.sco")) {}
+  if (system("touch temp.sco")) {}
+  x->editor_flag = UNEDITED_SCRIPT;
+
+  for (i=0; i<MAX_SCRIPTS; i++)
+    x->script_size[i] = 0;
 
   post("rtcmix~ -- RTcmix music language, v. %s (%s)", VERSION, RTcmixVERSION);
 
@@ -225,23 +209,6 @@ static void load_dylib(t_rtcmix* x)
   unsigned int j;
   for(j=sizeof(t_object);j<sizeof(t_rtcmix);j++)
     ((char *)x)[j]=0;
-
-     /*
-  // these are the entry function pointers in to the rtcmixdylib.so lib
-  x->rtcmixmain = NULL;
-  x->pd_rtsetparams = NULL;
-  x->pullTraverse = NULL;
-  x->parse_score = NULL;
-  x->check_bang = NULL;
-  x->check_vals = NULL;
-  x->parse_dispatch = NULL;
-  x->check_error = NULL;
-  x->pfield_set = NULL;
-  x->buffer_set = NULL;
-  x->flush = NULL;
-     */
-
-  //constrain number of inputs and outputs
 
   x->dylibincr = dylibincr++; // keep track of rtcmixdylibN.so for copy/load
 
@@ -335,8 +302,8 @@ t_int *rtcmix_perform(t_int *w)
 {
   t_rtcmix *x = (t_rtcmix *)(w[1]);
 
-  float *in[MAX_INPUTS];          //pointers to the input vectors
-  float *out[MAX_OUTPUTS];	//pointers to the output vectors
+  float *in[MAX_INPUTS];   //pointers to the input vectors
+  float *out[MAX_OUTPUTS]; //pointers to the output vectors
 
   t_int n = w[x->num_inputs + x->num_outputs + 2]; //number of samples per vector
 
@@ -382,7 +349,6 @@ t_int *rtcmix_perform(t_int *w)
   // look for a pending bang from MAXBANG()
   if (x->check_bang() == 1) // JWM: no defer in Pd, and BGG says unnecessary anyway
     {
-      //defer_low(x, (method)rtcmix_dobangout, (t_symbol *)NULL, 0, (t_atom *)NULL);
       outlet_bang(x->outpointer);
     }
   // look for pending vals from MAXMESSAGE()
@@ -437,7 +403,7 @@ void rtcmix_free(t_rtcmix *x)
     for (i=0; i<MAX_SCRIPTS; i++)
       {
         free(x->rtcmix_script[i]);
-        sprintf(x->s_name[i],"0");
+        sprintf(x->script_name[i],"0");
       }
 
     free(x->rtcmix_script);
@@ -450,10 +416,9 @@ void rtcmix_free(t_rtcmix *x)
 
 static void rtcmix_openeditor(t_rtcmix *x)
 {
-  x->editor_flag = MODIFIED;
-  rtcmix_dosave(x, "temp.sco");
+  x->editor_flag = EDITED_SCRIPT;
   char *openeditor_cmd = malloc(MAXPDSTRING);
-  sprintf(openeditor_cmd, "python rtcmix_scripteditor.py temp.sco");
+  sprintf(openeditor_cmd, "python rtcmix_scripteditor.py temp.sco &");
   DEBUG(post("cmd: %s",openeditor_cmd););
   if (system(openeditor_cmd))
     error("rtcmix~: can't open rtcmix script editor");
@@ -463,11 +428,12 @@ static void rtcmix_openeditor(t_rtcmix *x)
 // bang triggers the current working script
 void rtcmix_bang(t_rtcmix *x)
 {
-  t_atom a[1];
+  DEBUG(post("rtcmix~: received bang"););
 
   if (x->flushflag == 1) return; // heap and queue being reset
 
-  rtcmix_goscript(x, NULL, 0, a);
+  t_atom *argv = getbytes(0);
+  rtcmix_goscript(x, gensym("\0"), 0, argv);
 }
 
 void rtcmix_float(t_rtcmix *x, t_float scriptnum)
@@ -476,7 +442,7 @@ void rtcmix_float(t_rtcmix *x, t_float scriptnum)
   t_atom *argv = getbytes(0);
   t_int hold_scriptnum = x->current_script;
   x->current_script = (t_int)scriptnum;
-  rtcmix_goscript(x,gensym("\0"),0,argv);
+  rtcmix_goscript(x, gensym("\0"), 0, argv);
   x->current_script = hold_scriptnum;
 }
 
@@ -488,12 +454,12 @@ void rtcmix_version(t_rtcmix *x)
   outlet_bang(x->outpointer);
 }
 
-// JWM: In Pd, this comes from [entry] as a list
+// JWM: In Pd-extended, one-shot commands from [flatgui/entry] as a list
 void rtcmix_text(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   if (x->flushflag == 1) return; // heap and queue being reset
   short i, varnum;
-  char thebuf[MAXPDSTRING]; // should #define these probably
+  char thebuf[MAXPDSTRING];
   char xfer[MAXPDSTRING];
   char *bptr;
   int nchars;
@@ -609,7 +575,6 @@ void rtcmix_badquotes(char *cmd, char *thebuf)
 void rtcmix_rtcmix(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
   if (x->flushflag == 1) return; // heap and queue being reset
-  //defer_low(x, (method)rtcmix_dortcmix, s, argc, argv); // always defer this message
   rtcmix_dortcmix(x,s,argc,argv);
 }
 
@@ -688,101 +653,29 @@ void rtcmix_varlist(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
 }
 
-
-// the "bufset" message allows access to a [buffer~] object.  The only argument is the name of the [buffer~]
-void rtcmix_bufset(t_rtcmix *x, t_symbol *s)
-{
-  /*
-  t_buffer *b;
-
-  if ((b = (t_buffer *)(s->s_thing)) && ob_sym(b) == ps_buffer)
-    {
-      x->buffer_set(s->s_name, b->b_samples, b->b_frames, b->b_nchans, b->b_modtime);
-    }
-  else
-    {
-      error("rtcmix~: no buffer~ %s", s->s_name);
-    }
-  */
-}
-
 // the "flush" message
 void rtcmix_flush(t_rtcmix *x)
 {
   x->flushflag = 1; // set a flag, the flush will happen in perform after pulltraverse()
 }
 
-
-// here is the text-editor buffer stuff, go dan trueman go!
-// used for rtcmix~ internal buffers
-void rtcmix_edclose (t_rtcmix *x, char **text, long size)
-{
-  /*
-  if (x->rtcmix_script[x->current_script])
-    {
-      //sysmem_freeptr((void *)x->rtcmix_script[x->current_script]);
-      freebytes((void *)x->rtcmix_script[x->current_script],sizeof(x->rtcmix_script[x->current_script]));
-      x->rtcmix_script[x->current_script] = 0;
-    }
-  x->rtcmix_script_len[x->current_script] = size;
-  x->rtcmix_script[x->current_script] = (char *)sysmem_newptr((size+1) * sizeof(char)); // size+1 so we can add '\0' at end
-  x->rtcmix_script[x->current_script] = getbytes(
-  strncpy(x->rtcmix_script[x->current_script], *text, size);
-  x->rtcmix_script[x->current_script][size] = '\0'; // add the terminating '\0'
-  x->m_editor = NULL;
-  */
-}
-
-
-void rtcmix_okclose (t_rtcmix *x, char *prompt, short *result)
-{
-  //*result = 3; //don't put up dialog box
-  //return;
-}
-
-
-// open up an ed window on the current buffer
-void rtcmix_dblclick(t_rtcmix *x)
-{
-  DEBUG(post("DOUBLE CLICK!!!"););
-  // JWM - eventually open an editor here
-  /*
-  char title[80];
-
-  if (x->m_editor)
-    {
-      if(x->rtcmix_script[x->current_script])
-        object_method(x->m_editor, gensym("settext"), x->rtcmix_script[x->current_script], gensym("utf-8"));
-    }
-  else
-    {
-      x->m_editor = object_new(CLASS_NOBOX, gensym("jed"), (t_object *)x, 0);
-      sprintf(title,"script_%d", x->current_script);
-      object_attr_setsym(x->m_editor, gensym("title"), gensym(title));
-      if(x->rtcmix_script[x->current_script])
-        object_method(x->m_editor, gensym("settext"), x->rtcmix_script[x->current_script], gensym("utf-8"));
-    }
-
-  object_attr_setchar(x->m_editor, gensym("visible"), 1);
-  */
-}
-
 // the [goscript N] message will cause buffer N to be sent to the RTcmix parser
 void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
+  DEBUG(post("goscript"););
   // JWM reload temp.sco if editor has been open
-  if (x->editor_flag = MODIFIED)
+  post("flag: %i",x->editor_flag);
+  if (x->editor_flag = EDITED_SCRIPT)
     {
       rtcmix_doread(x,"temp.sco");
-      x->editor_flag = UNMODIFIED;
+      x->editor_flag = UNEDITED_SCRIPT;
     }
   short i;
   short temp = 0;
+  // JWM: if banged, triggers current script
   if (argc == 0)
     {
       temp = x->current_script;
-      //error("rtcmix~: goscript needs a buffer number [0-19]");
-      //return;
     }
 
   for (i = 0; i < argc; i++)
@@ -808,10 +701,51 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   short j;
   int tval;
 
-  int buflen = strlen(x->rtcmix_script[x->current_script]);
-  char thebuf[MAXSCRIPTSIZE];
+  int buflen = x->script_size[x->current_script];
+
+  for (j = buflen-1; j>=0; j--)
+    {
+      if ((int)x->rtcmix_script[x->current_script][j]==0)
+        buflen--;
+      else
+        break;
+    }
+  char *thebuf = malloc(buflen);
 
   DEBUG(post("buflen: %i",buflen););
+
+      // JWM: HEAVY DUTY BUFFER DEBUGGER
+
+  DEBUG(
+        j = buflen;
+        i = 0;
+        int linenum = 1;
+        while (i < j)
+          {
+            if (j - i >= 10)
+              {
+                int foo;
+                for (foo=0; foo<10; foo++)
+                  {
+                    if ((int)x->rtcmix_script[x->current_script][i+foo] == 10)
+                      linenum++;
+                  }
+                post("line: %i: chars: %c %c %c %c %c %c %c %c %c %c",
+                     //post("line: %i: chars: %i %i %i %i %i %i %i %i %i %i",
+                     linenum, x->rtcmix_script[x->current_script][i], x->rtcmix_script[x->current_script][i+1], x->rtcmix_script[x->current_script][i+2],
+                     x->rtcmix_script[x->current_script][i+3], x->rtcmix_script[x->current_script][i+4], x->rtcmix_script[x->current_script][i+5],
+                     x->rtcmix_script[x->current_script][i+6], x->rtcmix_script[x->current_script][i+7], x->rtcmix_script[x->current_script][i+8],
+                     x->rtcmix_script[x->current_script][i+9]);
+                i += 10;
+              }
+            else
+              {
+                if ((int)x->rtcmix_script[x->current_script][i] == 10)
+                  linenum++;
+                post("line: %i chars: %c", linenum, x->rtcmix_script[x->current_script][i++]);
+              }
+          });
+
 
   // probably don't need to transfer to a new buffer, but I want to be sure there's room for the \0,
   // plus the substitution of \n for those annoying ^M thingies
@@ -838,34 +772,42 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
             }
           j++;
         }
-      thebuf[j] = '\0';
 
-      // HEAVY DUTY BUFFER DEBUGGER
-      /*
-        i = 0;
-        while (i < j)
+      // JWM: HEAVY DUTY BUFFER DEBUGGER
+
+      DEBUG(
+      i = 0;
+      linenum = 1;
+      while (i < j)
         {
-        if (j - i >= 10)
-        {
-        post("chars: %c %c %c %c %c %c %c %c %c %c",
-        //post("chars: %i %i %i %i %i %i %i %i %i %i",
-        thebuf[i], thebuf[i+1], thebuf[i+2],
-        thebuf[i+3], thebuf[i+4], thebuf[i+5],
-        thebuf[i+6], thebuf[i+7], thebuf[i+8],
-        thebuf[i+9]);
-        i += 10;
-        }
-        else
-        {
-        post("chars: %c", thebuf[i++]);
-        }
-        }
-      */
+          if (j - i >= 10)
+            {
+              int foo;
+              for (foo=0; foo<10; foo++)
+                {
+                  if ((int)thebuf[i+foo] == 10)
+                    linenum++;
+                }
+              //post("line: %i: chars: %c %c %c %c %c %c %c %c %c %c",
+                   post("line: %i: chars: %i %i %i %i %i %i %i %i %i %i",
+                   linenum, thebuf[i], thebuf[i+1], thebuf[i+2],
+                   thebuf[i+3], thebuf[i+4], thebuf[i+5],
+                   thebuf[i+6], thebuf[i+7], thebuf[i+8],
+                   thebuf[i+9]);
+              i += 10;
+            }
+          else
+            {
+              if ((int)thebuf[i] == 10)
+                linenum++;
+              post("line: %i chars: %i", linenum, thebuf[i++]);
+            }
+        });
 
       if ( (canvas_dspstate == 1) || (strncmp(thebuf, "system", 6) == 0) )
         { // don't send if the dacs aren't turned on, unless it is a system() <------- HACK HACK HACK!
 
-          post ("rtcmix~: parsing script %i: \"%s\"",x->current_script,x->s_name[x->current_script]);
+          post ("rtcmix~: parsing script %i: \"%s\"",x->current_script,x->script_name[x->current_script]);
 
           if (x->parse_score(thebuf, j) != 0)
             error("possible problem parsing RTcmix script");
@@ -873,41 +815,8 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
       else
         error ("rtcmix~: can't parse score with DSP off");
     }
+  free(thebuf);
 }
-
-// [openscript N] will open a buffer N
-// JWM: this will requires the hammereditor
-void rtcmix_openscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
-{
-  short i,temp = 0;
-
-  if (argc == 0)
-    {
-      error("rtcmix~: openscript needs a buffer number [0-19]");
-      return;
-    }
-
-  for (i = 0; i < argc; i++)
-    {
-      if (argv[i].a_type == A_FLOAT)
-        temp = (short)argv[i].a_w.w_float;
-    }
-
-  if (temp > MAX_SCRIPTS)
-    {
-      error("rtcmix~: only %d scripts available, setting to script number %d", MAX_SCRIPTS, MAX_SCRIPTS-1);
-      temp = MAX_SCRIPTS-1;
-    }
-  if (temp < 0)
-    {
-      error("rtcmix~: the script number should be > 0!  Resetting to script number 0");
-      temp = 0;
-    }
-
-  x->current_script = temp;
-  rtcmix_dblclick(x);
-}
-
 
 // [setscript N] will set the currently active script to N
 void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
@@ -937,130 +846,17 @@ void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
       temp = 0;
     }
 
+  x->editor_flag==EDITED_SCRIPT;
+  rtcmix_doread(x, "temp.sco");
   x->current_script = (t_int)temp;
-  post("rtcmix~: set current script to %i: \"%s\"", x->current_script, x->s_name[x->current_script]);
-}
-
-
-// the [savescript] message triggers this
-void rtcmix_write(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
-{
-  /*
-  short i, temp = 0;
-
-  for (i = 0; i < argc; i++)
-    {
-      if (argv[i].a_type)
-        temp = (short)argv[i].a_w.w_float;
-    }
-
-  if (temp > MAX_SCRIPTS)
-    {
-      error("rtcmix~: only %d scripts available, setting to script number %d", MAX_SCRIPTS, MAX_SCRIPTS-1);
-      temp = MAX_SCRIPTS-1;
-    }
-  if (temp < 0)
-    {
-      error("rtcmix~: the script number should be > 0!  Resetting to script number 0");
-      temp = 0;
-    }
-
-  x->current_script = temp;
-  DEBUG(post("rtcmix: current script is %d", temp););
-
-  //defer(x, (method)rtcmix_dowrite, s, argc, argv); // always defer this message
-  rtcmix_dowrite(x,s,argc,argv);
-  */
-}
-
-
-// the [savescriptas] message triggers this
-void rtcmix_writeas(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
-{
-  /*
-  short i, temp = 0;
-
-  for (i=0; i < argc; i++)
-    {
-      switch (argv[i].a_type)
-        {
-        case A_FLOAT:
-          temp = (short)argv[i].a_w.w_float;
-          if (temp > MAX_SCRIPTS)
-            {
-              error("rtcmix~: only %d scripts available, setting to script number %d", MAX_SCRIPTS, MAX_SCRIPTS-1);
-              temp = MAX_SCRIPTS-1;
-            }
-          if (temp < 0)
-            {
-              error("rtcmix~: the script number should be > 0!  Resetting to script number 0");
-              temp = 0;
-            }
-          x->current_script = temp;
-          //x->s_name[x->current_script][0] = 0;
-          break;
-        case A_SYMBOL://this doesn't work yet
-          //strcpy(x->s_name[x->current_script], argv[i].a_w.w_symbol->s_name);
-          post("rtcmix~: writing file %s",x->s_name[x->current_script]);
-        }
-    }
-  post("rtcmix: current script is %d", temp);
-
-  //defer(x, (method)rtcmix_dowrite, s, argc, argv); // always defer this message
-  rtcmix_dowrite(x,s,argc,argv);
-  */
-}
-
-
-// deferred from the [save*] messages
-void rtcmix_dowrite(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
-{
-  /*
-  char filename[256];
-  t_handle script_handle;
-  short err;
-  long type_chosen, thistype = 'TEXT';
-  t_filehandle fh;
-
-  if(!x->s_name[x->current_script][0])
-    {
-      //if (saveas_dialog(&x->s_name[0][x->current_script], &x->path[x->current_script], &type))
-      if (saveasdialog_extended(x->s_name[x->current_script], &x->path[x->current_script], &type_chosen, &thistype, 1))
-        return; //user cancelled
-    }
-  strcpy(filename, x->s_name[x->current_script]);
-
-  err = path_createsysfile(filename, x->path[x->current_script], thistype, &fh);
-  if (err)
-    {
-      fh = 0;
-      error("rtcmix~: error %d creating file", err);
-      return;
-    }
-
-  script_handle = sysmem_newhandle(0);
-  sysmem_ptrandhand (x->rtcmix_script[x->current_script], script_handle, x->rtcmix_script_len[x->current_script]);
-
-  err = sysfile_writetextfile(fh, script_handle, TEXT_LB_UNIX);
-  if (err)
-    {
-      fh = 0;
-      error("rtcmix~: error %d writing file", err);
-      return;
-    }
-
-  // BGG for some reason mach-o doesn't like this one... the memory hit should be small
-  //	sysmem_freehandle(script_handle);
-  sysfile_seteof(fh, x->rtcmix_script_len[x->current_script]);
-  sysfile_close(fh);
-
-  return;
-  */
+  post("rtcmix~: set current script to %i: \"%s\"", x->current_script, x->script_name[x->current_script]);
+  rtcmix_dosave(x,"temp.sco");
 }
 
 // the [read ...] message triggers this
 void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
+  DEBUG(post("read"););
   int i;
   int temp = x->current_script;
   t_symbol *filename;
@@ -1106,7 +902,13 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
 }
 
-void rtcmix_save(t_rtcmix *x, void *w)
+void rtcmix_save(t_rtcmix *x)
+{
+  DEBUG(post("save signaled"););
+  rtcmix_dosave(x, x->script_name[x->current_script]);
+}
+
+void rtcmix_saveas(t_rtcmix *x)
 {
   DEBUG(post("savepanel signaled"););
   x->rw_flag = RTcmixWRITEFLAG;
@@ -1118,75 +920,69 @@ void rtcmix_callback(t_rtcmix *x, t_symbol *filename)
   DEBUG(post("callback! flag = %d",x->rw_flag););
   DEBUG(post("current script: %i",x->current_script););
   char *buf = malloc(MAXPDSTRING);
-  sprintf(x->s_name[x->current_script], "%s",filename->s_name);
+  sprintf(x->script_name[x->current_script], "%s",filename->s_name);
   switch (x->rw_flag)
     {
     case RTcmixWRITEFLAG:
       canvas_makefilename(x->x_canvas, filename->s_name,
                           buf, MAXPDSTRING);
       rtcmix_dosave(x,buf);
-      /*if (binbuf_write(x->rtcmix_script[x->current_script], buf, "", CRFLAG))
-        error("rtcmix~: %s: write failed", buf);
-        else
-        post("rtcmix~: wrote script %i to \"%s\"",x->current_script,buf);*/
       break;
     case RTcmixREADFLAG:
     default:
       rtcmix_doread(x,filename->s_name);
-      /*DEBUG(post("loading into binbuf %i:", x->current_script););
-        if (binbuf_read_via_canvas(x->rtcmix_script[x->current_script], filename->s_name, x->x_canvas, CRFLAG))
-        error("rtcmix~: %s: read failed", filename->s_name);
-        else
-        post("rtcmix~: read \"%s\" into script %i",filename->s_name,x->current_script);
-        t_atom eof;
-        t_symbol *eof_marker = gensym("\0");
-        SETSYMBOL(&eof,eof_marker);
-        binbuf_add(x->rtcmix_script[x->current_script], 1,&eof );*/
     }
   free(buf);
 }
 
 static void rtcmix_doread(t_rtcmix *x, char* filename)
 {
+  DEBUG(post("doread %s",filename););
   FILE *fp = fopen ( filename , "rb" );
 
-  long lSize;
-  char buffer[MAXSCRIPTSIZE];
-  if( fp == NULL)
+  long lSize = 0;
+  char *buffer;
+  if( fp == NULL )
     {
       // JWM: if user opens an empty editor and then closes it empty,
       // it would trigger an error message, so this surpresses it
-      if (x->editor_flag==UNMODIFIED)
+      if (x->editor_flag==UNEDITED_SCRIPT)
         error("rtcmix~: error reading \"%s\"",filename);
       goto out;
     }
-  else
+
+  fseek( fp , 0L , SEEK_END);
+  lSize = ftell( fp );
+  rewind( fp );
+
+  if (lSize>MAXSCRIPTSIZE)
     {
-      fseek( fp , 0L , SEEK_END);
-      lSize = ftell( fp );
-      rewind( fp );
-
-      if (lSize>MAXSCRIPTSIZE)
-        {
-          error("rtcmix~: error: file is longer than MAXSCRIPTSIZE");
-          goto out;
-        }
-
-      if( 1!=fread( buffer , lSize-1, 1 , fp) )
-        {
-          // error if file is empty; this is not necessary an error
-          // if you close the editor with an empty file
-          if (x->editor_flag==UNMODIFIED)
-            error("rtcmix~: failed to read file");
-          goto out;
-        }
+      error("rtcmix~: error: file is longer than MAXSCRIPTSIZE");
+      fclose(fp);
+      goto out;
     }
 
-  sprintf(x->rtcmix_script[x->current_script], "%s",buffer);
-
- out:
+  buffer = malloc(MAXSCRIPTSIZE);
+  if( 1!=fread( buffer , lSize-1, 1 , fp) )
+    {
+      // error if file is empty; this is not necessary an error
+      // if you close the editor with an empty file
+      if (x->editor_flag==UNEDITED_SCRIPT)
+        error("rtcmix~: failed to read file");
+      fclose(fp);
+      goto out;
+    }
+  if (lSize>0)
+    sprintf(x->rtcmix_script[x->current_script], "%s",buffer);
+  free(buffer);
   fclose(fp);
-  x->editor_flag = UNMODIFIED;
+  // if it's not a temp file already, save to temp.sco
+  if (x->editor_flag==UNEDITED_SCRIPT)
+    rtcmix_dosave(x, "temp.sco");
+
+  out:
+  x->script_size[x->current_script] = lSize;
+  x->editor_flag = UNEDITED_SCRIPT;
 }
 
 static void rtcmix_dosave(t_rtcmix *x, char* filename)
@@ -1209,7 +1005,7 @@ static void rtcmix_dosave(t_rtcmix *x, char* filename)
              strlen(x->rtcmix_script[x->current_script]),
              pfile);
     }
-  if (x->editor_flag == UNMODIFIED)
+  if (x->editor_flag == EDITED_SCRIPT)
     post("rtcmix~: wrote script %i to %s",x->current_script,filename);
   fclose(pfile);
 }
