@@ -9,7 +9,7 @@ class RoomEditor(Text):
         self.config(
             wrap=WORD, # use word wrapping
             undo=True,
-            width=64,
+            width=100
             )
 
         self.filename = None # current document
@@ -47,6 +47,8 @@ class RoomEditor(Text):
         try:
             f.write(s.rstrip())
             f.write("\n")
+        except UnicodeEncodeError:
+            root.quit()
         finally:
             f.close()
         self.modified = False
@@ -156,7 +158,6 @@ def file_save_as(event=None):
     return "break"
 
 def file_quit(event=None):
-    print("foo!! foo!!")
     try:
         editor.save("temp.sco")
     except Cancel:
@@ -168,6 +169,7 @@ editor.bind("<Control-o>", file_open)
 editor.bind("<Control-s>", file_save)
 editor.bind("<Control-Shift-S>", file_save_as)
 editor.bind("<Control-q>", file_quit)
+editor.bind("<Control-w>", file_quit)
 
 root.protocol("WM_DELETE_WINDOW", file_quit) # window close button
 

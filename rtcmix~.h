@@ -16,7 +16,14 @@ char mpathname[MAXPDSTRING];
 // I use a flag to indicate whether we're loading or writing
 #define RTcmixREADFLAG 0
 #define RTcmixWRITEFLAG 1
-#define CRFLAG 1 // Flag for carriage return translation for binbufs
+
+// JWM: since Pd has no decent internal text editor, I use an external application built in python
+// which reads temp.sco, modifies it, and rewrites it. If <modified>, rtcmix_goscript() rereads the
+// temp file so we're sure to have the most recent edit. Modified also supresses some unnecessary
+// messages in the doread and dosave functions.
+#define UNMODIFIED 0
+#define MODIFIED 1
+
 
 /*** RTcmix stuff ---------------------------------------------------------------------------***/
 
@@ -93,7 +100,7 @@ typedef struct _rtcmix
 
   // buffer for error-reporting
   char theerror[MAXPDSTRING];
-  short tempbuffer_flag;
+  short editor_flag;
   /*
   // editor stuff
   // JWM: TODO: will try to implement custom editor later
@@ -135,7 +142,9 @@ static void rtcmix_dlopen_and_errorcheck(t_rtcmix *x);
 
 // JWM: for getting bang at left inlet only
 void rtcmix_bang(t_rtcmix *x);
+void rtcmix_float(t_rtcmix *x, t_float scriptnum);
 // JWM: float inlets are rewritten (in a horrible embarassing way) below
+
 
 //for custom messages
 void rtcmix_version(t_rtcmix *x);
@@ -169,7 +178,7 @@ static void rtcmix_doread(t_rtcmix *x, char* filename);
 static void rtcmix_dosave(t_rtcmix *x, char* filename);
 
 // for receiving pfields from inlets
-static void rtcmix_float(t_rtcmix *x, short inlet, t_float f);
+static void rtcmix_float_inlet(t_rtcmix *x, short inlet, t_float f);
 static void rtcmix_inletp0(t_rtcmix *x, t_float f);
 static void rtcmix_inletp1(t_rtcmix *x, t_float f);
 static void rtcmix_inletp2(t_rtcmix *x, t_float f);

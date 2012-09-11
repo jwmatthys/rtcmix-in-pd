@@ -471,12 +471,12 @@ s,@ECHO_N@,-n,;t t
 s,@ECHO_T@,,;t t
 s,@LIBS@,,;t t
 s,@CMIXDIR@,/home/jwmatthys/rtcmix-in-pd/RTcmix-pd-4.0.1.6,;t t
-s,@build@,x86_64-unknown-linux-gnu,;t t
-s,@build_cpu@,x86_64,;t t
+s,@build@,powerpc64-unknown-linux-gnu,;t t
+s,@build_cpu@,powerpc64,;t t
 s,@build_vendor@,unknown,;t t
 s,@build_os@,linux-gnu,;t t
-s,@host@,x86_64-unknown-linux-gnu,;t t
-s,@host_cpu@,x86_64,;t t
+s,@host@,powerpc64-unknown-linux-gnu,;t t
+s,@host_cpu@,powerpc64,;t t
 s,@host_vendor@,unknown,;t t
 s,@host_os@,linux-gnu,;t t
 s,@ARCH@,LINUX,;t t

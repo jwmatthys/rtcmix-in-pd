@@ -41,7 +41,7 @@ void rtcmix_tilde_setup(void)
 
   //so we know what to do with floats that we receive at the inputs
   class_addlist(rtcmix_class, rtcmix_text); // text from [entry] comes in as list
-  //class_addfloat(rtcmix_class, rtcmix_float);
+  class_addfloat(rtcmix_class, rtcmix_float);
   class_addbang(rtcmix_class, rtcmix_bang); // trigger scripts
   class_addmethod(rtcmix_class,(t_method)rtcmix_openeditor, gensym("click"), 0);
 
@@ -197,7 +197,7 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   // temp.sco file, so we need to be sure it exists.
   if (system("touch temp.sco"))
     error("error creating temp.sco");
-  x->tempbuffer_flag = 0;
+  x->editor_flag = UNMODIFIED;
 
   post("rtcmix~ -- RTcmix music language, v. %s (%s)", VERSION, RTcmixVERSION);
 
@@ -221,18 +221,12 @@ static void load_dylib(t_rtcmix* x)
   // BGG kept this in for the dlopen() stuff
 
   //zero out the struct, to be careful (takk to jkclayton)
-  // JWM: TROUBLE! somehow this is zeroing out num_output too
-  // I suspect it's because not all of the objects are the
-  // same size; I'm going to disable this and see if it
-  // causes any trouble in the long run...
+  // JWM - no need for null check; just zero it out anyway.
+  unsigned int j;
+  for(j=sizeof(t_object);j<sizeof(t_rtcmix);j++)
+    ((char *)x)[j]=0;
 
-     if (x)
-     {
-     unsigned int j;
-     for(j=sizeof(t_object);j<sizeof(t_rtcmix);j++)
-     ((char *)x)[j]=0;
-     }
-
+     /*
   // these are the entry function pointers in to the rtcmixdylib.so lib
   x->rtcmixmain = NULL;
   x->pd_rtsetparams = NULL;
@@ -245,6 +239,7 @@ static void load_dylib(t_rtcmix* x)
   x->pfield_set = NULL;
   x->buffer_set = NULL;
   x->flush = NULL;
+     */
 
   //constrain number of inputs and outputs
 
@@ -455,7 +450,7 @@ void rtcmix_free(t_rtcmix *x)
 
 static void rtcmix_openeditor(t_rtcmix *x)
 {
-  x->tempbuffer_flag = 1;
+  x->editor_flag = MODIFIED;
   rtcmix_dosave(x, "temp.sco");
   char *openeditor_cmd = malloc(MAXPDSTRING);
   sprintf(openeditor_cmd, "python rtcmix_scripteditor.py temp.sco");
@@ -463,9 +458,6 @@ static void rtcmix_openeditor(t_rtcmix *x)
   if (system(openeditor_cmd))
     error("rtcmix~: can't open rtcmix script editor");
   free(openeditor_cmd);
-  // JWM: Ugh, I'm not fond of this. It basically just surpresses a
-  // few error messages
-  rtcmix_doread(x,"temp.sco");
 }
 
 // bang triggers the current working script
@@ -476,6 +468,16 @@ void rtcmix_bang(t_rtcmix *x)
   if (x->flushflag == 1) return; // heap and queue being reset
 
   rtcmix_goscript(x, NULL, 0, a);
+}
+
+void rtcmix_float(t_rtcmix *x, t_float scriptnum)
+{
+  DEBUG(post("received float %f",scriptnum););
+  t_atom *argv = getbytes(0);
+  t_int hold_scriptnum = x->current_script;
+  x->current_script = (t_int)scriptnum;
+  rtcmix_goscript(x,gensym("\0"),0,argv);
+  x->current_script = hold_scriptnum;
 }
 
 
@@ -768,6 +770,12 @@ void rtcmix_dblclick(t_rtcmix *x)
 // the [goscript N] message will cause buffer N to be sent to the RTcmix parser
 void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
+  // JWM reload temp.sco if editor has been open
+  if (x->editor_flag = MODIFIED)
+    {
+      rtcmix_doread(x,"temp.sco");
+      x->editor_flag = UNMODIFIED;
+    }
   short i;
   short temp = 0;
   if (argc == 0)
@@ -801,7 +809,7 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   int tval;
 
   int buflen = strlen(x->rtcmix_script[x->current_script]);
-  char *thebuf = malloc(MAXSCRIPTSIZE);
+  char thebuf[MAXSCRIPTSIZE];
 
   DEBUG(post("buflen: %i",buflen););
 
@@ -810,61 +818,59 @@ void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   if (buflen<=0)
     {
       error("rtcmix~: you are triggering a 0-length script!");
-      return;
     }
-
-  for (i = 0, j = 0; i < buflen; i++)
+  else
     {
-      thebuf[j] = *(x->rtcmix_script[x->current_script]+i);
-      if ((int)thebuf[j] == 13) thebuf[j] = 10; // RTcmix wants newlines, not <cr>'s
-      if ((int)thebuf[j] == 9) thebuf[j] = 32; // turn tab into space
-
-      // ok, here's where we substitute the $vars
-      if ((int)thebuf[j] == 36)
+      for (i = 0, j = 0; i < buflen; i++)
         {
-          sscanf(x->rtcmix_script[x->current_script]+i+1, "%d", &tval);
-          if ( !(x->var_set[tval-1]) )
-            error("variable $%d has not been set yet, using 0.0 as default", tval);
-          sprintf(thebuf+j, "%f", x->var_array[tval-1]);
-          j = strlen(thebuf)-1;
-          i++; // skip over the var number in input
+          thebuf[j] = *(x->rtcmix_script[x->current_script]+i);
+          if ((int)thebuf[j] == 13) thebuf[j] = 10; // RTcmix wants newlines, not <cr>'s
+
+          // ok, here's where we substitute the $vars
+          if ((int)thebuf[j] == 36)
+            {
+              sscanf(x->rtcmix_script[x->current_script]+i+1, "%d", &tval);
+              if ( !(x->var_set[tval-1]) )
+                error("variable $%d has not been set yet, using 0.0 as default", tval);
+              sprintf(thebuf+j, "%f", x->var_array[tval-1]);
+              j = strlen(thebuf)-1;
+              i++; // skip over the var number in input
+            }
+          j++;
         }
-      j++;
+      thebuf[j] = '\0';
+
+      // HEAVY DUTY BUFFER DEBUGGER
+      /*
+        i = 0;
+        while (i < j)
+        {
+        if (j - i >= 10)
+        {
+        post("chars: %c %c %c %c %c %c %c %c %c %c",
+        //post("chars: %i %i %i %i %i %i %i %i %i %i",
+        thebuf[i], thebuf[i+1], thebuf[i+2],
+        thebuf[i+3], thebuf[i+4], thebuf[i+5],
+        thebuf[i+6], thebuf[i+7], thebuf[i+8],
+        thebuf[i+9]);
+        i += 10;
+        }
+        else
+        {
+        post("chars: %c", thebuf[i++]);
+        }
+        }
+      */
+
+      if ( (canvas_dspstate == 1) || (strncmp(thebuf, "system", 6) == 0) )
+        { // don't send if the dacs aren't turned on, unless it is a system() <------- HACK HACK HACK!
+
+          post ("rtcmix~: parsing script %i: \"%s\"",x->current_script,x->s_name[x->current_script]);
+
+          if (x->parse_score(thebuf, j) != 0)
+            error("possible problem parsing RTcmix script");
+        }
     }
-  thebuf[j] = '\0';
-
-  // HEAVY DUTY BUFFER DEBUGGER
-  /*
-  i = 0;
-  while (i < j)
-    {
-      if (j - i >= 10)
-        {
-          post("chars: %c %c %c %c %c %c %c %c %c %c",
-          //post("chars: %i %i %i %i %i %i %i %i %i %i",
-               thebuf[i], thebuf[i+1], thebuf[i+2],
-               thebuf[i+3], thebuf[i+4], thebuf[i+5],
-               thebuf[i+6], thebuf[i+7], thebuf[i+8],
-               thebuf[i+9]);
-          i += 10;
-        }
-      else
-        {
-          post("chars: %c", thebuf[i++]);
-        }
-    }
-  */
-
-  if ( (canvas_dspstate == 1) || (strncmp(thebuf, "system", 6) == 0) )
-    { // don't send if the dacs aren't turned on, unless it is a system() <------- HACK HACK HACK!
-
-      post ("rtcmix~: parsing script %i: \"%s\"",x->current_script,x->s_name[x->current_script]);
-
-      if (x->parse_score(thebuf, j) != 0)
-        error("possible problem parsing RTcmix script");
-
-      }
-  free(thebuf);
 }
 
 // [openscript N] will open a buffer N
@@ -1107,36 +1113,36 @@ void rtcmix_save(t_rtcmix *x, void *w)
 
 void rtcmix_callback(t_rtcmix *x, t_symbol *filename)
 {
-DEBUG(post("callback! flag = %d",x->rw_flag););
+  DEBUG(post("callback! flag = %d",x->rw_flag););
   DEBUG(post("current script: %i",x->current_script););
-    char *buf = malloc(MAXPDSTRING);
-    sprintf(x->s_name[x->current_script], "%s",filename->s_name);
-        switch (x->rw_flag)
-          {
- case RTcmixWRITEFLAG:
-   canvas_makefilename(x->x_canvas, filename->s_name,
-                         buf, MAXPDSTRING);
-     rtcmix_dosave(x,buf);
+  char *buf = malloc(MAXPDSTRING);
+  sprintf(x->s_name[x->current_script], "%s",filename->s_name);
+  switch (x->rw_flag)
+    {
+    case RTcmixWRITEFLAG:
+      canvas_makefilename(x->x_canvas, filename->s_name,
+                          buf, MAXPDSTRING);
+      rtcmix_dosave(x,buf);
       /*if (binbuf_write(x->rtcmix_script[x->current_script], buf, "", CRFLAG))
         error("rtcmix~: %s: write failed", buf);
-      else
-      post("rtcmix~: wrote script %i to \"%s\"",x->current_script,buf);*/
+        else
+        post("rtcmix~: wrote script %i to \"%s\"",x->current_script,buf);*/
       break;
     case RTcmixREADFLAG:
     default:
       rtcmix_doread(x,filename->s_name);
       /*DEBUG(post("loading into binbuf %i:", x->current_script););
-      if (binbuf_read_via_canvas(x->rtcmix_script[x->current_script], filename->s_name, x->x_canvas, CRFLAG))
+        if (binbuf_read_via_canvas(x->rtcmix_script[x->current_script], filename->s_name, x->x_canvas, CRFLAG))
         error("rtcmix~: %s: read failed", filename->s_name);
-      else
+        else
         post("rtcmix~: read \"%s\" into script %i",filename->s_name,x->current_script);
-      t_atom eof;
-      t_symbol *eof_marker = gensym("\0");
-      SETSYMBOL(&eof,eof_marker);
-      binbuf_add(x->rtcmix_script[x->current_script], 1,&eof );*/
+        t_atom eof;
+        t_symbol *eof_marker = gensym("\0");
+        SETSYMBOL(&eof,eof_marker);
+        binbuf_add(x->rtcmix_script[x->current_script], 1,&eof );*/
     }
   free(buf);
-    }
+}
 
 static void rtcmix_doread(t_rtcmix *x, char* filename)
 {
@@ -1146,7 +1152,9 @@ static void rtcmix_doread(t_rtcmix *x, char* filename)
   char buffer[MAXSCRIPTSIZE];
   if( fp == NULL)
     {
-      if (x->tempbuffer_flag==0)
+      // JWM: if user opens an empty editor and then closes it empty,
+      // it would trigger an error message, so this surpresses it
+      if (x->editor_flag==UNMODIFIED)
         error("rtcmix~: error reading \"%s\"",filename);
       goto out;
     }
@@ -1159,13 +1167,14 @@ static void rtcmix_doread(t_rtcmix *x, char* filename)
       if (lSize>MAXSCRIPTSIZE)
         {
           error("rtcmix~: error: file is longer than MAXSCRIPTSIZE");
-          fclose(fp);
           goto out;
         }
 
       if( 1!=fread( buffer , lSize-1, 1 , fp) )
         {
-          if (x->tempbuffer_flag==0)
+          // error if file is empty; this is not necessary an error
+          // if you close the editor with an empty file
+          if (x->editor_flag==UNMODIFIED)
             error("rtcmix~: failed to read file");
           goto out;
         }
@@ -1174,9 +1183,8 @@ static void rtcmix_doread(t_rtcmix *x, char* filename)
   sprintf(x->rtcmix_script[x->current_script], "%s",buffer);
 
  out:
-  x->tempbuffer_flag = 0;
   fclose(fp);
-
+  x->editor_flag = UNMODIFIED;
 }
 
 static void rtcmix_dosave(t_rtcmix *x, char* filename)
@@ -1186,7 +1194,7 @@ static void rtcmix_dosave(t_rtcmix *x, char* filename)
   pfile = fopen(filename,"w");
   if(pfile == NULL)
     {
-      error("rtcmix~: error opening \"&s\" for writing");
+      error("rtcmix~: error opening \"%s\" for writing",filename);
       fclose(pfile);
       return;
     }
@@ -1199,7 +1207,7 @@ static void rtcmix_dosave(t_rtcmix *x, char* filename)
              strlen(x->rtcmix_script[x->current_script]),
              pfile);
     }
-  if (x->tempbuffer_flag==0)
+  if (x->editor_flag == UNMODIFIED)
     post("rtcmix~: wrote script %i to %s",x->current_script,filename);
   fclose(pfile);
 }
@@ -1207,56 +1215,56 @@ static void rtcmix_dosave(t_rtcmix *x, char* filename)
 static void rtcmix_inletp0(t_rtcmix *x, t_float f)
 {
   DEBUG(post("received %f at pinlet 0",f););
-  rtcmix_float(x,0,f);
+  rtcmix_float_inlet(x,0,f);
 }
 
 static void rtcmix_inletp1(t_rtcmix *x, t_float f)
 {
   DEBUG(post("received %f at pinlet 1",f););
-  rtcmix_float(x,1,f);
+  rtcmix_float_inlet(x,1,f);
 }
 static void rtcmix_inletp2(t_rtcmix *x, t_float f)
 {
   DEBUG(post("received %f at pinlet 2",f););
-  rtcmix_float(x,2,f);
+  rtcmix_float_inlet(x,2,f);
 }
 static void rtcmix_inletp3(t_rtcmix *x, t_float f)
 {
   DEBUG(post("received %f at pinlet 3",f););
-  rtcmix_float(x,3,f);
+  rtcmix_float_inlet(x,3,f);
 }
 static void rtcmix_inletp4(t_rtcmix *x, t_float f)
 {
   DEBUG(post("received %f at pinlet 4",f););
-  rtcmix_float(x,4,f);
+  rtcmix_float_inlet(x,4,f);
 }
 static void rtcmix_inletp5(t_rtcmix *x, t_float f)
 {
   DEBUG(post("received %f at pinlet 5",f););
-  rtcmix_float(x,5,f);
+  rtcmix_float_inlet(x,5,f);
 }
 static void rtcmix_inletp6(t_rtcmix *x, t_float f)
 {
   DEBUG(post("received %f at pinlet 6",f););
-  rtcmix_float(x,6,f);
+  rtcmix_float_inlet(x,6,f);
 }
 static void rtcmix_inletp7(t_rtcmix *x, t_float f)
 {
   DEBUG(post("received %f at pinlet 7",f););
-  rtcmix_float(x,7,f);
+  rtcmix_float_inlet(x,7,f);
 }
 static void rtcmix_inletp8(t_rtcmix *x, t_float f)
 {
   DEBUG(post("received %f at pinlet 8",f););
-  rtcmix_float(x,8,f);
+  rtcmix_float_inlet(x,8,f);
 }
 static void rtcmix_inletp9(t_rtcmix *x, t_float f)
 {
   DEBUG(post("received %f at pinlet 9",f););
-  rtcmix_float(x,9,f);
+  rtcmix_float_inlet(x,9,f);
 }
 
-static void rtcmix_float(t_rtcmix *x, short inlet, t_float f)
+static void rtcmix_float_inlet(t_rtcmix *x, short inlet, t_float f)
 {
   //check to see which input the float came in, then set the appropriate variable value
   if (inlet >= x->num_inputs)
