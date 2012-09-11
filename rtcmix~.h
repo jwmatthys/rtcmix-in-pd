@@ -1,7 +1,6 @@
-#define VERSION "0.01"
-#define RTcmixVERSION "RTcmix-pd-4.0.1.6"
-
 #include "m_pd.h"
+
+#define RTCMIXEXTERNALNAME "rtcmix~.pd_linux"
 
 int dylibincr = 0;
 // for where the rtcmix-dylibs folder is located
@@ -79,7 +78,7 @@ typedef struct _rtcmix
   int dylibincr;
   void *rtcmixdylib;
   // for the full path to the rtcmixdylib.so file
-  char *pathname; //[MAXPDSTRING];
+  char pathname[MAXPDSTRING];
 
   // space for these malloc'd in rtcmix_dsp()
   float *pd_outbuf;
@@ -107,6 +106,7 @@ typedef struct _rtcmix
   char script_name[MAX_SCRIPTS][256];
   t_int script_size[MAX_SCRIPTS];
   t_int current_script, rw_flag;
+  char tempfile_path[MAXPDSTRING];
   // JWM : canvas objects for callback addressing
   t_canvas *x_canvas;
   t_symbol *canvas_path;
@@ -151,7 +151,7 @@ void rtcmix_flush(t_rtcmix *x);
 
 //for the text editor
 void rtcmix_dblclick(t_rtcmix *x);
-void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
+void rtcmix_goscript(t_rtcmix *x, t_float s);
 static void rtcmix_openeditor(t_rtcmix *x);
 void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);

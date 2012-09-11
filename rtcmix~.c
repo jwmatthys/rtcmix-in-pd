@@ -1,13 +1,15 @@
-// rtcmix~ v 0.01, Joel Matthys (8/2012) (Linux, Pd support), based on:
+// rtcmix~ v 0.11, Joel Matthys (8/2012) (Linux, Pd support), based on:
 // rtcmix~ v 1.81, Brad Garton (2/2011) (OS 10.5/6, Max5 support)
 // uses the RTcmix bundled executable lib, now based on RTcmix-4.0.1.6
 // see http://music.columbia.edu/cmc/RTcmix for more info
-//
-// see rtcmix~.c in BGG's rtcmix~ for Max/MSP thank yous & changelog
+
+#define VERSION "0.11"
+#define RTcmixVERSION "RTcmix-pd-4.0.1.6"
 
 // JWM - Pd headers
 #include "rtcmix~.h"
 #include "m_pd.h"
+#include "m_imp.h"
 #include <string.h>
 #include <math.h>
 #include <stdio.h>
@@ -42,7 +44,7 @@ void rtcmix_tilde_setup(void)
   class_addlist(rtcmix_class, rtcmix_text); // text from [entry] comes in as list
   class_addfloat(rtcmix_class, rtcmix_float);
   class_addbang(rtcmix_class, rtcmix_bang); // trigger scripts
-  class_addmethod(rtcmix_class,(t_method)rtcmix_goscript, gensym("goscript"), A_GIMME, 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_goscript, gensym("goscript"), A_FLOAT, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_openeditor, gensym("click"), 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_setscript, gensym("setscript"), A_GIMME, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_read, gensym("read"), A_GIMME, 0);
@@ -72,7 +74,37 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   // creates the object
   t_rtcmix *x = (t_rtcmix *)pd_new(rtcmix_class);
 
-  load_dylib(x);
+  // using Pd's open_via_path to find rtcmix~, and from there rtcmixdylib.so
+  //char temp_path[MAXPDSTRING]; //, *pathptr;
+  char *externdir = rtcmix_class->c_externdir->s_name;
+  DEBUG(post("dir: %s %i %i",externdir, strlen(externdir),MAXPDSTRING););
+  sprintf(mpathname, "%s/dylib/", externdir);
+  //int fd = -1;
+  //fd = open_via_path(".", RTCMIXEXTERNALNAME, "", temp_path, &pathptr, MAXPDSTRING,0);
+
+  DEBUG(post("external path: %s",mpathname););
+  /*
+  if(x)
+    {
+      unsigned int j;
+      for(j=sizeof(t_object);j<sizeof(t_rtcmix);j++)
+        ((char *)x)[j]=0;
+    }
+  */
+  x->dylibincr = dylibincr++; // keep track of rtcmixdylibN.so for copy/load
+
+  // full path to the rtcmixdylib.so file
+  sprintf(x->pathname, "%srtcmixdylib%d.so", mpathname, x->dylibincr);
+
+  char cp_command[MAXPDSTRING];
+
+  // ok, this is fairly insane.  To guarantee a fully-isolated namespace with dlopen(), we need
+  // a totally *unique* dylib, so we copy this.  Deleted in rtcmix_free() below
+  // RTLD_LOCAL doesn't do it all - probably the global vars in RTcmix
+  sprintf(cp_command, "cp \"%srtcmixdylib.so\" \"%s\"",mpathname,x->pathname);
+  if (system(cp_command)) error("error creating unique dylib copy");
+
+  rtcmix_dlopen_and_errorcheck(x);
 
   int i;
 
@@ -87,7 +119,6 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
       num_inoutputs = atom_getint(argv);
     }
   DEBUG(post("creating %d inlets and outlets and %d additional inlets",num_inoutputs,num_additional););
-
   if (num_inoutputs < 1) num_inoutputs = 1; // no args, use default of 1 channel in/out
   if ((num_inoutputs + num_additional) > MAX_INPUTS)
     {
@@ -136,7 +167,6 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   for (i = 0; i < (x->num_inputs + x->num_pinlets); i++)
     {
       x->in[i] = 0.;
-      x->in_connected[i] = 0;
     }
 
   // set up for the variable-substitution scheme
@@ -152,7 +182,7 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   x->current_script = 0;
   x->rw_flag = RTcmixREADFLAG;
 
-  x->rtcmix_script = malloc(MAX_SCRIPTS * sizeof(char *));
+  x->rtcmix_script = malloc(MAX_SCRIPTS * MAXSCRIPTSIZE);
 
   for (i=0; i<MAX_SCRIPTS; i++)
     {
@@ -175,11 +205,9 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   // JWM: since Pd has no decent text editor, I created a simple Text GUI object in
   // Python. It reads temp.sco and rewrites when it's altered. [rtcmix~] reads that
   // temp.sco file, so we need to be sure it exists.
-  if (system("touch temp.sco")) {} // 'if' is only there to prevent an error for not using return value
-  if (system("rm temp.sco")) {}
-  if (system("touch temp.sco")) {}
-  x->editor_flag = UNEDITED_SCRIPT;
 
+  x->editor_flag = UNEDITED_SCRIPT;
+  sprintf(x->tempfile_path,"%stemp.sco",mpathname);
   for (i=0; i<MAX_SCRIPTS; i++)
     x->script_size[i] = 0;
 
@@ -191,24 +219,35 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
 static void load_dylib(t_rtcmix* x)
 {
   // using Pd's open_via_path to find rtcmix~, and from there rtcmixdylib.so
-  char temp_path[MAXPDSTRING], *pathptr;
-  int fd = -1;
-  fd = open_via_path(".","rtcmix~.pd_linux","",temp_path, &pathptr, MAXPDSTRING,1);
+  //char temp_path[MAXPDSTRING]; //, *pathptr;
+  /*
+  char *temp_path;//, *pathptr;
+  temp_path = malloc(MAXPDSTRING);
+  temp_path = rtcmix_class->c_externdir->s_name;
+  sprintf(mpathname,"%s/dylib/",temp_path);
+  //int fd = -1;
+  //fd = open_via_path(".", RTCMIXEXTERNALNAME, "", temp_path, &pathptr, MAXPDSTRING,0);
+
+  DEBUG(post("external path: %s",temp_path););
+  free(temp_path);
   if (fd < 0)
     error ("open_via_path() failed!");
   // JWM: TODO: add backup which uses canvas path
   else
     {
+      sys_close(fd);
       sprintf(mpathname,"%s/dylib/",temp_path);
     }
-
   // BGG kept this in for the dlopen() stuff
 
   //zero out the struct, to be careful (takk to jkclayton)
   // JWM - no need for null check; just zero it out anyway.
-  unsigned int j;
-  for(j=sizeof(t_object);j<sizeof(t_rtcmix);j++)
-    ((char *)x)[j]=0;
+  if(x)
+    {
+      unsigned int j;
+      for(j=sizeof(t_object);j<sizeof(t_rtcmix);j++)
+        ((char *)x)[j]=0;
+    }
 
   x->dylibincr = dylibincr++; // keep track of rtcmixdylibN.so for copy/load
 
@@ -225,6 +264,8 @@ static void load_dylib(t_rtcmix* x)
   if (system(cp_command)) error("error creating unique dylib copy");
 
   rtcmix_dlopen_and_errorcheck(x);
+  */
+
 }
 
 //this gets called everytime audio is started; even when audio is running, if the user
@@ -239,6 +280,7 @@ void rtcmix_dsp(t_rtcmix *x, t_signal **sp)
   t_int dsp_add_args [x->num_inputs + x->num_outputs + 2];
   t_int vector_size = sp[0]->s_n;
   int i;
+  unsigned int j;
 
   // RTcmix vars
   // these are the entry function pointers in to the rtcmixdylib.so lib
@@ -276,7 +318,8 @@ void rtcmix_dsp(t_rtcmix *x, t_signal **sp)
   dsp_addv(rtcmix_perform, (x->num_inputs  + x->num_outputs + 2),(t_int*)dsp_add_args); //add them to the signal chain
 
   // reload, this reinits the RTcmix queue, etc.
-  dlclose(x->rtcmixdylib);
+  if (x->rtcmixdylib)
+    dlclose(x->rtcmixdylib);
 
   // load the dylib
   rtcmix_dlopen_and_errorcheck(x);
@@ -386,14 +429,13 @@ t_int *rtcmix_perform(t_int *w)
 void rtcmix_free(t_rtcmix *x)
 {
   // BGG kept dlopen() stuff in in case NSLoad gets dropped
-  char *rm_command = malloc(MAXPDSTRING);
+  char rm_command[MAXPDSTRING];
 
     dlclose(x->rtcmixdylib);
     sprintf(rm_command, "rm -rf \"%s\" ", x->pathname);
     if (system(rm_command))
       error("error deleting unique dylib");
 
-    free(x->canvas_path);
     free(x->pd_inbuf);
     free(x->pd_outbuf);
     free(x->var_array);
@@ -407,22 +449,19 @@ void rtcmix_free(t_rtcmix *x)
       }
 
     free(x->rtcmix_script);
-    free(x->pathname);
-    free(rm_command);
-    if (system("rm -rf temp.sco"))
-      error("error deleting temp.sco");
+
     DEBUG(post ("rtcmix~ DESTROYED!"););
 }
 
 static void rtcmix_openeditor(t_rtcmix *x)
 {
   x->editor_flag = EDITED_SCRIPT;
-  char *openeditor_cmd = malloc(MAXPDSTRING);
-  sprintf(openeditor_cmd, "python rtcmix_scripteditor.py temp.sco &");
-  DEBUG(post("cmd: %s",openeditor_cmd););
-  if (system(openeditor_cmd))
+  char *editor_cmd = malloc(MAXPDSTRING);
+  sprintf(editor_cmd, "python %srtcmix_scripteditor.py %s &",mpathname,x->tempfile_path);
+  DEBUG(post("cmd: %s",editor_cmd););
+  if (system(editor_cmd))
     error("rtcmix~: can't open rtcmix script editor");
-  free(openeditor_cmd);
+  free(editor_cmd);
 }
 
 // bang triggers the current working script
@@ -433,17 +472,13 @@ void rtcmix_bang(t_rtcmix *x)
   if (x->flushflag == 1) return; // heap and queue being reset
 
   t_atom *argv = getbytes(0);
-  rtcmix_goscript(x, gensym("\0"), 0, argv);
+  rtcmix_goscript(x, x->current_script);
 }
 
 void rtcmix_float(t_rtcmix *x, t_float scriptnum)
 {
   DEBUG(post("received float %f",scriptnum););
-  t_atom *argv = getbytes(0);
-  t_int hold_scriptnum = x->current_script;
-  x->current_script = (t_int)scriptnum;
-  rtcmix_goscript(x, gensym("\0"), 0, argv);
-  x->current_script = hold_scriptnum;
+  rtcmix_goscript(x, scriptnum);
 }
 
 
@@ -659,30 +694,17 @@ void rtcmix_flush(t_rtcmix *x)
   x->flushflag = 1; // set a flag, the flush will happen in perform after pulltraverse()
 }
 
-// the [goscript N] message will cause buffer N to be sent to the RTcmix parser
-void rtcmix_goscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
+void rtcmix_goscript(t_rtcmix *x, t_float f)
 {
   DEBUG(post("goscript"););
   // JWM reload temp.sco if editor has been open
-  post("flag: %i",x->editor_flag);
   if (x->editor_flag = EDITED_SCRIPT)
     {
-      rtcmix_doread(x,"temp.sco");
+      rtcmix_doread(x,x->tempfile_path);
       x->editor_flag = UNEDITED_SCRIPT;
     }
   short i;
-  short temp = 0;
-  // JWM: if banged, triggers current script
-  if (argc == 0)
-    {
-      temp = x->current_script;
-    }
-
-  for (i = 0; i < argc; i++)
-    {
-      if (argv[i].a_type == A_FLOAT)
-        temp = (short)argv[i].a_w.w_float;
-    }
+  short temp =   temp = (short)f;
 
   if (temp > MAX_SCRIPTS)
     {
@@ -847,10 +869,10 @@ void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
 
   x->editor_flag==EDITED_SCRIPT;
-  rtcmix_doread(x, "temp.sco");
+  //rtcmix_doread(x, x->tempfile_path);
   x->current_script = (t_int)temp;
   post("rtcmix~: set current script to %i: \"%s\"", x->current_script, x->script_name[x->current_script]);
-  rtcmix_dosave(x,"temp.sco");
+  rtcmix_dosave(x,x->tempfile_path);
 }
 
 // the [read ...] message triggers this
@@ -859,6 +881,7 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
   DEBUG(post("read"););
   int i;
   int temp = x->current_script;
+  x->editor_flag = UNEDITED_SCRIPT;
   t_symbol *filename;
   int fnflag = 0;
   for (i=0; i<argc; i++)
@@ -941,7 +964,7 @@ static void rtcmix_doread(t_rtcmix *x, char* filename)
   FILE *fp = fopen ( filename , "rb" );
 
   long lSize = 0;
-  char *buffer;
+  char *buffer = malloc(MAXSCRIPTSIZE);
   if( fp == NULL )
     {
       // JWM: if user opens an empty editor and then closes it empty,
@@ -962,7 +985,6 @@ static void rtcmix_doread(t_rtcmix *x, char* filename)
       goto out;
     }
 
-  buffer = malloc(MAXSCRIPTSIZE);
   if( 1!=fread( buffer , lSize-1, 1 , fp) )
     {
       // error if file is empty; this is not necessary an error
@@ -974,26 +996,25 @@ static void rtcmix_doread(t_rtcmix *x, char* filename)
     }
   if (lSize>0)
     sprintf(x->rtcmix_script[x->current_script], "%s",buffer);
-  free(buffer);
   fclose(fp);
   // if it's not a temp file already, save to temp.sco
   if (x->editor_flag==UNEDITED_SCRIPT)
-    rtcmix_dosave(x, "temp.sco");
+    rtcmix_dosave(x, x->tempfile_path);
 
   out:
   x->script_size[x->current_script] = lSize;
   x->editor_flag = UNEDITED_SCRIPT;
+  free(buffer);
 }
 
 static void rtcmix_dosave(t_rtcmix *x, char* filename)
 {
-  FILE *pfile = NULL;
-
+  DEBUG(post("dosave %s",filename););
+  FILE *pfile;
   pfile = fopen(filename,"w");
   if(pfile == NULL)
     {
       error("rtcmix~: error opening \"%s\" for writing",filename);
-      fclose(pfile);
       return;
     }
 
@@ -1005,9 +1026,9 @@ static void rtcmix_dosave(t_rtcmix *x, char* filename)
              strlen(x->rtcmix_script[x->current_script]),
              pfile);
     }
+  fclose(pfile);
   if (x->editor_flag == EDITED_SCRIPT)
     post("rtcmix~: wrote script %i to %s",x->current_script,filename);
-  fclose(pfile);
 }
 
 static void rtcmix_inletp0(t_rtcmix *x, t_float f)

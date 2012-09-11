@@ -3,7 +3,6 @@ current: rtcmix~_linux
 clean: ; rm -f *.pd_linux *.o
 	- rm dylib/*
 	- rmdir dylib
-	- rm temp.sco
 
 # ----------------------- NT -----------------------
 
@@ -45,4 +44,4 @@ LINUXCFLAGS = -DPD -O2 -fPIC -funroll-loops -fomit-frame-pointer \
 	rm $*.o
 	mkdir dylib
 	cp RTcmix-*/src/rtcmix/*.so dylib
-
+	cp rtcmix_scripteditor.py dylib

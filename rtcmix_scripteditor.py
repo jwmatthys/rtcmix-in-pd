@@ -145,7 +145,7 @@ def file_open(event=None):
 
 def file_save(event=None):
     try:
-        editor.save("temp.sco")
+        editor.save(sys.argv[1])
     except Cancel:
         pass
     return "break"
@@ -159,7 +159,7 @@ def file_save_as(event=None):
 
 def file_quit(event=None):
     try:
-        editor.save("temp.sco")
+        editor.save(sys.argv[1])
     except Cancel:
         return
     root.quit()
