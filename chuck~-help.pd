@@ -1,0 +1,74 @@
+#N canvas 22 99 905 443 12;
+#X obj 2 1 cnv 15 900 440 empty empty empty 20 12 0 14 -203904 -66577
+0;
+#X obj 41 21 cnv 15 120 400 empty empty empty 20 12 0 14 -232576 -66577
+0;
+#X text 59 25 chuck~ 0.21;
+#X text 58 33 ____________;
+#X text 53 375 Pd version by;
+#X text 53 392 Joel Matthys;
+#X obj 203 312 adc~;
+#X obj 202 397 dac~;
+#X obj 188 94 bng 30 250 50 0 empty empty empty 17 7 0 10 -258113 -262144
+-1;
+#X obj 214 172 vradio 15 1 0 3 empty empty empty 0 -8 0 10 -262130
+-1 -1 0;
+#X obj 385 21 cnv 15 470 260 empty empty empty 20 12 0 14 -204786 -66577
+0;
+#X obj 402 250 s object-messages;
+#X msg 402 30 version;
+#X msg 405 58 read;
+#X msg 408 86 read sample.sco;
+#X msg 411 114 save;
+#X msg 415 142 saveas;
+#X msg 415 190 setscript \$1;
+#X floatatom 470 167 5 0 19 0 - - -;
+#X msg 414 221 flush;
+#X text 479 29 print current version;
+#X text 446 58 read a scorefile into memory via openpanel dialog;
+#X text 529 85 read a scorefile via path;
+#X text 452 113 save current scorefile to last known filepath;
+#X text 477 143 save current scorefile via savepanel dialog;
+#X text 513 191 set the current working script (0-19);
+#X text 462 222 flush the buffer to stop scorefile interpretation;
+#X obj 176 24 cnv 15 160 40 empty empty empty 20 12 0 14 -204786 -66577
+0;
+#X obj 195 34 r object-messages;
+#X text 226 89 bang left inlet;
+#X text 226 109 to play current;
+#X text 226 129 scorefile;
+#X text 237 171 send a number;
+#X text 237 190 0-20 to trigger;
+#X text 237 209 nth script;
+#X obj 178 344 cnv 15 280 40 empty empty empty 20 12 0 14 -262144 -66577
+0;
+#X obj 195 356 chuck~ 2 1;
+#X obj 269 397 print outmessages;
+#X floatatom 269 316 5 0 0 0 - - -;
+#X obj 475 301 cnv 15 380 120 empty empty empty 20 12 0 14 -261682
+-66577 0;
+#X text 266 294 control p-fields;
+#X text 488 308 CREATION ARGUMENTS;
+#X text 487 331 chuck~ <num-channels> <num-additional-inlets>;
+#X text 487 385 see pfield example for use of additional inlets;
+#X text 487 358 num channels is the same for input and output;
+#X text 287 355 <-- click to see editor;
+#N canvas 200 240 450 300 samples 0;
+#X restore 59 88 pd samples;
+#X connect 6 0 36 0;
+#X connect 6 1 36 1;
+#X connect 8 0 36 0;
+#X connect 9 0 36 0;
+#X connect 12 0 11 0;
+#X connect 13 0 11 0;
+#X connect 14 0 11 0;
+#X connect 15 0 11 0;
+#X connect 16 0 11 0;
+#X connect 17 0 11 0;
+#X connect 18 0 17 0;
+#X connect 19 0 11 0;
+#X connect 28 0 36 0;
+#X connect 36 0 7 0;
+#X connect 36 1 7 1;
+#X connect 36 2 37 0;
+#X connect 38 0 36 2;
