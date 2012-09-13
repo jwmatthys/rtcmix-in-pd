@@ -698,7 +698,7 @@ void rtcmix_goscript(t_rtcmix *x, t_float f)
 {
   DEBUG(post("goscript"););
   // JWM reload temp.sco if editor has been open
-  if (x->editor_flag = EDITED_SCRIPT)
+  if (x->editor_flag == EDITED_SCRIPT)
     {
       rtcmix_doread(x,x->tempfile_path);
       x->editor_flag = UNEDITED_SCRIPT;
@@ -752,8 +752,8 @@ void rtcmix_goscript(t_rtcmix *x, t_float f)
                     if ((int)x->rtcmix_script[x->current_script][i+foo] == 10)
                       linenum++;
                   }
-                post("line: %i: chars: %c %c %c %c %c %c %c %c %c %c",
-                     //post("line: %i: chars: %i %i %i %i %i %i %i %i %i %i",
+                //post("orig: %i: chars: %c %c %c %c %c %c %c %c %c %c",
+                     post("orig: %i: chars: %i %i %i %i %i %i %i %i %i %i",
                      linenum, x->rtcmix_script[x->current_script][i], x->rtcmix_script[x->current_script][i+1], x->rtcmix_script[x->current_script][i+2],
                      x->rtcmix_script[x->current_script][i+3], x->rtcmix_script[x->current_script][i+4], x->rtcmix_script[x->current_script][i+5],
                      x->rtcmix_script[x->current_script][i+6], x->rtcmix_script[x->current_script][i+7], x->rtcmix_script[x->current_script][i+8],
@@ -764,7 +764,7 @@ void rtcmix_goscript(t_rtcmix *x, t_float f)
               {
                 if ((int)x->rtcmix_script[x->current_script][i] == 10)
                   linenum++;
-                post("line: %i chars: %c", linenum, x->rtcmix_script[x->current_script][i++]);
+                post("orig: %i chars: %i", linenum, x->rtcmix_script[x->current_script][i++]);
               }
           });
 
@@ -810,8 +810,8 @@ void rtcmix_goscript(t_rtcmix *x, t_float f)
                   if ((int)thebuf[i+foo] == 10)
                     linenum++;
                 }
-              //post("line: %i: chars: %c %c %c %c %c %c %c %c %c %c",
-                   post("line: %i: chars: %i %i %i %i %i %i %i %i %i %i",
+              //post("fix: %i: chars: %c %c %c %c %c %c %c %c %c %c",
+                   post("fix: %i: chars: %i %i %i %i %i %i %i %i %i %i",
                    linenum, thebuf[i], thebuf[i+1], thebuf[i+2],
                    thebuf[i+3], thebuf[i+4], thebuf[i+5],
                    thebuf[i+6], thebuf[i+7], thebuf[i+8],
@@ -921,7 +921,9 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
   else
     {
-  rtcmix_callback(x,filename);
+      char fullpath[MAXPDSTRING];
+      sprintf(fullpath,"%s/%s",x->canvas_path->s_name, filename->s_name);
+      rtcmix_callback(x,gensym(fullpath));
     }
 }
 
@@ -985,7 +987,9 @@ static void rtcmix_doread(t_rtcmix *x, char* filename)
       goto out;
     }
 
-  if( 1!=fread( buffer , lSize-1, 1 , fp) )
+  post("rtcmix~: read \"%s\"", filename);
+
+  if( fread( buffer , lSize, 1, fp) != 1 )
     {
       // error if file is empty; this is not necessary an error
       // if you close the editor with an empty file
