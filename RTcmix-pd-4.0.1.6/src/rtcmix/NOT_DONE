@@ -1,8 +1,0 @@
-DUMP (not needed, I think)
-MMOVE/MPLACE (name conflicts with MOVE/PLACE)
-	(and DMOVE)
-NOISE (conflict with NOISE in IIR)
-GRANULATE (buffer loading problematic right now)
-NPAN (multi-outputs not supported in max/msp yet)
-QPAN (multi-outputs not supported in max/msp yet)
-SROOM (because of the delmacros and var conflicts with MROOM)
