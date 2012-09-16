@@ -1,7 +1,8 @@
 # Print embeddable python library, as well as other libs it requires.
 # Will prefer static linkage unless invoked with "shared" argument.
 # -JGG, 8/4/04, rev. 7/21/05 for OS X Tiger
-
+# Added "-lssl -lz -lcrypto" for successful build with libssl-dev
+#   on Ubuntu 10.04 -BGB 12.10.2010
 import sys, os.path, distutils.sysconfig
 
 static_link = 1
@@ -16,7 +17,7 @@ pyversion = major + minor
 # Note that this adds libraries we've certainly already linked to.
 libs = distutils.sysconfig.get_config_var("LIBS")
 libs += " " + distutils.sysconfig.get_config_var("SYSLIBS")
-
+libs += " -lz -lcrypto -lssl"
 prefix = distutils.sysconfig.get_config_var("LIBPL")
 
 if static_link:

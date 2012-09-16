@@ -54,11 +54,13 @@ CONFDIR = $(SRCDIR)/conf
 PARSERDIR = $(SRCDIR)/parser
 MINCDIR = $(PARSERDIR)/minc
 PERLDIR = $(PARSERDIR)/perl
+PYTHONDIR = $(PARSEDIR)/python
 
 # For temporary use in linking MIX instrument in
 MIXDIR = insts/base/MIX
 
 MINCLIB = $(MINCDIR)/libminc.a
+PYTHONLIB = $(PYTHONDIR)/libcmixpython.a
 SNDLIB = $(SRCDIR)/sndlib/sndlib.a
 AUDIOLIB = $(AUDIODIR)/librtaudio.a
 
@@ -203,7 +205,7 @@ IMB_RTCMIX_O =
 P_O =  $(PARSERDIR)/parse_with_perl.o
 PY_O = $(PARSERDIR)/parse_with_python.o
 
-CMIXOBJS = $(CMIX_O) $(M_O) $(GENLIB)
+CMIXOBJS = $(CMIX_O) $(PY_O) $(GENLIB)
 IMBCMIXOBJS = $(IMB_RTCMIX_O) $(GENLIB)
 
 # Things to be removed by 'clean'
