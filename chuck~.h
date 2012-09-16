@@ -26,17 +26,13 @@ char mpathname[MAXPDSTRING];
 
 /*** Chuck stuff ---------------------------------------------------------------------------***/
 
-typedef int (*chuckmainFunctionPtr)();
-typedef int (*pd_rtsetparamsFunctionPtr)(float sr, int nchans, int vecsize, float *pd_inbuf, float *pd_outbuf, char *theerror);
-typedef int (*parse_scoreFunctionPtr)();
-typedef void (*pullTraverseFunctionPtr)();
+typedef int (*chuckmainFunctionPtr)(int vecsize, int srate);
+typedef void (*pull_cb2FunctionPtr)(float *maxmsp_outbuf, int vecsize);
+typedef int (*parse_scoreFunctionPtr)(char *buf);
 typedef int (*check_bangFunctionPtr)();
 typedef int (*check_valsFunctionPtr)(float *thevals);
-typedef double (*parse_dispatchFunctionPtr)(char *cmd, double *p, int n_args, void *retval);
-typedef int (*check_errorFunctionPtr)();
-typedef void (*pfield_setFunctionPtr)(int inlet, float pval);
-typedef void (*buffer_setFunctionPtr)(char *bufname, float *bufstart, int nframes, int nchans, int modtime);
-typedef int (*flushPtr)();
+typedef int (*inlet_setFunctionPtr)(int inlet, float pval, int ninlets);
+
 
 
 /*** PD FUNCTIONS ---------------------------------------------------------------------------***/
@@ -61,18 +57,12 @@ typedef struct _chuck
   t_outlet *outpointer;
 
   /******* Chuck stuff *******/
-
   chuckmainFunctionPtr chuckmain;
-  pd_rtsetparamsFunctionPtr pd_rtsetparams;
+  pull_cb2FunctionPtr pull_cb2;
   parse_scoreFunctionPtr parse_score;
-  pullTraverseFunctionPtr pullTraverse;
   check_bangFunctionPtr check_bang;
   check_valsFunctionPtr check_vals;
-  parse_dispatchFunctionPtr parse_dispatch;
-  check_errorFunctionPtr check_error;
-  pfield_setFunctionPtr pfield_set;
-  buffer_setFunctionPtr buffer_set;
-  flushPtr flush;
+  inlet_setFunctionPtr inlet_set;
 
   // for the load of chuckdylibN.so
   int dylibincr;

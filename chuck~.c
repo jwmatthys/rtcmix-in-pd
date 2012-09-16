@@ -1,20 +1,10 @@
-<<<<<<< HEAD:rtcmix~.c
-// rtcmix~ v 0.21, Joel Matthys (8/2012) (Linux, Pd support), based on:
-// rtcmix~ v 1.81, Brad Garton (2/2011) (OS 10.5/6, Max5 support)
-// uses the RTcmix bundled executable lib, now based on RTcmix-4.0.1.6
-// see http://music.columbia.edu/cmc/RTcmix for more info
-
-#define VERSION "0.21"
-#define RTcmixVERSION "RTcmix-pd-4.0.1.6"
-=======
 // chuck~ v 0.11, Joel Matthys (8/2012) (Linux, Pd support), based on:
 // chuck~ v 1.81, Brad Garton (2/2011) (OS 10.5/6, Max5 support)
 // uses the Chuck bundled executable lib, now based on Chuck-4.0.1.6
 // see http://music.columbia.edu/cmc/Chuck for more info
 
 #define VERSION "0.11"
-#define ChuckVERSION "Chuck-pd-4.0.1.6"
->>>>>>> bde7671c7cc90a8858dc2a463cad49c223c66cb9:chuck~.c
+#define ChuckVERSION "ChucK-pd-4.0.1.6"
 
 // JWM - Pd headers
 #include "chuck~.h"
@@ -27,8 +17,8 @@
 #include <math.h>
 #include <dlfcn.h>
 
-#define DEBUG(x) // debug off
-//#define DEBUG(x) x
+          //#define DEBUG(x) // debug off
+#define DEBUG(x) x
 
 /*** PD EXTERNAL SETUP ---------------------------------------------------------------------------***/
 void chuck_tilde_setup(void)
@@ -295,16 +285,11 @@ void chuck_dsp(t_chuck *x, t_signal **sp)
   // Chuck vars
   // these are the entry function pointers in to the chuckdylib.so lib
   x->chuckmain = NULL;
-  x->pd_rtsetparams = NULL;
-  x->pullTraverse = NULL;
+  x->pull_cb2 = NULL;
   x->parse_score = NULL;
   x->check_bang = NULL;
   x->check_vals = NULL;
-  x->parse_dispatch = NULL;
-  x->check_error = NULL;
-  x->pfield_set = NULL;
-  x->buffer_set = NULL;
-  x->flush = NULL;
+  x->inlet_set = NULL;
 
   // set sample rate
   x->srate = sys_getsr();
@@ -341,11 +326,6 @@ void chuck_dsp(t_chuck *x, t_signal **sp)
   // zero out these buffers for UB
   for (i = 0; i < (vector_size * x->num_inputs); i++) x->pd_inbuf[i] = 0.0;
   for (i = 0; i < (vector_size * x->num_outputs); i++) x->pd_outbuf[i] = 0.0;
-
-  if (x->pd_rtsetparams)
-    {
-      x->pd_rtsetparams(x->srate, x->num_outputs, vector_size, x->pd_inbuf, x->pd_outbuf, x->theerror);
-    }
 }
 
 
@@ -395,9 +375,9 @@ t_int *chuck_perform(t_int *w)
         *out[i]++ = (x->pd_outbuf)[j++];
     }
 
-  // Chuck stuff
-  // this drives the Chuck sample-computing engine
-  x->pullTraverse();
+  // ChucK stuff
+  // this drives the sample-computing input and output in chuck
+  x->pull_cb2(x->pd_outbuf, n);
 
   // look for a pending bang from MAXBANG()
   if (x->check_bang() == 1) // JWM: no defer in Pd, and BGG says unnecessary anyway
@@ -417,6 +397,7 @@ t_int *chuck_perform(t_int *w)
         }
     }
 
+  /*
   errflag = x->check_error();
   if (errflag != 0)
     {
@@ -430,6 +411,7 @@ t_int *chuck_perform(t_int *w)
       x->flush();
       x->flushflag = 0;
     }
+  */
 
   //return a pointer to the next object in the signal chain.
   return w + x->num_inputs + x->num_outputs + 3;
@@ -550,7 +532,7 @@ void chuck_text(t_chuck *x, t_symbol *s, short argc, t_atom *argv)
   chuck_badquotes("system", thebuf);
   chuck_badquotes("dataset", thebuf);
 
-  if (x->parse_score(thebuf, strlen(thebuf)) != 0) error("problem parsing Chuck script");
+  if (x->parse_score(thebuf) != 0) error("problem parsing Chuck script");
 }
 
 
@@ -644,7 +626,8 @@ void chuck_dochuck(t_chuck *x, t_symbol *s, short argc, t_atom *argv)
         }
     }
 
-  x->parse_dispatch(cmd, p, argc-1, NULL);
+  // JWM: not sure what's supposed to happen here...
+  //chuck_text(cmd, p, argc-1, NULL);
 }
 
 
@@ -747,7 +730,6 @@ void chuck_goscript(t_chuck *x, t_float f)
   DEBUG(post("buflen: %i",buflen););
 
       // JWM: HEAVY DUTY BUFFER DEBUGGER
-
   DEBUG(
         j = buflen;
         i = 0;
@@ -762,32 +744,26 @@ void chuck_goscript(t_chuck *x, t_float f)
                     if ((int)x->chuck_script[x->current_script][i+foo] == 10)
                       linenum++;
                   }
-<<<<<<< HEAD:rtcmix~.c
                 //post("orig: %i: chars: %c %c %c %c %c %c %c %c %c %c",
                      post("orig: %i: chars: %i %i %i %i %i %i %i %i %i %i",
-                     linenum, x->rtcmix_script[x->current_script][i], x->rtcmix_script[x->current_script][i+1], x->rtcmix_script[x->current_script][i+2],
-                     x->rtcmix_script[x->current_script][i+3], x->rtcmix_script[x->current_script][i+4], x->rtcmix_script[x->current_script][i+5],
-                     x->rtcmix_script[x->current_script][i+6], x->rtcmix_script[x->current_script][i+7], x->rtcmix_script[x->current_script][i+8],
-                     x->rtcmix_script[x->current_script][i+9]);
-=======
+                     linenum, x->chuck_script[x->current_script][i], x->chuck_script[x->current_script][i+1], x->chuck_script[x->current_script][i+2],
+                     x->chuck_script[x->current_script][i+3], x->chuck_script[x->current_script][i+4], x->chuck_script[x->current_script][i+5],
+                     x->chuck_script[x->current_script][i+6], x->chuck_script[x->current_script][i+7], x->chuck_script[x->current_script][i+8],
+                     x->chuck_script[x->current_script][i+9]);
                 post("line: %i: chars: %c %c %c %c %c %c %c %c %c %c",
                      //post("line: %i: chars: %i %i %i %i %i %i %i %i %i %i",
                      linenum, x->chuck_script[x->current_script][i], x->chuck_script[x->current_script][i+1], x->chuck_script[x->current_script][i+2],
                      x->chuck_script[x->current_script][i+3], x->chuck_script[x->current_script][i+4], x->chuck_script[x->current_script][i+5],
                      x->chuck_script[x->current_script][i+6], x->chuck_script[x->current_script][i+7], x->chuck_script[x->current_script][i+8],
                      x->chuck_script[x->current_script][i+9]);
->>>>>>> bde7671c7cc90a8858dc2a463cad49c223c66cb9:chuck~.c
                 i += 10;
               }
             else
               {
                 if ((int)x->chuck_script[x->current_script][i] == 10)
                   linenum++;
-<<<<<<< HEAD:rtcmix~.c
-                post("orig: %i chars: %i", linenum, x->rtcmix_script[x->current_script][i++]);
-=======
+                post("orig: %i chars: %i", linenum, x->chuck_script[x->current_script][i++]);
                 post("line: %i chars: %c", linenum, x->chuck_script[x->current_script][i++]);
->>>>>>> bde7671c7cc90a8858dc2a463cad49c223c66cb9:chuck~.c
               }
           });
 
@@ -854,7 +830,7 @@ void chuck_goscript(t_chuck *x, t_float f)
 
           post ("chuck~: parsing script %i: \"%s\"",x->current_script,x->script_name[x->current_script]);
 
-          if (x->parse_score(thebuf, j) != 0)
+          if (x->parse_score(thebuf) != 0)
             error("possible problem parsing Chuck script");
         }
       else
@@ -944,13 +920,10 @@ void chuck_read(t_chuck *x, t_symbol *s, short argc, t_atom *argv)
     }
   else
     {
-<<<<<<< HEAD:rtcmix~.c
       char fullpath[MAXPDSTRING];
       sprintf(fullpath,"%s/%s",x->canvas_path->s_name, filename->s_name);
-      rtcmix_callback(x,gensym(fullpath));
-=======
+      chuck_callback(x,gensym(fullpath));
   chuck_callback(x,filename);
->>>>>>> bde7671c7cc90a8858dc2a463cad49c223c66cb9:chuck~.c
     }
 }
 
@@ -1122,7 +1095,7 @@ static void chuck_float_inlet(t_chuck *x, short inlet, t_float f)
       x->in[inlet] = f;
       post("chuck~: setting in[%d] =  %f, but chuck~ doesn't use this", inlet, f);
     }
-  else x->pfield_set(inlet+1, f);
+  else x->inlet_set(inlet+1, f);
 }
 
 static void chuck_dlopen_and_errorcheck(t_chuck *x)
@@ -1134,47 +1107,27 @@ static void chuck_dlopen_and_errorcheck(t_chuck *x)
     }
 
   // find the main entry to be sure we're cool...
-  x->chuckmain = dlsym(x->chuckdylib, "chuckmain");
-  if (x->chuckmain)	x->chuckmain();
+  x->chuckmain = dlsym(x->chuckdylib, "_chuckmain");
+  if (x->chuckmain)	x->chuckmain(x->outbuf_size, x->srate);
   else error("chuck~ could not call chuckmain()");
 
-  x->pd_rtsetparams = dlsym(x->chuckdylib, "pd_rtsetparams");
-  if (!(x->pd_rtsetparams))
-    error("chuck~ could not find pd_rtsetparams()");
+  x->pull_cb2 = dlsym(x->chuckdylib, "_pull_cb2");
+  if (!(x->pull_cb2))
+    error("chuck~ could not find pull_cb2()");
 
-  x->parse_score = dlsym(x->chuckdylib, "parse_score");
+  x->parse_score = dlsym(x->chuckdylib, "_parse_score");
   if (!(x->parse_score))
     error("chuck~ could not find parse_score()");
 
-  x->pullTraverse = dlsym(x->chuckdylib, "pullTraverse");
-  if (!(x->pullTraverse))
-    error("chuck~ could not find pullTraverse()");
-
-  x->check_bang = dlsym(x->chuckdylib, "check_bang");
+  x->check_bang = dlsym(x->chuckdylib, "_check_bang");
   if (!(x->check_bang))
     error("chuck~ could not find check_bang()");
 
-  x->check_vals = dlsym(x->chuckdylib, "check_vals");
+  x->check_vals = dlsym(x->chuckdylib, "_check_vals");
   if (!(x->check_vals))
     error("chuck~ could not find check_vals()");
 
-  x->parse_dispatch = dlsym(x->chuckdylib, "parse_dispatch");
-  if (!(x->parse_dispatch))
-    error("chuck~ could not find parse_dispatch()");
-
-  x->check_error = dlsym(x->chuckdylib, "check_error");
-  if (!(x->check_error))
-    error("chuck~ could not find check_error()");
-
-  x->pfield_set = dlsym(x->chuckdylib, "pfield_set");
-  if (!(x->pfield_set))
-    error("chuck~ could not find pfield_set()");
-
-  x->buffer_set = dlsym(x->chuckdylib, "buffer_set");
-  if (!(x->buffer_set))
-    error("chuck~ could not find buffer_set()");
-
-  x->flush = dlsym(x->chuckdylib, "flush_sched");
-  if (!(x->flush))
-    error("chuck~ could not find flush_sched()");
+  x->inlet_set = dlsym(x->chuckdylib, "_inlet_set");
+  if (!(x->inlet_set))
+    error("chuck~ could not find inlet_set()");
 }
