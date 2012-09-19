@@ -17,8 +17,8 @@
 #include <math.h>
 #include <dlfcn.h>
 
-//#define DEBUG(x) // debug off
-#define DEBUG(x) x
+#define DEBUG(x) // debug off
+//#define DEBUG(x) x
 
 /*** PD EXTERNAL SETUP ---------------------------------------------------------------------------***/
 void rtcmix_tilde_setup(void)
