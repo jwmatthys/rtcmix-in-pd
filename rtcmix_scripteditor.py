@@ -55,7 +55,7 @@ class RoomEditor(Text):
         self.filename = filename
 
 root = Tk()
-root.title("rtcmix~ script editor")
+root.title(sys.argv[2])
 editor = RoomEditor(root)
 editor.pack(fill=Y, expand=1)
 

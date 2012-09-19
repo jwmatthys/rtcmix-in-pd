@@ -93,4 +93,3 @@ rtchandel = 0.05
 cf = 0
 
 REVERBIT(st=0, insk=0, totdur + ringdur, amp, revtime, revpct, rtchandel, cf)
-

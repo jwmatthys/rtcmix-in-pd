@@ -1,9 +1,9 @@
-// rtcmix~ v 0.21, Joel Matthys (8/2012) (Linux, Pd support), based on:
+// rtcmix~ v 0.25, Joel Matthys (8/2012) (Linux, Pd support), based on:
 // rtcmix~ v 1.81, Brad Garton (2/2011) (OS 10.5/6, Max5 support)
 // uses the RTcmix bundled executable lib, now based on RTcmix-4.0.1.6
 // see http://music.columbia.edu/cmc/RTcmix for more info
 
-#define VERSION "0.21"
+#define VERSION "0.25"
 #define RTcmixVERSION "RTcmix-pd-4.0.1.6"
 
 // JWM - Pd headers
@@ -17,8 +17,8 @@
 #include <math.h>
 #include <dlfcn.h>
 
-//#define DEBUG(x) // debug off
-#define DEBUG(x) x
+#define DEBUG(x) // debug off
+//#define DEBUG(x) x
 
 /*** PD EXTERNAL SETUP ---------------------------------------------------------------------------***/
 void rtcmix_tilde_setup(void)
@@ -35,6 +35,7 @@ void rtcmix_tilde_setup(void)
 
   //our own messages
   class_addmethod(rtcmix_class,(t_method)rtcmix_version, gensym("version"), 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_info, gensym("info"), 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_rtcmix, gensym("rtcmix"), A_GIMME, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_var, gensym("var"), A_GIMME, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_varlist, gensym("varlist"), A_GIMME, 0);
@@ -200,13 +201,17 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
       x->script_size[i] = 0;
       x->rtcmix_script[i] = malloc(MAXSCRIPTSIZE);
       x->tempscript_path[i] = malloc(MAXSCRIPTSIZE);
-      sprintf(x->script_name[i],"tempscript %i",i); // internal name, for display
+      sprintf(x->script_name[i],"tempscript_%i",i); // internal name, for display
       // path to temp script: for script 0 of the first instance of rtcmix~,
       // this should be /tmp/rtcmix0/tempscore0.sco
       sprintf(x->tempscript_path[i],"%s%i/%s%i.%s",TEMPFOLDERPREFIX, x->dylibincr, TEMPSCRIPTNAME, i, SCOREEXTENSION);
       DEBUG(post("tempscript_path %i: %s", i, x->tempscript_path[i]););
       x->script_flag[i] = UNCHANGED;
     }
+  // turn off livecoding flag by default. This means that
+  // rtcmix_goscript will only reload the tempscore from file
+  // if the script_flag==CHANGED
+  x->livecode_flag = 0;
 
   // This nasty looking stuff is to bind the object's ID
   // to x_s to facilitate callbacks
@@ -420,7 +425,7 @@ static void rtcmix_openeditor(t_rtcmix *x)
 {
   x->script_flag[x->current_script] = CHANGED;
   char *sys_cmd = malloc(MAXPDSTRING);
-  sprintf(sys_cmd, "python %s %s &", x->editor_path, x->tempscript_path[x->current_script]);
+  sprintf(sys_cmd, "python %s %s %s &", x->editor_path, x->tempscript_path[x->current_script], x->script_name[x->current_script]);
   DEBUG(post("cmd: %s",sys_cmd););
   if (system(sys_cmd))
     error("rtcmix~: can't open rtcmix script editor");
@@ -678,7 +683,7 @@ void rtcmix_goscript(t_rtcmix *x, t_float f)
   DEBUG(post("current script = %i",x->current_script););
 
   // JWM reload temporary score if editor has been open
-  if (x->script_flag[x->current_script] == CHANGED)
+  if (x->script_flag[x->current_script] == CHANGED || x->livecode_flag)
     {
       rtcmix_doread(x, x->tempscript_path[x->current_script]);
       x->script_flag[x->current_script] = UNCHANGED;
@@ -1101,5 +1106,24 @@ static void rtcmix_dlopen_and_errorcheck(t_rtcmix *x)
 
 void rtcmix_livecode(t_rtcmix *x, t_float f)
 {
-  post ("livecode!!");
+  if (f != 0)
+    {
+      x->livecode_flag = 1;
+      post ("rtcmix~: livecoding session ACTIVE.");
+      post ("rtcmix~: this [rtcmix~] object's temporary scorefiles");
+      post ("rtcmix~: can be found in \"%s%i\"",TEMPFOLDERPREFIX,x->dylibincr);
+    }
+  else
+    {
+      x->livecode_flag = 0;
+      post ("rtcmix~: livecoding inactive.");
+    }
+}
+
+void rtcmix_info(t_rtcmix *x)
+{
+  rtcmix_version(x);
+  post("compiled at %s on %s",__TIME__, __DATE__);
+  post("original files are located at %s", mpathname);
+  post("temporary files are stored in \"%s%i\"", TEMPFOLDERPREFIX, x->dylibincr);
 }

@@ -117,6 +117,11 @@ typedef struct _rtcmix
   t_int script_flag[MAX_SCRIPTS]; // store script value CHANGED or UNCHANGED (called on goscript)
   char **tempscript_path;
 
+  // JWM : introduce an option to always reload temp scores, even if no script_flag is up. This
+  // may slow things down some but could allow for editing of scores in other editors alongsize
+  // Pd, or even for multiple players to ssh in, and edit a temp score during performance.
+  short livecode_flag;
+
   // JWM : canvas objects for callback addressing
   t_canvas *x_canvas;
   t_symbol *canvas_path;
@@ -149,6 +154,7 @@ void rtcmix_float(t_rtcmix *x, t_float scriptnum);
 
 //for custom messages
 void rtcmix_version(t_rtcmix *x);
+void rtcmix_info(t_rtcmix *x);
 void rtcmix_text(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 //void rtcmix_dotext(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_badquotes(char *cmd, char *buf); // this is to check for 'split' quoted params, called in rtcmix_dotext
