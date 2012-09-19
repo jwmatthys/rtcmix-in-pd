@@ -91,9 +91,10 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
   //create temp folder
   sys_cmd = malloc (MAXPDSTRING);
-  sprintf(sys_cmd, "mkdir \"%s%i\"", TEMPFOLDERPREFIX, x->dylibincr);
+  sprintf(sys_cmd, "test -d \"%s%i\" || mkdir \"%s%i\"", TEMPFOLDERPREFIX, x->dylibincr, TEMPFOLDERPREFIX, x->dylibincr);
   DEBUG(post("rtcmix~: sys_cmd: \"%s\"", sys_cmd););
-  if (system(sys_cmd)) {} // ignore error, since folder may already exists
+  if (system(sys_cmd))
+    error ("rtcmix~: error creating temp folder");
 
   // copy dylib from lib to /tmp/rtcmixN
   sprintf(sys_cmd, "cp %s/%s %s", mpathname, DYLIBNAME, x->dylib_path);
@@ -104,6 +105,7 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   // full path to script editor
   x->editor_path = malloc (MAXPDSTRING);
   sprintf(x->editor_path, "%s%i/%s", TEMPFOLDERPREFIX, x->dylibincr, SCRIPTEDITOR);
+  DEBUG(post("rtcmix~: editor_path: %s", x->editor_path););
 
   // copy script editor from lib to /tmp/rtcmixN
   sprintf(sys_cmd, "cp \"%s/%s\" \"%s%i\"", mpathname, SCRIPTEDITOR, TEMPFOLDERPREFIX, x->dylibincr);
@@ -201,7 +203,8 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
       sprintf(x->script_name[i],"tempscript %i",i); // internal name, for display
       // path to temp script: for script 0 of the first instance of rtcmix~,
       // this should be /tmp/rtcmix0/tempscore0.sco
-      sprintf(x->tempscript_path[i],"%s/%s%i.%s",x->temp_folder, TEMPSCRIPTNAME, i, SCOREEXTENSION);
+      sprintf(x->tempscript_path[i],"%s%i/%s%i.%s",TEMPFOLDERPREFIX, x->dylibincr, TEMPSCRIPTNAME, i, SCOREEXTENSION);
+      DEBUG(post("tempscript_path %i: %s", i, x->tempscript_path[i]););
       x->script_flag[i] = UNCHANGED;
     }
 
@@ -238,7 +241,6 @@ void rtcmix_dsp(t_rtcmix *x, t_signal **sp)
   t_int dsp_add_args [x->num_inputs + x->num_outputs + 2];
   t_int vector_size = sp[0]->s_n;
   int i;
-  unsigned int j;
 
   // RTcmix vars
   // these are the entry function pointers in to the rtcmixdylib.so lib
@@ -403,13 +405,13 @@ void rtcmix_free(t_rtcmix *x)
     for (i=0; i<MAX_SCRIPTS; i++)
       {
         free(x->rtcmix_script[i]);
-        sprintf(x->script_name[i], "0");
         free(x->tempscript_path[i]);
-        sprintf(x->tempscript_path[i],"0");
       }
 
     free(x->rtcmix_script);
     free(x->tempscript_path);
+    free(x->editor_path);
+    free(x->dylib_path);
 
     DEBUG(post ("rtcmix~ DESTROYED!"););
 }
@@ -432,7 +434,6 @@ void rtcmix_bang(t_rtcmix *x)
 
   if (x->flushflag == 1) return; // heap and queue being reset
 
-  t_atom *argv = getbytes(0);
   rtcmix_goscript(x, x->current_script);
 }
 
@@ -512,7 +513,6 @@ void rtcmix_badquotes(char *cmd, char *thebuf)
   char *rtinputptr;
   int badquotes, checkon;
   int clen;
-  char tbuf[MAXPDSTRING];
 
   // jeez this just sucks big giant easter eggs
   badquotes = 0;
@@ -546,6 +546,7 @@ void rtcmix_badquotes(char *cmd, char *thebuf)
     } // at this point we're at the beginning of the should-be-quoted param in the buffer
 
     // so we copy it to a temporary buffer, insert a quote...
+    char *tbuf = malloc(MAXPDSTRING);
     strcpy(tbuf, rtinputptr);
     *rtinputptr++ = 34;
     strcpy(rtinputptr, tbuf);
@@ -563,6 +564,7 @@ void rtcmix_badquotes(char *cmd, char *thebuf)
     strcpy(tbuf, rtinputptr);
     *rtinputptr++ = 34;
     strcpy(rtinputptr, tbuf);
+    free(tbuf);
   }
 }
 
@@ -659,7 +661,7 @@ void rtcmix_goscript(t_rtcmix *x, t_float f)
 {
   DEBUG(post("goscript"););
   short i;
-  short temp =   temp = (short)f;
+  short temp = (short)f;
 
   if (temp > MAX_SCRIPTS)
     {
@@ -832,7 +834,7 @@ void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
   x->current_script = (t_int)temp;
   post("rtcmix~: set current script to %i: \"%s\"", x->current_script, x->script_name[x->current_script]);
-  rtcmix_dosave(x,x->tempscript_path[x->current_script]);
+  //rtcmix_dosave(x,x->tempscript_path[x->current_script]);
 }
 
 // the [read ...] message triggers this
@@ -976,6 +978,7 @@ static void rtcmix_dosave(t_rtcmix *x, char* filename)
     error ("rtcmix~: error saving %s",filename);
   else
     post("rtcmix~: wrote script %i to %s",x->current_script,filename);
+  free(sys_cmd);
 }
 
 static void rtcmix_inletp0(t_rtcmix *x, t_float f)
@@ -1043,6 +1046,7 @@ static void rtcmix_float_inlet(t_rtcmix *x, short inlet, t_float f)
 
 static void rtcmix_dlopen_and_errorcheck(t_rtcmix *x)
 {
+  DEBUG(post("rtcmix~: dlpath: %s",x->dylib_path););
   x->rtcmixdylib = dlopen(x->dylib_path,  RTLD_NOW | RTLD_LOCAL);
   if (!x->rtcmixdylib)
     {

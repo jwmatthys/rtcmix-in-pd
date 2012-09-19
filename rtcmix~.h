@@ -87,8 +87,7 @@ typedef struct _rtcmix
   char *dylib_path;
   // full path to the rtcmix_scripteditor.py file
   char *editor_path;
-  // path to temp folder /tmp/rtcmix<N>
-  char *temp_folder;
+
   // space for these malloc'd in rtcmix_dsp()
   float *pd_outbuf;
   float *pd_inbuf;

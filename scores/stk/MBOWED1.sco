@@ -1,6 +1,3 @@
-rtsetparams(44100, 2)
-load("./libMBOWED.so")
-
 /* MBOWED - the "Bowed" physical model instrument in
         Perry Cook/Gary Scavone's "stk" (synthesis tookkit).
 
