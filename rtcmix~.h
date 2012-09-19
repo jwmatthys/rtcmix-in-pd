@@ -1,10 +1,12 @@
 #include "m_pd.h"
 
 #define RTCMIXEXTERNALNAME "rtcmix~.pd_linux"
-#define TEMPFOLDER "/tmp/rtcmix"
+#define TEMPFOLDERPREFIX "/tmp/rtcmix"
 #define SCRIPTEDITOR "rtcmix_scripteditor.py"
 #define DEPENDSFOLDER "lib"
 #define DYLIBNAME "rtcmixdylib.so"
+#define TEMPSCRIPTNAME "tempscript"
+#define SCOREEXTENSION "sco"
 
 int dylibincr = 0;
 // for where the rtcmix-dylibs folder is located
@@ -24,8 +26,8 @@ char mpathname[MAXPDSTRING];
 // which reads temp.sco, modifies it, and rewrites it. If <modified>, rtcmix_goscript() rereads the
 // temp file so we're sure to have the most recent edit. Modified also supresses some unnecessary
 // messages in the doread and dosave functions.
-#define UNEDITED_SCRIPT 0
-#define EDITED_SCRIPT 1
+#define UNCHANGED 0
+#define CHANGED 1
 
 
 /*** RTcmix stuff ---------------------------------------------------------------------------***/
@@ -78,11 +80,14 @@ typedef struct _rtcmix
   buffer_setFunctionPtr buffer_set;
   flushPtr flush;
 
-  // for the load of rtcmixdylibN.so
+  // for the load of rtcmixdylib.so
   int dylibincr;
   void *rtcmixdylib;
   // for the full path to the rtcmixdylib.so file
-  char dylib_path[MAXPDSTRING];
+  char *dylib_path;
+  // full path to the rtcmix_scripteditor.py file
+  char *editor_path;
+  // path to temp folder /tmp/rtcmix<N>
   char *temp_folder;
   // space for these malloc'd in rtcmix_dsp()
   float *pd_outbuf;
@@ -103,14 +108,16 @@ typedef struct _rtcmix
 
   // buffer for error-reporting
   char theerror[MAXPDSTRING];
-  short editor_flag;
 
   // editor stuff
   char **rtcmix_script;
   char script_name[MAX_SCRIPTS][256];
   t_int script_size[MAX_SCRIPTS];
-  t_int current_script, rw_flag;
-  char temp_script[MAX_SCRIPTS][20];
+  t_int current_script;
+  t_int rw_flag; // one callback function is run after either save or read; need to differentiate
+  t_int script_flag[MAX_SCRIPTS]; // store script value CHANGED or UNCHANGED (called on goscript)
+  char **tempscript_path;
+
   // JWM : canvas objects for callback addressing
   t_canvas *x_canvas;
   t_symbol *canvas_path;
@@ -152,6 +159,7 @@ void rtcmix_var(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_varlist(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_bufset(t_rtcmix *x, t_symbol *s);
 void rtcmix_flush(t_rtcmix *x);
+void rtcmix_livecode(t_rtcmix *x, t_float f);
 
 //for the text editor
 void rtcmix_dblclick(t_rtcmix *x);

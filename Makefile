@@ -41,6 +41,6 @@ LINUXCFLAGS = -DPD -O2 -fPIC -funroll-loops -fomit-frame-pointer \
 	ld -shared -o $*.pd_linux $*.o -lc -lm
 	strip --strip-unneeded $*.pd_linux
 	rm $*.o
-	- mkdir lib
+	test -d lib || mkdir lib
 	cp RTcmix-*/src/rtcmix/*.so lib
 	cp rtcmix_scripteditor.py lib
