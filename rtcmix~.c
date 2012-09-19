@@ -393,14 +393,21 @@ t_int *rtcmix_perform(t_int *w)
 // here's my free function
 void rtcmix_free(t_rtcmix *x)
 {
-  // BGG kept dlopen() stuff in in case NSLoad gets dropped
-  char rm_command[MAXPDSTRING];
+  char *sys_cmd = malloc(MAXPDSTRING);
 
     dlclose(x->rtcmixdylib);
-    sprintf(rm_command, "rm -rf \"%s\" ", x->dylib_path);
-    if (system(rm_command))
-      error("error deleting unique dylib");
 
+    // remove temporary files
+    sprintf(sys_cmd, "rm -rf %s%i/*", TEMPFOLDERPREFIX, x->dylibincr);
+    if (system(sys_cmd))
+      error("error removing temporary files");
+
+    // remove temp folder
+    sprintf(sys_cmd, "rm -rf %s%i", TEMPFOLDERPREFIX, x->dylibincr);
+    if (system(sys_cmd))
+      error("error removing temporary folder");
+
+    free(sys_cmd);
     free(x->pd_inbuf);
     free(x->pd_outbuf);
     free(x->var_array);
@@ -416,6 +423,8 @@ void rtcmix_free(t_rtcmix *x)
     free(x->rtcmix_script);
     free(x->tempscript_path);
     free(x->editor_path);
+
+
     free(x->dylib_path);
 
     DEBUG(post ("rtcmix~ DESTROYED!"););
