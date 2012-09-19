@@ -17,8 +17,8 @@
 #include <math.h>
 #include <dlfcn.h>
 
-#define DEBUG(x) // debug off
-//#define DEBUG(x) x
+//#define DEBUG(x) // debug off
+#define DEBUG(x) x
 
 /*** PD EXTERNAL SETUP ---------------------------------------------------------------------------***/
 void rtcmix_tilde_setup(void)
@@ -699,7 +699,6 @@ void rtcmix_goscript(t_rtcmix *x, t_float f)
     }
 
   short j;
-  int tval;
 
   int buflen = x->script_size[x->current_script];
 
@@ -710,7 +709,8 @@ void rtcmix_goscript(t_rtcmix *x, t_float f)
       else
         break;
     }
-  char *thebuf = malloc(buflen);
+  // JWM: allocate an extra 80 characters for $ vars
+  char *thebuf = malloc(buflen+80);
 
   DEBUG(post("buflen: %i",buflen););
 
@@ -763,6 +763,7 @@ void rtcmix_goscript(t_rtcmix *x, t_float f)
           // ok, here's where we substitute the $vars
           if ((int)thebuf[j] == 36)
             {
+	      int tval;
               sscanf(x->rtcmix_script[x->current_script]+i+1, "%d", &tval);
               if ( !(x->var_set[tval-1]) )
                 error("variable $%d has not been set yet, using 0.0 as default", tval);
