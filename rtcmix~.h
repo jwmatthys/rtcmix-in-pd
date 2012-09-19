@@ -1,6 +1,10 @@
 #include "m_pd.h"
 
 #define RTCMIXEXTERNALNAME "rtcmix~.pd_linux"
+#define TEMPFOLDER "/tmp/rtcmix"
+#define SCRIPTEDITOR "rtcmix_scripteditor.py"
+#define DEPENDSFOLDER "lib"
+#define DYLIBNAME "rtcmixdylib.so"
 
 int dylibincr = 0;
 // for where the rtcmix-dylibs folder is located
@@ -78,8 +82,8 @@ typedef struct _rtcmix
   int dylibincr;
   void *rtcmixdylib;
   // for the full path to the rtcmixdylib.so file
-  char pathname[MAXPDSTRING];
-
+  char dylib_path[MAXPDSTRING];
+  char *temp_folder;
   // space for these malloc'd in rtcmix_dsp()
   float *pd_outbuf;
   float *pd_inbuf;
@@ -106,7 +110,7 @@ typedef struct _rtcmix
   char script_name[MAX_SCRIPTS][256];
   t_int script_size[MAX_SCRIPTS];
   t_int current_script, rw_flag;
-  char tempfile_path[MAXPDSTRING];
+  char temp_script[MAX_SCRIPTS][20];
   // JWM : canvas objects for callback addressing
   t_canvas *x_canvas;
   t_symbol *canvas_path;
