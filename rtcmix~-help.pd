@@ -1,4 +1,4 @@
-#N canvas 114 177 905 443 12;
+#N canvas 110 183 905 443 12;
 #X obj 2 1 cnv 15 900 440 empty empty empty 20 12 0 14 -203904 -66577
 0;
 #X obj 41 21 cnv 15 120 400 empty empty empty 20 12 0 14 -159808 -66577
@@ -1082,12 +1082,13 @@ bang;
 -1 -1;
 #X text 49 69 RTcmix musical;
 #X text 67 90 language;
-#X text 59 25 rtcmix~ 0.25;
 #X obj 137 399 bng 15 250 50 0 info-bang empty empty 17 7 0 10 -1 -1
 -1;
 #X obj 195 356 rtcmix~ 2 1;
-#X connect 3 0 51 0;
-#X connect 3 1 51 1;
+#X msg 253 213 verbose 0;
+#X text 59 25 rtcmix~ 0.28;
+#X connect 3 0 50 0;
+#X connect 3 1 50 1;
 #X connect 9 0 8 0;
 #X connect 10 0 8 0;
 #X connect 11 0 8 0;
@@ -1096,8 +1097,9 @@ bang;
 #X connect 14 0 8 0;
 #X connect 15 0 14 0;
 #X connect 16 0 8 0;
-#X connect 25 0 51 0;
-#X connect 33 0 51 2;
-#X connect 51 0 4 0;
-#X connect 51 1 4 1;
-#X connect 51 2 46 0;
+#X connect 25 0 50 0;
+#X connect 33 0 50 2;
+#X connect 50 0 4 0;
+#X connect 50 1 4 1;
+#X connect 50 2 46 0;
+#X connect 51 0 50 0;

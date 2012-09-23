@@ -41,6 +41,7 @@ void rtcmix_tilde_setup(void)
   class_addmethod(rtcmix_class,(t_method)rtcmix_varlist, gensym("varlist"), A_GIMME, 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_flush, gensym("flush"), 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_livecode, gensym("livecode"), A_FLOAT, 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_verbose, gensym("verbose"), A_FLOAT, 0);
 
   //so we know what to do with floats that we receive at the inputs
   class_addlist(rtcmix_class, rtcmix_text); // text from [entry] comes in as list
@@ -230,12 +231,13 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   x->canvas_path = canvas_getdir(x->x_canvas);
 
   x->flushflag = 0; // [flush] sets flag for call to x->flush() in rtcmix_perform() (after pulltraverse completes)
-
+  x->verbose = normal;
   // JWM: since Pd has no decent text editor, I created a simple Text GUI object in
   // Python. It reads temp.sco and rewrites when it's altered. [rtcmix~] reads that
   // temp.sco file, so we need to be sure it exists.
 
-  post("rtcmix~ -- RTcmix music language, v. %s (%s)", VERSION, RTcmixVERSION);
+  post("rtcmix~ --- RTcmix music language, http://rtcmix.org ---");
+  post("rtcmix~ version %s by Joel Matthys (%s)", VERSION, RTcmixVERSION);
 
   return (x);
 }
@@ -283,8 +285,8 @@ void rtcmix_dsp(t_rtcmix *x, t_signal **sp)
 
   dsp_add_args[x->num_inputs + x->num_outputs + 1] = vector_size; //pointer to the vector size
 
-  DEBUG(post("vector size: %d",vector_size););
-  //DEBUG(post("num inputs: %i, num outputs: %i", x->num_inputs, x->num_outputs););
+  if (x->verbose == debug)
+    post("vector size: %d",vector_size);
 
   dsp_addv(rtcmix_perform, (x->num_inputs  + x->num_outputs + 2),(t_int*)dsp_add_args); //add them to the signal chain
 
@@ -433,7 +435,8 @@ void rtcmix_free(t_rtcmix *x)
     free(x->tempfolder_path);
     free(x->dylib_path);
 
-    DEBUG(post ("rtcmix~ DESTROYED!"););
+    if (x->verbose == debug)
+      post ("rtcmix~ DESTROYED!");
 }
 
 static void rtcmix_openeditor(t_rtcmix *x)
@@ -441,7 +444,8 @@ static void rtcmix_openeditor(t_rtcmix *x)
   x->script_flag[x->current_script] = CHANGED;
   char *sys_cmd = malloc(MAXPDSTRING);
   sprintf(sys_cmd, "python %s %s %s &", x->editor_path, x->tempscript_path[x->current_script], x->script_name[x->current_script]);
-  DEBUG(post("cmd: %s",sys_cmd););
+  if (x->verbose == debug)
+    post("cmd: %s",sys_cmd);
   if (system(sys_cmd))
     error("rtcmix~: can't open rtcmix script editor");
   free(sys_cmd);
@@ -450,7 +454,8 @@ static void rtcmix_openeditor(t_rtcmix *x)
 // bang triggers the current working script
 void rtcmix_bang(t_rtcmix *x)
 {
-  DEBUG(post("rtcmix~: received bang"););
+  if (x->verbose == debug)
+    post("rtcmix~: received bang");
 
   if (x->flushflag == 1) return; // heap and queue being reset
 
@@ -459,7 +464,8 @@ void rtcmix_bang(t_rtcmix *x)
 
 void rtcmix_float(t_rtcmix *x, t_float scriptnum)
 {
-  DEBUG(post("received float %f",scriptnum););
+  if (x->verbose == debug)
+    post("received float %f",scriptnum);
   rtcmix_goscript(x, scriptnum);
 }
 
@@ -638,17 +644,19 @@ void rtcmix_var(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
       if (argv[i+1].a_type == A_FLOAT)
           x->var_array[varnum-1] = argv[i+1].a_w.w_float;
     }
-  DEBUG( post("vars: %f %f %f %f %f %f %f %f %f",
-              (float)(x->var_array[0]),
-              (float)(x->var_array[1]),
-              (float)(x->var_array[2]),
-              (float)(x->var_array[3]),
-              (float)(x->var_array[4]),
-              (float)(x->var_array[5]),
-              (float)(x->var_array[6]),
-              (float)(x->var_array[7]),
-              (float)(x->var_array[8])););
-
+  if (x->verbose == debug)
+    {
+      post("vars: %f %f %f %f %f %f %f %f %f",
+           (float)(x->var_array[0]),
+           (float)(x->var_array[1]),
+           (float)(x->var_array[2]),
+           (float)(x->var_array[3]),
+           (float)(x->var_array[4]),
+           (float)(x->var_array[5]),
+           (float)(x->var_array[6]),
+           (float)(x->var_array[7]),
+           (float)(x->var_array[8]));
+    }
 }
 
 
@@ -679,7 +687,8 @@ void rtcmix_flush(t_rtcmix *x)
 
 void rtcmix_goscript(t_rtcmix *x, t_float f)
 {
-  DEBUG(post("goscript"););
+  if (x->verbose == debug)
+    post("goscript");
   short i;
   short temp = (short)f;
 
@@ -695,7 +704,9 @@ void rtcmix_goscript(t_rtcmix *x, t_float f)
     }
 
   x->current_script = (t_int)temp;
-  DEBUG(post("current script = %i",x->current_script););
+
+  if (x->verbose == debug)
+    post("current script = %i",x->current_script);
 
   // JWM reload temporary score if editor has been open
   if (x->script_flag[x->current_script] == CHANGED || x->livecode_flag)
@@ -718,39 +729,44 @@ void rtcmix_goscript(t_rtcmix *x, t_float f)
   // JWM: allocate an extra 80 characters for $ vars
   char *thebuf = malloc(buflen+80);
 
-  DEBUG(post("buflen: %i",buflen););
+  if (x->verbose == debug)
+    post("buflen: %i",buflen);
 
       // JWM: HEAVY DUTY BUFFER DEBUGGER
 
-  DEBUG(
-        j = buflen;
-        i = 0;
-        int linenum = 1;
-        while (i < j)
-          {
-            if (j - i >= 10)
-              {
-                int foo;
-                for (foo=0; foo<10; foo++)
-                  {
-                    if ((int)x->rtcmix_script[x->current_script][i+foo] == 10)
-                      linenum++;
-                  }
-                //post("orig: %i: chars: %c %c %c %c %c %c %c %c %c %c",
-                     post("orig: %i: chars: %i %i %i %i %i %i %i %i %i %i",
-                     linenum, x->rtcmix_script[x->current_script][i], x->rtcmix_script[x->current_script][i+1], x->rtcmix_script[x->current_script][i+2],
-                     x->rtcmix_script[x->current_script][i+3], x->rtcmix_script[x->current_script][i+4], x->rtcmix_script[x->current_script][i+5],
-                     x->rtcmix_script[x->current_script][i+6], x->rtcmix_script[x->current_script][i+7], x->rtcmix_script[x->current_script][i+8],
-                     x->rtcmix_script[x->current_script][i+9]);
-                i += 10;
-              }
-            else
-              {
-                if ((int)x->rtcmix_script[x->current_script][i] == 10)
-                  linenum++;
-                post("orig: %i chars: %i", linenum, x->rtcmix_script[x->current_script][i++]);
-              }
-          });
+  int linenum;
+  if (x->verbose == debug)
+    {
+      j = buflen;
+      i = 0;
+      linenum = 1;
+      while (i < j)
+        {
+          if (j - i >= 10)
+            {
+              int foo;
+              for (foo=0; foo<10; foo++)
+                {
+                  if ((int)x->rtcmix_script[x->current_script][i+foo] == 10)
+                    linenum++;
+                }
+              //post("orig: %i: chars: %c %c %c %c %c %c %c %c %c %c",
+              post("orig: %i: chars: %i %i %i %i %i %i %i %i %i %i",
+                   linenum, x->rtcmix_script[x->current_script][i], x->rtcmix_script[x->current_script][i+1], x->rtcmix_script[x->current_script][i+2],
+                   x->rtcmix_script[x->current_script][i+3], x->rtcmix_script[x->current_script][i+4], x->rtcmix_script[x->current_script][i+5],
+                   x->rtcmix_script[x->current_script][i+6], x->rtcmix_script[x->current_script][i+7], x->rtcmix_script[x->current_script][i+8],
+                   x->rtcmix_script[x->current_script][i+9]);
+              i += 10;
+            }
+          else
+            {
+              if ((int)x->rtcmix_script[x->current_script][i] == 10)
+                linenum++;
+              post("orig: %i chars: %i", linenum, x->rtcmix_script[x->current_script][i++]);
+            }
+        }
+    }
+
 
 
   // probably don't need to transfer to a new buffer, but I want to be sure there's room for the \0,
@@ -782,39 +798,43 @@ void rtcmix_goscript(t_rtcmix *x, t_float f)
 
       // JWM: HEAVY DUTY BUFFER DEBUGGER
 
-      DEBUG(
-      i = 0;
-      linenum = 1;
-      while (i < j)
+      if (x->verbose == debug)
         {
-          if (j - i >= 10)
+          i = 0;
+          linenum = 1;
+          while (i < j)
             {
-              int foo;
-              for (foo=0; foo<10; foo++)
+              if (j - i >= 10)
                 {
-                  if ((int)thebuf[i+foo] == 10)
-                    linenum++;
+                  int foo;
+                  for (foo=0; foo<10; foo++)
+                    {
+                      if ((int)thebuf[i+foo] == 10)
+                        linenum++;
+                    }
+                  //post("fix: %i: chars: %c %c %c %c %c %c %c %c %c %c",
+                  post("fix: %i: chars: %i %i %i %i %i %i %i %i %i %i",
+                       linenum, thebuf[i], thebuf[i+1], thebuf[i+2],
+                       thebuf[i+3], thebuf[i+4], thebuf[i+5],
+                       thebuf[i+6], thebuf[i+7], thebuf[i+8],
+                       thebuf[i+9]);
+                  i += 10;
                 }
-              //post("fix: %i: chars: %c %c %c %c %c %c %c %c %c %c",
-                   post("fix: %i: chars: %i %i %i %i %i %i %i %i %i %i",
-                   linenum, thebuf[i], thebuf[i+1], thebuf[i+2],
-                   thebuf[i+3], thebuf[i+4], thebuf[i+5],
-                   thebuf[i+6], thebuf[i+7], thebuf[i+8],
-                   thebuf[i+9]);
-              i += 10;
+              else
+                {
+                  if ((int)thebuf[i] == 10)
+                    linenum++;
+                  post("line: %i chars: %i", linenum, thebuf[i++]);
+                }
             }
-          else
-            {
-              if ((int)thebuf[i] == 10)
-                linenum++;
-              post("line: %i chars: %i", linenum, thebuf[i++]);
-            }
-        });
+        }
+
 
       if ( (canvas_dspstate == 1) || (strncmp(thebuf, "system", 6) == 0) )
         { // don't send if the dacs aren't turned on, unless it is a system() <------- HACK HACK HACK!
 
-          post ("rtcmix~: parsing script %i: \"%s\"",x->current_script,x->script_name[x->current_script]);
+          if (x->verbose != silent)
+            post ("rtcmix~: parsing script %i: \"%s\"",x->current_script,x->script_name[x->current_script]);
 
           if (x->parse_score(thebuf, j) != 0)
             error("possible problem parsing RTcmix script");
@@ -854,14 +874,16 @@ void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
     }
 
   x->current_script = (t_int)temp;
-  post("rtcmix~: set current script to %i: \"%s\"", x->current_script, x->script_name[x->current_script]);
+  if (x->verbose != silent)
+    post("rtcmix~: set current script to %i: \"%s\"", x->current_script, x->script_name[x->current_script]);
   //rtcmix_dosave(x,x->tempscript_path[x->current_script]);
 }
 
 // the [read ...] message triggers this
 void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 {
-  DEBUG(post("read"););
+  if (x->verbose == debug)
+    post("read");
   int i;
   int temp = x->current_script;
   t_symbol *filename;
@@ -893,9 +915,11 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
   if (!fnflag)
     {
-      DEBUG(post("openpanel signaled"););
+      if (x->verbose == debug)
+        post("openpanel signaled");
       x->rw_flag = RTcmixREADFLAG;
-      DEBUG(post("x->x_s->s_name: %s, x->canvas_path->s_name: %s",x->x_s->s_name, x->canvas_path->s_name););
+      if (x->verbose == debug)
+        post("x->x_s->s_name: %s, x->canvas_path->s_name: %s",x->x_s->s_name, x->canvas_path->s_name);
       sys_vgui("pdtk_openpanel {%s} {%s}\n", x->x_s->s_name, x->canvas_path->s_name);
     }
   else
@@ -908,22 +932,26 @@ void rtcmix_read(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv)
 
 void rtcmix_save(t_rtcmix *x)
 {
-  DEBUG(post("save signaled"););
+  if (x->verbose == debug)
+    post("save signaled");
   rtcmix_dosave(x, x->script_name[x->current_script]);
 }
 
 void rtcmix_saveas(t_rtcmix *x)
 {
-  DEBUG(post("savepanel signaled"););
+  if (x->verbose == debug)
+    post("savepanel signaled");
   x->rw_flag = RTcmixWRITEFLAG;
   sys_vgui("pdtk_savepanel {%s} {%s}\n", x->x_s->s_name, x->canvas_path->s_name);
 }
 
 void rtcmix_callback(t_rtcmix *x, t_symbol *filename)
 {
-  DEBUG(post("callback! flag = %d",x->rw_flag););
-  DEBUG(post("current script: %i",x->current_script););
-
+  if (x->verbose == debug)
+    {
+      post("callback! flag = %d",x->rw_flag);
+      post("current script: %i",x->current_script);
+    }
 
   char *buf = malloc(MAXPDSTRING);
   sprintf(x->script_name[x->current_script], "%s",filename->s_name);
@@ -948,7 +976,8 @@ void rtcmix_callback(t_rtcmix *x, t_symbol *filename)
 
 static void rtcmix_doread(t_rtcmix *x, char* filename)
 {
-  DEBUG(post("doread %s",filename););
+  if (x->verbose == debug)
+    post("doread %s",filename);
   FILE *fp = fopen ( filename , "rb" );
 
   long lSize = 0;
@@ -992,65 +1021,77 @@ static void rtcmix_doread(t_rtcmix *x, char* filename)
 
 static void rtcmix_dosave(t_rtcmix *x, char* filename)
 {
-  DEBUG(post("dosave %s",filename););
+  if (x->verbose == debug)
+    post("dosave %s",filename);
   char * sys_cmd = malloc(MAXPDSTRING);
   sprintf(sys_cmd, "cp \"%s\" \"%s\"", x->tempscript_path[x->current_script], filename);
   if (system(sys_cmd))
     error ("rtcmix~: error saving %s",filename);
   else
-    post("rtcmix~: wrote script %i to %s",x->current_script,filename);
+    if (x->verbose != silent)
+      post("rtcmix~: wrote script %i to %s",x->current_script,filename);
   free(sys_cmd);
 }
 
 static void rtcmix_inletp0(t_rtcmix *x, t_float f)
 {
-  DEBUG(post("received %f at pinlet 0",f););
+  if (x->verbose == debug)
+    post("received %f at pinlet 0",f);
   rtcmix_float_inlet(x,0,f);
 }
 
 static void rtcmix_inletp1(t_rtcmix *x, t_float f)
 {
-  DEBUG(post("received %f at pinlet 1",f););
+  if (x->verbose == debug)
+    post("received %f at pinlet 1",f);
   rtcmix_float_inlet(x,1,f);
 }
 static void rtcmix_inletp2(t_rtcmix *x, t_float f)
 {
-  DEBUG(post("received %f at pinlet 2",f););
+  if (x->verbose == debug)
+    post("received %f at pinlet 2",f);
   rtcmix_float_inlet(x,2,f);
 }
 static void rtcmix_inletp3(t_rtcmix *x, t_float f)
 {
-  DEBUG(post("received %f at pinlet 3",f););
+  if (x->verbose == debug)
+    post("received %f at pinlet 3",f);
   rtcmix_float_inlet(x,3,f);
 }
 static void rtcmix_inletp4(t_rtcmix *x, t_float f)
 {
-  DEBUG(post("received %f at pinlet 4",f););
+  if (x->verbose == debug)
+    post("received %f at pinlet 4",f);
   rtcmix_float_inlet(x,4,f);
 }
 static void rtcmix_inletp5(t_rtcmix *x, t_float f)
 {
-  DEBUG(post("received %f at pinlet 5",f););
+  if (x->verbose == debug)
+    post("received %f at pinlet 5",f);
   rtcmix_float_inlet(x,5,f);
 }
 static void rtcmix_inletp6(t_rtcmix *x, t_float f)
 {
-  DEBUG(post("received %f at pinlet 6",f););
+  if (x->verbose == debug)
+    post("received %f at pinlet 6",f);
   rtcmix_float_inlet(x,6,f);
 }
 static void rtcmix_inletp7(t_rtcmix *x, t_float f)
 {
-  DEBUG(post("received %f at pinlet 7",f););
+  if (x->verbose == debug)
+    post("received %f at pinlet 7",f);
   rtcmix_float_inlet(x,7,f);
 }
 static void rtcmix_inletp8(t_rtcmix *x, t_float f)
 {
-  DEBUG(post("received %f at pinlet 8",f););
+  if (x->verbose == debug)
+    post("received %f at pinlet 8",f);
   rtcmix_float_inlet(x,8,f);
 }
 static void rtcmix_inletp9(t_rtcmix *x, t_float f)
 {
-  DEBUG(post("received %f at pinlet 9",f););
+  if (x->verbose == debug)
+    post("received %f at pinlet 9",f);
   rtcmix_float_inlet(x,9,f);
 }
 
@@ -1067,7 +1108,8 @@ static void rtcmix_float_inlet(t_rtcmix *x, short inlet, t_float f)
 
 static void rtcmix_dlopen_and_errorcheck(t_rtcmix *x)
 {
-  DEBUG(post("rtcmix~: dlpath: %s",x->dylib_path););
+  if (x->verbose == debug)
+    post("rtcmix~: dlpath: %s",x->dylib_path);
   x->rtcmixdylib = dlopen(x->dylib_path,  RTLD_NOW | RTLD_LOCAL);
   if (!x->rtcmixdylib)
     {
@@ -1144,4 +1186,21 @@ void rtcmix_info(t_rtcmix *x)
   post("temporary files are stored in \"%s\"", x->tempfolder_path);
   post("dylib is called \"%s\"", x->dylib_path);
   post("editor is called \"%s\"", x->editor_path);
+}
+
+void rtcmix_verbose (t_rtcmix *x, t_float f)
+{
+  switch ((short)f)
+    {
+    case 0:
+      x->verbose = silent;
+      break;
+    case 2:
+      x->verbose = debug;
+      break;
+    case 1:
+    default:
+      x->verbose = normal;
+    }
+  post("rtcmix~: verbosity set to %i",(short)f);
 }

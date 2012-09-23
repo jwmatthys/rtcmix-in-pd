@@ -29,6 +29,11 @@ char mpathname[MAXPDSTRING];
 #define UNCHANGED 0
 #define CHANGED 1
 
+enum verbose_flags {
+  silent,
+  normal,
+  debug
+};
 
 /*** RTcmix stuff ---------------------------------------------------------------------------***/
 
@@ -132,6 +137,9 @@ typedef struct _rtcmix
 
   int flushflag;
   t_float f;
+
+  enum verbose_flags verbose;
+
 } t_rtcmix;
 
 
@@ -166,9 +174,9 @@ void rtcmix_varlist(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
 void rtcmix_bufset(t_rtcmix *x, t_symbol *s);
 void rtcmix_flush(t_rtcmix *x);
 void rtcmix_livecode(t_rtcmix *x, t_float f);
+void rtcmix_verbose(t_rtcmix *x, t_float f);
 
 //for the text editor
-void rtcmix_dblclick(t_rtcmix *x);
 void rtcmix_goscript(t_rtcmix *x, t_float s);
 static void rtcmix_openeditor(t_rtcmix *x);
 void rtcmix_setscript(t_rtcmix *x, t_symbol *s, short argc, t_atom *argv);
