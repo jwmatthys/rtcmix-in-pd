@@ -214,6 +214,7 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
       // this should be /tmp/rtcmix0/tempscore0.sco
       sprintf(x->tempscript_path[i],"%s/%s%i.%s",x->tempfolder_path, TEMPSCRIPTNAME, i, SCOREEXTENSION);
       x->script_flag[i] = UNCHANGED;
+      x->numvars[i] = 0;
     }
   // turn off livecoding flag by default. This means that
   // rtcmix_goscript will only reload the tempscore from file
@@ -726,8 +727,8 @@ void rtcmix_goscript(t_rtcmix *x, t_float f)
       else
         break;
     }
-  // JWM: allocate an extra 80 characters for $ vars
-  char *thebuf = malloc(buflen+80);
+  // JWM: allocate extra 10 chars for each var
+  char *thebuf = malloc(buflen+10*x->numvars[x->current_script]);
 
   if (x->verbose == debug)
     post("buflen: %i",buflen);
@@ -1016,6 +1017,15 @@ static void rtcmix_doread(t_rtcmix *x, char* filename)
   out:
   x->script_size[x->current_script] = lSize;
   x->script_flag[x->current_script] = UNCHANGED;
+
+  // count how many $ variables are in script
+  x->numvars[x->current_script] = 0;
+  int i;
+  for (i=0; i<x->script_size[x->current_script]; i++)
+    {
+      if ((int)x->rtcmix_script[x->current_script][i] == 36)
+        x->numvars[x->current_script]++;
+    }
   free(buffer);
 }
 

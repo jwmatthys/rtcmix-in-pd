@@ -122,7 +122,7 @@ typedef struct _rtcmix
   t_int rw_flag; // one callback function is run after either save or read; need to differentiate
   t_int script_flag[MAX_SCRIPTS]; // store script value CHANGED or UNCHANGED (called on goscript)
   char **tempscript_path;
-
+  t_int numvars[MAX_SCRIPTS];
   // JWM : introduce an option to always reload temp scores, even if no script_flag is up. This
   // may slow things down some but could allow for editing of scores in other editors alongsize
   // Pd, or even for multiple players to ssh in, and edit a temp score during performance.
