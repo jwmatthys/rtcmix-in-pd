@@ -80,17 +80,17 @@ usage()
 #include <string.h>
 
 void *operator new(size_t size) {
-	size_t memsize = (size > 4) ? size : 4;
-	void *ptr = malloc(memsize);
-	memset(ptr, 0xaa, memsize);
-	return ptr;
+        size_t memsize = (size > 4) ? size : 4;
+        void *ptr = malloc(memsize);
+        memset(ptr, 0xaa, memsize);
+        return ptr;
 }
 
 void operator delete(void *mem) {
-	if (mem) {
-		memset(mem, 0xdd, 4);
-		free(mem);
-	}
+        if (mem) {
+                memset(mem, 0xdd, 4);
+                free(mem);
+        }
 }
 
 #endif
@@ -98,17 +98,17 @@ void operator delete(void *mem) {
 extern "C" {
   int profile();
   void rtprofile();
-	// I don't call the profiles here, because dead-time instruments
-	// won't be compiled into the object file unless they are present at
-	// the build (i.e. they aren't DSO's).  RT instruments have the
-	// rtprofile() called when they get loaded.  Go Doug, go!
+        // I don't call the profiles here, because dead-time instruments
+        // won't be compiled into the object file unless they are present at
+        // the build (i.e. they aren't DSO's).  RT instruments have the
+        // rtprofile() called when they get loaded.  Go Doug, go!
 }
 
 // RTcmixMain is the derived RTcmix class called by main()
 
 // Private static state
 
-int 			RTcmixMain::xargc;
+int                     RTcmixMain::xargc;
 char *			RTcmixMain::xargv[MAXARGS + 1];
 int				RTcmixMain::interrupt_handler_called = 0;
 int				RTcmixMain::signal_handler_called = 0;
@@ -116,7 +116,7 @@ int				RTcmixMain::signal_handler_called = 0;
 int				RTcmixMain::noParse         = 0;
 int				RTcmixMain::socknew			= 0;
 #ifdef NETAUDIO
-int				RTcmixMain::netplay 		= 0;	// for remote sound network playing
+int				RTcmixMain::netplay             = 0;	// for remote sound network playing
 #endif
 
 
@@ -124,7 +124,7 @@ int				RTcmixMain::netplay 		= 0;	// for remote sound network playing
 // Assuming that our default shared lib dir is in the same directory as our
 // bin dir, return the path name of the shared lib dir.  Return empty string
 // if path to RTcmix executable <progPath> isn't deep enough, or if derived
-// dir name doesn't exist.  Caller is responsible for deleting returned 
+// dir name doesn't exist.  Caller is responsible for deleting returned
 // string.  -JGG
 
 #define PATH_DELIMITER  '/'
@@ -160,10 +160,10 @@ char *RTcmixMain::makeDSOPath(const char *progPath)
 // BGG mm -- got rid of argc and argv for max/msp
 RTcmixMain::RTcmixMain() : RTcmix(false)
 {
-	// BGG mm -- added this for the xargv initialization below
-	int i;
+        // BGG mm -- added this for the xargv initialization below
+        int i;
 
-	// BGG mm -- don't set the sig_handlers for max/msp
+        // BGG mm -- don't set the sig_handlers for max/msp
 //   set_sig_handlers();
 
 // FIXME: should consult a makefile variable to tell us whether we should
@@ -187,10 +187,10 @@ RTcmixMain::RTcmixMain() : RTcmix(false)
    init_globals(true, NULL);     // 'true' indicates we were called from main
 //   delete [] dsoPath;
 
-	// BGG mm -- no more argc, argv for max/msp
+        // BGG mm -- no more argc, argv for max/msp
 //   parseArguments(argc, argv);
 
-	// BGG mm -- moved this here because parseArguments is no longer called
+        // BGG mm -- moved this here because parseArguments is no longer called
    for (i = 1; i <= MAXARGS; i++)
       xargv[i] = NULL;
    xargc = 1;
@@ -217,7 +217,7 @@ RTcmixMain::parseArguments(int argc, char **argv)
    int         i, j, k, l;
    int         retcode;                 /* for mutexes */
 #ifdef LINUX
-   int		   priority = 0;
+   int             priority = 0;
 #endif
    char        *infile;
 #ifdef NETAUDIO
@@ -256,13 +256,13 @@ RTcmixMain::parseArguments(int argc, char **argv)
                Option::print(false);
                break;
 #ifdef LINUX
-			case 'p':
+                        case 'p':
                if (++i >= argc) {
                   fprintf(stderr, "You didn't give a priority number.\n");
                   exit(1);
                }
-			   priority = atoi(argv[i]);
-			   break;
+                           priority = atoi(argv[i]);
+                           break;
 #endif
             case 'D':
                if (++i >= argc) {
@@ -273,10 +273,10 @@ RTcmixMain::parseArguments(int argc, char **argv)
                break;
 #ifdef NETAUDIO
             case 'r':               /* set up for network playing */
-              	if (++i >= argc) {
+                if (++i >= argc) {
                   fprintf(stderr, "You didn't give a remote host ip.\n");
                   exit(1);
-              	}
+                }
                /* host ip num */
                strcat(rhostname, "net:");
                strncat(rhostname, argv[i], 59-4);    /* safe strcat */
@@ -314,37 +314,37 @@ RTcmixMain::parseArguments(int argc, char **argv)
                tags_on = 1;
                printf("rtupdates enabled\n");
                curtag = 1;          /* "0" is reserved for all notes */
-			   curinst = 0;
-			   curgen = 1;
+                           curinst = 0;
+                           curgen = 1;
 
                for (j = 0; j < MAXPUPS; j++)     /* initialize element 0 */
                   pupdatevals[0][j] = NOPUPDATE;
-			   for(j = 0; j < MAXNUMTAGS; j++)
-			   {
-				   for(k = 0; k < MAXNUMPARAMS; k++)
-				   {
-					   numcalls[j][k] = 0;
-					   cum_parray_size[j][k] = 0;
-					   for(l = 0; l < MAXNUMCALLS; l++)
-					   {
-						   parray_size[j][k][l] = 0; //initilizes size of 
-					   }						  // pfpath array
- 
-				   }
-			   }
-			   for(j = 0; j < MAXNUMINSTS; j++)
-			   {
-				   pi_goto[j] = -1;
-				   for(k = 0; k < MAXNUMPARAMS; k++)
-				   {
-						numinstcalls[j][k] = 0;
-						cum_piarray_size[j][k] = 0;
-						for(l = 0; l < MAXNUMCALLS; l++)
-						{
-							piarray_size[j][k][l] = 0;
-						}
-				   }
-			   }
+                           for(j = 0; j < MAXNUMTAGS; j++)
+                           {
+                                   for(k = 0; k < MAXNUMPARAMS; k++)
+                                   {
+                                           numcalls[j][k] = 0;
+                                           cum_parray_size[j][k] = 0;
+                                           for(l = 0; l < MAXNUMCALLS; l++)
+                                           {
+                                                   parray_size[j][k][l] = 0; //initilizes size of
+                                           }                                              // pfpath array
+
+                                   }
+                           }
+                           for(j = 0; j < MAXNUMINSTS; j++)
+                           {
+                                   pi_goto[j] = -1;
+                                   for(k = 0; k < MAXNUMPARAMS; k++)
+                                   {
+                                                numinstcalls[j][k] = 0;
+                                                cum_piarray_size[j][k] = 0;
+                                                for(l = 0; l < MAXNUMCALLS; l++)
+                                                {
+                                                        piarray_size[j][k][l] = 0;
+                                                }
+                                   }
+                           }
                break;
 #endif /* RTUPDATE */
             case 'f':     /* use file name arg instead of stdin as score */
@@ -450,7 +450,7 @@ RTcmixMain::run()
 #ifdef DBUG
       fprintf(stdout, "calling waitForMainLoop()\n");
 #endif
-	  retcode = waitForMainLoop();
+          retcode = waitForMainLoop();
       if (retcode != 0) {
          fprintf(stderr, "waitForMailLoop() failed\n");
       }
@@ -465,19 +465,19 @@ RTcmixMain::run()
 int status = 0;
 #ifdef PYTHON
       /* Have to reinstall this after running Python interpreter. (Why?) */
-	  set_sig_handlers();
+          set_sig_handlers();
 #endif
       if (status == 0) {
 #ifdef LINUX
-//		 if (priority != 0)
-//			 if (setpriority(PRIO_PROCESS, 0, priority) != 0)
-//			 	perror("setpriority");
+//               if (priority != 0)
+//                       if (setpriority(PRIO_PROCESS, 0, priority) != 0)
+//                              perror("setpriority");
 #endif
 
 // BGG mm -- runMainLoop() will set up ok, but return -1 for max/msp
          if ((status = runMainLoop()) == 0)
-			 waitForMainLoop();
-	  }
+                         waitForMainLoop();
+          }
       else
          exit(status);
 
@@ -493,41 +493,41 @@ int status = 0;
 void
 RTcmixMain::interrupt_handler(int signo)
 {
-	// Dont do handler work more than once
-	if (!interrupt_handler_called) {
-		interrupt_handler_called = 1;
-	   fprintf(stderr, "\n<<< Caught interrupt signal >>>\n");
+        // Dont do handler work more than once
+        if (!interrupt_handler_called) {
+                interrupt_handler_called = 1;
+           fprintf(stderr, "\n<<< Caught interrupt signal >>>\n");
 
-	   // Notify rendering loop.
-	   run_status = RT_SHUTDOWN;
-	   if (audioDevice) {
+           // Notify rendering loop.
+           run_status = RT_SHUTDOWN;
+           if (audioDevice) {
 printf("interrupt_handler: calling audioDevice->close()\n");
-	       audioDevice->close();
-	   }
-	   if (!audioLoopStarted) {
-		   closesf();	// We exit if we have not yet configured audio.
-	   }
-	}
+               audioDevice->close();
+           }
+           if (!audioLoopStarted) {
+                   closesf();	// We exit if we have not yet configured audio.
+           }
+        }
 }
 
 /* ------------------------------------------------------- signal_handler --- */
 void
 RTcmixMain::signal_handler(int signo)
 {
-	// Dont do handler work more than once
-	if (!signal_handler_called) {
-		signal_handler_called = 1;
-	   fprintf(stderr, "\n<<< Caught internal signal (%d) >>>\n", signo);
+        // Dont do handler work more than once
+        if (!signal_handler_called) {
+                signal_handler_called = 1;
+           fprintf(stderr, "\n<<< Caught internal signal (%d) >>>\n", signo);
 
-	   run_status = RT_ERROR;
-	   switch (signo) {
-	   default:
-		   fflush(stdout);
-		   fflush(stderr);
-  	 	   exit(1);
-	       break;
-	   }
-	}
+           run_status = RT_ERROR;
+           switch (signo) {
+           default:
+                   fflush(stdout);
+                   fflush(stderr);
+                   exit(1);
+               break;
+           }
+        }
 }
 
 void
@@ -566,7 +566,7 @@ RTcmixMain::sockit(void *arg)
     char *sptr;
     int val,optlen;
     int ntag,pval;
-	Bool audio_configured = NO;
+        Bool audio_configured = NO;
 
     /* create the socket for listening */
 
@@ -575,7 +575,7 @@ RTcmixMain::sockit(void *arg)
 #endif
     if( (s = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
       perror("socket");
-	  run_status = RT_ERROR;	// Notify inTraverse()
+          run_status = RT_ERROR;	// Notify inTraverse()
       exit(1);
     }
 
@@ -588,16 +588,16 @@ RTcmixMain::sockit(void *arg)
     sss.sin_family = AF_INET;
     sss.sin_addr.s_addr = INADDR_ANY;
     // socknew is offset from MYPORT to allow more than one inst
-    if (noParse) {}	
+    if (noParse) {}
     sss.sin_port = htons(MYPORT+socknew);
 
     err = bind(s, (struct sockaddr *)&sss, sizeof(sss));
     if (err < 0) {
       perror("bind");
-	  fflush(stdout);
-	  run_status = RT_ERROR;	// Notify inTraverse()
-	  sleep(1);
-	  cout << "\n";
+          fflush(stdout);
+          run_status = RT_ERROR;	// Notify inTraverse()
+          sleep(1);
+          cout << "\n";
       exit(1);
     }
 
@@ -611,7 +611,7 @@ RTcmixMain::sockit(void *arg)
     ns = accept(s, (struct sockaddr *)&sss, &len);
     if(ns < 0) {
       perror("accept");
-	  run_status = RT_ERROR;	// Notify inTraverse()
+          run_status = RT_ERROR;	// Notify inTraverse()
       exit(1);
     }
     else {
@@ -620,130 +620,130 @@ RTcmixMain::sockit(void *arg)
       // Zero the socket structure
       sinfo->name[0] = '\0';
       for (i=0;i<MAXDISPARGS;i++) {
-		sinfo->data.p[i] = 0;
+                sinfo->data.p[i] = 0;
       }
-	  
+
       // we do this when the -n flag is set, it has to parse rtsetparams()
       // coming over the socket before it can access the values of RTBUFSAMPS,
       // SR, NCHANS, etc.
       if (noParse) {
-		
-		// Wait for the ok to go ahead
-		pthread_mutex_lock(&audio_config_lock);
-		if (!audio_config) {
-		  if (Option::print())
-			cout << "sockit():  waiting for audio_config . . . \n";
-		}
-		pthread_mutex_unlock(&audio_config_lock);
-		
-		while (!audio_configured) {
-		  pthread_mutex_lock(&audio_config_lock);
-		  if (audio_config) {
-			audio_configured = YES;
-		  }
-		  pthread_mutex_unlock(&audio_config_lock);
 
-		  sptr = (char *)sinfo;
-		  amt = read(ns, (void *)sptr, sizeof(struct sockdata));
-		  while (amt < sizeof(struct sockdata)) amt += read(ns, (void *)(sptr+amt), sizeof(struct sockdata)-amt);
-		  if ( (strcmp(sinfo->name, "rtinput") == 0) ||
-			   (strcmp(sinfo->name, "rtoutput") == 0) ||
-			   (strcmp(sinfo->name,"set_option") == 0) ||
-			   (strcmp(sinfo->name,"bus_config") == 0) ||
-			   (strcmp(sinfo->name, "load")==0) ) {
-			// these two commands use text data
-			// replace the text[i] with p[i] pointers
-			for (i = 0; i < sinfo->n_args; i++)
-			  strcpy(ttext[i],sinfo->data.text[i]);
-			for (i = 0; i < sinfo->n_args; i++) {
-			  sinfo->data.p[i] = STRING_TO_DOUBLE(ttext[i]);
-			}
-		  }
-		  (void) ::dispatch(sinfo->name, sinfo->data.p, sinfo->n_args, NULL);
-		}
-		
-		if (audio_configured && rtInteractive) {
-			if (Option::print())
-				cout << "sockit():  audio set.\n";
-		}
-		
-	  }
+                // Wait for the ok to go ahead
+                pthread_mutex_lock(&audio_config_lock);
+                if (!audio_config) {
+                  if (Option::print())
+                        cout << "sockit():  waiting for audio_config . . . \n";
+                }
+                pthread_mutex_unlock(&audio_config_lock);
+
+                while (!audio_configured) {
+                  pthread_mutex_lock(&audio_config_lock);
+                  if (audio_config) {
+                        audio_configured = YES;
+                  }
+                  pthread_mutex_unlock(&audio_config_lock);
+
+                  sptr = (char *)sinfo;
+                  amt = read(ns, (void *)sptr, sizeof(struct sockdata));
+                  while (amt < sizeof(struct sockdata)) amt += read(ns, (void *)(sptr+amt), sizeof(struct sockdata)-amt);
+                  if ( (strcmp(sinfo->name, "rtinput") == 0) ||
+                           (strcmp(sinfo->name, "rtoutput") == 0) ||
+                           (strcmp(sinfo->name,"set_option") == 0) ||
+                           (strcmp(sinfo->name,"bus_config") == 0) ||
+                           (strcmp(sinfo->name, "load")==0) ) {
+                        // these two commands use text data
+                        // replace the text[i] with p[i] pointers
+                        for (i = 0; i < sinfo->n_args; i++)
+                          strcpy(ttext[i],sinfo->data.text[i]);
+                        for (i = 0; i < sinfo->n_args; i++) {
+                          sinfo->data.p[i] = STRING_TO_DOUBLE(ttext[i]);
+                        }
+                  }
+                  (void) ::dispatch(sinfo->name, sinfo->data.p, sinfo->n_args, NULL);
+                }
+
+                if (audio_configured && rtInteractive) {
+                        if (Option::print())
+                                cout << "sockit():  audio set.\n";
+                }
+
+          }
 
       // Main socket reading loop
       while(1) {
 
-		sptr = (char *)sinfo;
-		amt = read(ns, (void *)sptr, sizeof(struct sockdata));
-		while (amt < sizeof(struct sockdata)) amt += read(ns, (void *)(sptr+amt), sizeof(struct sockdata)-amt);
-		if ( (strcmp(sinfo->name, "rtinput") == 0) ||
-			(strcmp(sinfo->name, "rtoutput") == 0) ||
-			(strcmp(sinfo->name,"set_option") == 0) ||
-			(strcmp(sinfo->name,"bus_config") == 0) ||
-			(strcmp(sinfo->name, "load")==0) ) {
-			
-			// these two commands use text data
-			// replace the text[i] with p[i] pointers
-			for (i = 0; i < sinfo->n_args; i++)
-				strcpy(ttext[i],sinfo->data.text[i]);
-			for (i = 0; i < sinfo->n_args; i++) {
-				sinfo->data.p[i] = STRING_TO_DOUBLE(ttext[i]);
-			}
-		}
+                sptr = (char *)sinfo;
+                amt = read(ns, (void *)sptr, sizeof(struct sockdata));
+                while (amt < sizeof(struct sockdata)) amt += read(ns, (void *)(sptr+amt), sizeof(struct sockdata)-amt);
+                if ( (strcmp(sinfo->name, "rtinput") == 0) ||
+                        (strcmp(sinfo->name, "rtoutput") == 0) ||
+                        (strcmp(sinfo->name,"set_option") == 0) ||
+                        (strcmp(sinfo->name,"bus_config") == 0) ||
+                        (strcmp(sinfo->name, "load")==0) ) {
 
-	 		// if it is an rtupdate, set the pval array
-		if (strcmp(sinfo->name, "rtupdate") == 0) {
-		  // rtupdate params are:
-		  //	p0 = note tag # 0 for all notes
-		  //	p1,2... pn,pn+1 = pfield, value
+                        // these two commands use text data
+                        // replace the text[i] with p[i] pointers
+                        for (i = 0; i < sinfo->n_args; i++)
+                                strcpy(ttext[i],sinfo->data.text[i]);
+                        for (i = 0; i < sinfo->n_args; i++) {
+                                sinfo->data.p[i] = STRING_TO_DOUBLE(ttext[i]);
+                        }
+                }
+
+                        // if it is an rtupdate, set the pval array
+                if (strcmp(sinfo->name, "rtupdate") == 0) {
+                  // rtupdate params are:
+                  //	p0 = note tag # 0 for all notes
+                  //	p1,2... pn,pn+1 = pfield, value
 #ifdef RTUPDATE
-		  ntag = (int)sinfo->data.p[0];
-		  pthread_mutex_lock(&pfieldLock);
-		  for (i = 1; i < sinfo->n_args; i += 2) {
-			pval = (int)sinfo->data.p[i];
-			pupdatevals[ntag][pval] = sinfo->data.p[i+1];
-		  }
-		  pthread_mutex_unlock(&pfieldLock);
-		  tag_sem=1;
+                  ntag = (int)sinfo->data.p[0];
+                  pthread_mutex_lock(&pfieldLock);
+                  for (i = 1; i < sinfo->n_args; i += 2) {
+                        pval = (int)sinfo->data.p[i];
+                        pupdatevals[ntag][pval] = sinfo->data.p[i+1];
+                  }
+                  pthread_mutex_unlock(&pfieldLock);
+                  tag_sem=1;
 #endif /* RTUPDATE */
-		}
+                }
 
-		else if ( (strcmp(sinfo->name, "RTcmix_off") == 0) ) {
-			printf("RTcmix termination cmd received.\n");
-			run_status = RT_SHUTDOWN;	// Notify inTraverse()
- 			shutdown(s,0);
-			return NULL;
-		}
-		else if ( (strcmp(sinfo->name, "RTcmix_panic") == 0) ) {
-			int count = 30;
-			printf("RTcmix panic cmd received...\n");
-			run_status = RT_PANIC;	// Notify inTraverse()
-			while (count--) {
+                else if ( (strcmp(sinfo->name, "RTcmix_off") == 0) ) {
+                        printf("RTcmix termination cmd received.\n");
+                        run_status = RT_SHUTDOWN;	// Notify inTraverse()
+                        shutdown(s,0);
+                        return NULL;
+                }
+                else if ( (strcmp(sinfo->name, "RTcmix_panic") == 0) ) {
+                        int count = 30;
+                        printf("RTcmix panic cmd received...\n");
+                        run_status = RT_PANIC;	// Notify inTraverse()
+                        while (count--) {
 #ifdef linux
-				usleep(1000);
+                                usleep(1000);
 #endif
-			}
-			printf("Resuming normal mode\n");
-			run_status = RT_GOOD;	// Notify inTraverse()
-		}
-		else {
-	
+                        }
+                        printf("Resuming normal mode\n");
+                        run_status = RT_GOOD;	// Notify inTraverse()
+                }
+                else {
+
 #ifdef DBUG
-		  cout << "sockit(): elapsed = " << elapsed << endl;
-		  cout << "sockit(): SR = " << SR << endl;
+                  cout << "sockit(): elapsed = " << elapsed << endl;
+                  cout << "sockit(): SR = " << SR << endl;
 #endif
-		  if(sinfo->name) {
+                  if(sinfo->name) {
 #ifdef ALLBUG
-			cout << "SOCKET RECIEVED\n";
-			cout << "sinfo->name = " << sinfo->name << endl;
-			cout << "sinfo->n_args = " << sinfo->n_args << endl;
-			for (i=0;i<sinfo->n_args;i++) {
-			  cout << "sinfo->data.p[" << i << "] =" << sinfo->data.p[i] << endl;
-			}
+                        cout << "SOCKET RECIEVED\n";
+                        cout << "sinfo->name = " << sinfo->name << endl;
+                        cout << "sinfo->n_args = " << sinfo->n_args << endl;
+                        for (i=0;i<sinfo->n_args;i++) {
+                          cout << "sinfo->data.p[" << i << "] =" << sinfo->data.p[i] << endl;
+                        }
 #endif
-			(void) ::dispatch(sinfo->name, sinfo->data.p, sinfo->n_args, NULL);
-	    
-		  }
-		}
+                        (void) ::dispatch(sinfo->name, sinfo->data.p, sinfo->n_args, NULL);
+
+                  }
+                }
       }
     }
 #ifdef DBUG
@@ -760,6 +760,6 @@ RTcmixMain::resetQueueHeap()
    rtHeap = NULL;
    rtQueue = NULL;
 
-	rtHeap = new heap;
+        rtHeap = new heap;
    rtQueue = new RTQueue[MAXBUS*3];
 }
