@@ -1,7 +1,7 @@
 #include "m_pd.h"
 
 #define RTCMIXEXTERNALNAME "rtcmix~.pd_linux"
-#define TEMPFOLDERPREFIX "/tmp/rtcmix"
+#define TEMPFOLDERPREFIX "/tmp/"
 #define SCRIPTEDITOR "rtcmix_scripteditor.py"
 #define DEPENDSFOLDER "lib"
 #define DYLIBNAME "rtcmixdylib.so"
@@ -83,6 +83,7 @@ typedef struct _rtcmix
   // for the load of rtcmixdylib.so
   int dylibincr;
   void *rtcmixdylib;
+  char *tempfolder_path;
   // for the full path to the rtcmixdylib.so file
   char *dylib_path;
   // full path to the rtcmix_scripteditor.py file

@@ -3,7 +3,7 @@
 // uses the RTcmix bundled executable lib, now based on RTcmix-4.0.1.6
 // see http://music.columbia.edu/cmc/RTcmix for more info
 
-#define VERSION "0.25"
+#define VERSION "0.28"
 #define RTcmixVERSION "RTcmix-pd-4.0.1.6"
 
 // JWM - Pd headers
@@ -84,18 +84,22 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   DEBUG(post("rtcmix~: external path: \"%s\"",mpathname););
 
   char *sys_cmd;
-  x->dylibincr = dylibincr++; // keep track of rtcmixdylibN.so for copy/load
-
-  // full path to the rtcmixdylib.so file
-  x->dylib_path = malloc (MAXPDSTRING);
-  sprintf(x->dylib_path, "%s%i/%s", TEMPFOLDERPREFIX, x->dylibincr, DYLIBNAME);
-
-  //create temp folder
   sys_cmd = malloc (MAXPDSTRING);
-  sprintf(sys_cmd, "test -d \"%s%i\" || mkdir \"%s%i\"", TEMPFOLDERPREFIX, x->dylibincr, TEMPFOLDERPREFIX, x->dylibincr);
-  DEBUG(post("rtcmix~: sys_cmd: \"%s\"", sys_cmd););
+
+  // create true temp files with true temp names
+  x->tempfolder_path = malloc(MAXPDSTRING);
+  x->dylib_path = malloc(MAXPDSTRING);
+  sprintf(x->tempfolder_path,"/tmp/rtcmixXXXXXX");
+  sprintf(x->dylib_path,"dylibXXXXXX");
+  // create temp folder
+  x->tempfolder_path = mkdtemp(x->tempfolder_path);
+  // create unique name for dylib
+  x->dylib_path = tempnam(x->tempfolder_path,x->dylib_path);
+
+  // allow other users to read and write (no execute tho)
+  sprintf(sys_cmd, "chmod 766 %s", x->tempfolder_path);
   if (system(sys_cmd))
-    error ("rtcmix~: error creating temp folder");
+    error ("rtcmix~: error setting temp folder \"%s\" permissions.", x->tempfolder_path);
 
   // copy dylib from lib to /tmp/rtcmixN
   sprintf(sys_cmd, "cp %s/%s %s", mpathname, DYLIBNAME, x->dylib_path);
@@ -105,11 +109,14 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
   // full path to script editor
   x->editor_path = malloc (MAXPDSTRING);
-  sprintf(x->editor_path, "%s%i/%s", TEMPFOLDERPREFIX, x->dylibincr, SCRIPTEDITOR);
+  sprintf(x->editor_path, "pyedXXXXXX");
+  x->editor_path = tempnam(x->tempfolder_path,x->editor_path);
+  //sprintf(x->editor_path, "%s/%s", x->tempfolder_path, SCRIPTEDITOR);
+
   DEBUG(post("rtcmix~: editor_path: %s", x->editor_path););
 
   // copy script editor from lib to /tmp/rtcmixN
-  sprintf(sys_cmd, "cp \"%s/%s\" \"%s%i\"", mpathname, SCRIPTEDITOR, TEMPFOLDERPREFIX, x->dylibincr);
+  sprintf(sys_cmd, "cp \"%s/%s\" \"%s\"", mpathname, SCRIPTEDITOR, x->editor_path);
   DEBUG(post("rtcmix~: sys_cmd: \"%s\"", sys_cmd););
   if (system(sys_cmd))
     error ("rtcmix~: error copying python script editor");
@@ -204,8 +211,7 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
       sprintf(x->script_name[i],"tempscript_%i",i); // internal name, for display
       // path to temp script: for script 0 of the first instance of rtcmix~,
       // this should be /tmp/rtcmix0/tempscore0.sco
-      sprintf(x->tempscript_path[i],"%s%i/%s%i.%s",TEMPFOLDERPREFIX, x->dylibincr, TEMPSCRIPTNAME, i, SCOREEXTENSION);
-      DEBUG(post("tempscript_path %i: %s", i, x->tempscript_path[i]););
+      sprintf(x->tempscript_path[i],"%s/%s%i.%s",x->tempfolder_path, TEMPSCRIPTNAME, i, SCOREEXTENSION);
       x->script_flag[i] = UNCHANGED;
     }
   // turn off livecoding flag by default. This means that
@@ -398,12 +404,12 @@ void rtcmix_free(t_rtcmix *x)
     dlclose(x->rtcmixdylib);
 
     // remove temporary files
-    sprintf(sys_cmd, "rm -rf %s%i/*", TEMPFOLDERPREFIX, x->dylibincr);
+    sprintf(sys_cmd, "rm -rf %s/*", x->tempfolder_path);
     if (system(sys_cmd))
       error("error removing temporary files");
 
     // remove temp folder
-    sprintf(sys_cmd, "rm -rf %s%i", TEMPFOLDERPREFIX, x->dylibincr);
+    sprintf(sys_cmd, "rm -rf %s", x->tempfolder_path);
     if (system(sys_cmd))
       error("error removing temporary folder");
 
@@ -424,7 +430,7 @@ void rtcmix_free(t_rtcmix *x)
     free(x->tempscript_path);
     free(x->editor_path);
 
-
+    free(x->tempfolder_path);
     free(x->dylib_path);
 
     DEBUG(post ("rtcmix~ DESTROYED!"););
@@ -763,7 +769,7 @@ void rtcmix_goscript(t_rtcmix *x, t_float f)
           // ok, here's where we substitute the $vars
           if ((int)thebuf[j] == 36)
             {
-	      int tval;
+              int tval;
               sscanf(x->rtcmix_script[x->current_script]+i+1, "%d", &tval);
               if ( !(x->var_set[tval-1]) )
                 error("variable $%d has not been set yet, using 0.0 as default", tval);
@@ -1121,7 +1127,7 @@ void rtcmix_livecode(t_rtcmix *x, t_float f)
       x->livecode_flag = 1;
       post ("rtcmix~: livecoding session ACTIVE.");
       post ("rtcmix~: this [rtcmix~] object's temporary scorefiles");
-      post ("rtcmix~: can be found in \"%s%i\"",TEMPFOLDERPREFIX,x->dylibincr);
+      post ("rtcmix~: can be found in \"%s\"",x->tempfolder_path);
     }
   else
     {
@@ -1135,5 +1141,7 @@ void rtcmix_info(t_rtcmix *x)
   rtcmix_version(x);
   post("compiled at %s on %s",__TIME__, __DATE__);
   post("original files are located at %s", mpathname);
-  post("temporary files are stored in \"%s%i\"", TEMPFOLDERPREFIX, x->dylibincr);
+  post("temporary files are stored in \"%s\"", x->tempfolder_path);
+  post("dylib is called \"%s\"", x->dylib_path);
+  post("editor is called \"%s\"", x->editor_path);
 }
