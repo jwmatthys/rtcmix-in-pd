@@ -1108,7 +1108,7 @@ static void rtcmix_inletp9(t_rtcmix *x, t_float f)
 static void rtcmix_float_inlet(t_rtcmix *x, short inlet, t_float f)
 {
   //check to see which input the float came in, then set the appropriate variable value
-  if (inlet >= x->num_inputs)
+  if (inlet >= x->num_pinlets)
     {
       x->in[inlet] = f;
       post("rtcmix~: setting in[%d] =  %f, but rtcmix~ doesn't use this", inlet, f);
