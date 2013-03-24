@@ -280,7 +280,7 @@ heap/rtHeap.o: heap/heap.o heap/queue.o
 # BGG mm/(UB -- added $(UB_CFLAGS) $(LIBJGOBJ) $(LIBSTK) )
 MIX: $(MAIN_OBJS) $(M_O) $(LIBS) $(PROFILE_O)
 #	$(CXX) -o MIX $(DYN) $(MAIN_OBJS) $(PROFILE_O) $(M_O) -L. $(LDFLAGS)
-	$(CXX) $(UB_CFLAGS) -shared -flat_namespace -o rtcmixdylib.so \
+	$(CXX) $(UB_CFLAGS) -shared -o rtcmixdylib_linux.so \
 	$(COMMON_OBJS) $(LIBS) $(MAIN_OBJS) $(LIBINLET) $(LIBPFBUS) $(M_O) \
 	$(LIBJGOBJ) $(LIBSTK) $(LIBMINC) \
 	-L$(LIBDIR) -lgen $(SYS_LDFLAGS)
@@ -344,7 +344,7 @@ standalone_uninstall:
 
 clean:
 	(cd heap; $(MAKE) $(MFLAGS) clean;)
-	$(RM) $(COMMON_OBJS) $(TARGETS) core rtcmixdylib.so
+	$(RM) $(COMMON_OBJS) $(TARGETS) core rtcmixdylib_linux.so
 
 cleanall: clean
 	$(RM) depend

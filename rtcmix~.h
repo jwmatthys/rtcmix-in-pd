@@ -1,10 +1,9 @@
 #include "m_pd.h"
 
-#define RTCMIXEXTERNALNAME "rtcmix~.pd_linux"
 #define TEMPFOLDERPREFIX "/tmp/"
 #define SCRIPTEDITOR "rtcmix_scripteditor.py"
 #define DEPENDSFOLDER "lib"
-#define DYLIBNAME "rtcmixdylib.so"
+#define DYLIBNAME "rtcmixdylib_linux.so"
 #define TEMPSCRIPTNAME "tempscript"
 #define SCOREEXTENSION "sco"
 

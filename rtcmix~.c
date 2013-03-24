@@ -3,7 +3,7 @@
 // uses the RTcmix bundled executable lib, now based on RTcmix-4.0.1.6
 // see http://music.columbia.edu/cmc/RTcmix for more info
 
-#define VERSION "0.28"
+#define VERSION "0.30"
 #define RTcmixVERSION "RTcmix-pd-4.0.1.6"
 
 // JWM - Pd headers

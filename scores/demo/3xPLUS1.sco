@@ -29,7 +29,7 @@ COMBIT (outdelay, 0, 120, 0.1*venv, cfreq, 0.5, 0, pan)
 
 startTime = 0
 count = 1
-for (ii = 1; ii < 50; ii += 1)
+for (ii = 1; ii < 50; ii += 2)
 {
 	swellLen = count / 4.0
 	swellPitch = cpspch(3)*count
@@ -45,6 +45,10 @@ for (ii = 1; ii < 50; ii += 1)
 		else
 			startval = (3 * startval) + 1
 		pitch = cpspch (5 + (startval-1)/400)
+		while (pitch > 10000)
+		{
+			pitch = pitch / 2
+		}
 		hardness = min(count/100,1)
 		MMODALBAR(startTime,0.5,20000,pitch,hardness,random(),mod(startval,2))
 		startTime += 0.1
