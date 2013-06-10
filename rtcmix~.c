@@ -128,14 +128,23 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
   short num_inoutputs = 1;
   short num_additional = 0;
+  // JWM: add optional third argument to autoload scorefile
+  t_symbol* optional_filename;
+  int fnflag = 0;
+
   switch(argc)
     {
     default:
+    case 3:
+      optional_filename = argv[2].a_w.w_symbol;
+      fnflag = 1;
+      DEBUG(post("rtcmix~: instantiating with scorefile %s",optional_filename););
     case 2:
       num_additional = atom_getint(argv+1);
     case 1:
       num_inoutputs = atom_getint(argv);
     }
+
   DEBUG(post("creating %d inlets and outlets and %d additional inlets",num_inoutputs,num_additional););
   if (num_inoutputs < 1) num_inoutputs = 1; // no args, use default of 1 channel in/out
   if ((num_inoutputs + num_additional) > MAX_INPUTS)
@@ -240,6 +249,13 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   post("rtcmix~ --- RTcmix music language, http://rtcmix.org ---");
   post("rtcmix~ version %s by Joel Matthys (%s)", VERSION, RTcmixVERSION);
 
+  // If filename is given in score instantiation, open scorefile
+  if (fnflag==1)
+    {
+      char fullpath[MAXPDSTRING];
+      sprintf(fullpath,"%s/%s",x->canvas_path->s_name, optional_filename->s_name);
+      rtcmix_callback(x,gensym(fullpath));
+    }
   return (x);
 }
 
