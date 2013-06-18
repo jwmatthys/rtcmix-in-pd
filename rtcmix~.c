@@ -136,7 +136,6 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
   switch(argc)
     {
-    default:
     case 3:
       optional_filename = argv[2].a_w.w_symbol;
       fnflag = 1;
