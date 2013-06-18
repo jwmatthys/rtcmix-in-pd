@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/pure-data/!svn/ver/16371/trunk/externals/template
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svnroot/pure-data/!svn/ver/13374/trunk/externals/template/README.txt
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svnroot/pure-data/!svn/ver/16369/trunk/externals/template/Makefile
+END
+LICENSE.txt
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/pure-data/!svn/ver/14913/trunk/externals/template/LICENSE.txt
+END
+mycobject.c
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/pure-data/!svn/ver/13879/trunk/externals/template/mycobject.c
+END
+template-meta.pd
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/pure-data/!svn/ver/13375/trunk/externals/template/template-meta.pd
+END
+mypdobject.pd
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/pure-data/!svn/ver/13374/trunk/externals/template/mypdobject.pd
+END
+TODO.txt
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svnroot/pure-data/!svn/ver/15531/trunk/externals/template/TODO.txt
+END
+mycobject-help.pd
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/pure-data/!svn/ver/15494/trunk/externals/template/mycobject-help.pd
+END
+mypdobject-help.pd
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/pure-data/!svn/ver/15494/trunk/externals/template/mypdobject-help.pd
+END

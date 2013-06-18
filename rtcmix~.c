@@ -1,9 +1,9 @@
-// rtcmix~ v 0.25, Joel Matthys (8/2012) (Linux, Pd support), based on:
+// rtcmix~ v 0.31, Joel Matthys (8/2012) (Linux, Pd support), based on:
 // rtcmix~ v 1.81, Brad Garton (2/2011) (OS 10.5/6, Max5 support)
 // uses the RTcmix bundled executable lib, now based on RTcmix-4.0.1.6
 // see http://music.columbia.edu/cmc/RTcmix for more info
 
-#define VERSION "0.30"
+#define VERSION "0.31"
 #define RTcmixVERSION "RTcmix-pd-4.0.1.6"
 
 // JWM - Pd headers
@@ -55,6 +55,7 @@ void rtcmix_tilde_setup(void)
   class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("save"), 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_saveas, gensym("saveas"), 0);
   class_addmethod(rtcmix_class,(t_method)rtcmix_save, gensym("write"), 0);
+  class_addmethod(rtcmix_class,(t_method)rtcmix_bufset, gensym("bufset"), A_SYMBOL, 0);
   // openpanel and savepanel return their messages through "callback"
   class_addmethod(rtcmix_class,(t_method)rtcmix_callback, gensym("callback"), A_SYMBOL, 0);
 
@@ -90,13 +91,14 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   // create true temp files with true temp names
   x->tempfolder_path = malloc(MAXPDSTRING);
   x->dylib_path = malloc(MAXPDSTRING);
+  // no /tmp path on Android, so put it in the external's folder
   sprintf(x->tempfolder_path,"/tmp/rtcmixXXXXXX");
   sprintf(x->dylib_path,"dylibXXXXXX");
   // create temp folder
   x->tempfolder_path = mkdtemp(x->tempfolder_path);
   // create unique name for dylib
   x->dylib_path = tempnam(x->tempfolder_path,x->dylib_path);
-
+  DEBUG(post("rtcmix~: tempfolder: %s", x->tempfolder_path););
   // allow other users to read and write (no execute tho)
   sprintf(sys_cmd, "chmod 766 %s", x->tempfolder_path);
   if (system(sys_cmd))
@@ -1229,4 +1231,26 @@ void rtcmix_verbose (t_rtcmix *x, t_float f)
       x->verbose = normal;
     }
   post("rtcmix~: verbosity set to %i",(short)f);
+}
+
+// the "bufset" message allows access to a Pd array. The only argument is the name of the array or table.
+void rtcmix_bufset(t_rtcmix *x, t_symbol *s)
+{
+  t_garray *g;
+  arraynumber_t *vec;
+  int vecsize;
+  if (x->verbose == debug)
+    post("rtcmix~: bufset %s",s->s_name);
+  if ((g = (t_garray *)pd_findbyclass(s,garray_class)))
+    {
+      if (!array_getarray(g, &vecsize, &vec))
+	{
+	  error("rtcmix~: can't read array");
+	}
+      x->buffer_set(s->s_name, (float*)vec, vecsize, 2, 0);
+    }
+  else
+    {
+      error("rtcmix~: no array \"%s\"", s->s_name);
+    }
 }

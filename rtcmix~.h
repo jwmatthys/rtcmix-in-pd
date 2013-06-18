@@ -7,6 +7,20 @@
 #define TEMPSCRIPTNAME "tempscript"
 #define SCOREEXTENSION "sco"
 
+// Compatibility fix for 64bit version of garray stuff
+// http://pure-data.svn.sourceforge.net/viewvc/pure-data/trunk/scripts/guiplugins/64bit-warning-plugin/README.txt?revision=17094&view=markup
+#if (defined PD_MAJOR_VERSION && defined PD_MINOR_VERSION) && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 41)
+# define arraynumber_t t_word
+# define array_getarray garray_getfloatwords
+# define array_get(pointer, index) (pointer[index].w_float)
+# define array_set(pointer, index, value) ((pointer[index].w_float)=value)
+#else
+# define arraynumber_t t_float
+# define array_getarray garray_getfloatarray
+# define array_get(pointer, index) (pointer[index])
+# define array_set(pointer, index, value) ((pointer[index])=value)
+#endif
+
 int dylibincr = 0;
 // for where the rtcmix-dylibs folder is located
 char mpathname[MAXPDSTRING];

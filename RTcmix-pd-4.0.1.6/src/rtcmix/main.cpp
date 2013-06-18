@@ -180,7 +180,7 @@ void buffer_set(char *bufname, float *bufstart, int nframes, int nchans, int mod
 
 
         if (strlen(bufname) >= MAX_MM_BUFNAME) { // defined in rtdefs.h
-                warn("bufset", "[buffer~] name has to be < %d chars", MAX_MM_BUFNAME);
+                warn("bufset", "array name has to be < %d chars", MAX_MM_BUFNAME);
                 return;
         }
 
@@ -189,7 +189,8 @@ void buffer_set(char *bufname, float *bufstart, int nframes, int nchans, int mod
         for (i = 0; i < n_mm_bufs; i++) {
                         if (strcmp(bufname, mm_bufs[i].name) == 0) {
                                 foundit = 1;
-                                if (modtime > mm_bufs[i].mm_modtime) { // buffer was modified
+                                if (1) // 
+				  { // buffer was modified
                                         mm_bufs[i].mm_bufstart = bufstart;
                                         mm_bufs[i].mm_buf_nframes = nframes;
                                         mm_bufs[i].mm_buf_chans = nchans;
@@ -202,7 +203,7 @@ void buffer_set(char *bufname, float *bufstart, int nframes, int nchans, int mod
         // it's a new one
         if (foundit == 0) {
                 if (n_mm_bufs >= MAX_MM_BUFS) {
-                        warn("bufset", "we can only do %d [buffer~] buffers at present, sorry!", MAX_MM_BUFS);
+                        warn("bufset", "we can only do %d arrays at present, sorry!", MAX_MM_BUFS);
                         return;
                 }
                 strcpy(mm_bufs[n_mm_bufs].name, bufname);

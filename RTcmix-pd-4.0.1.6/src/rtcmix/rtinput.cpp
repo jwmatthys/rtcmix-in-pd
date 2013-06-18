@@ -208,7 +208,7 @@ RTcmix::rtinput(float p[], int n_args, double pp[])
 // BGG mm ----------------------------
 // this segment is to allow rtcmix to access sample data from the
 // max/msp [buffer~] object.
-	if (strcmp(sfname, "MMBUF") == 0) {
+	if (strcmp(sfname, "MMBUF") == 0 || strcmp(sfname, "PDBUF") == 0 ) {
 			str = DOUBLE_TO_STRING(pp[1]);
 			for (i = 0; i < n_mm_bufs; i++) {
 				if (strcmp(str, mm_bufs[i].name) == 0) {
@@ -217,7 +217,7 @@ RTcmix::rtinput(float p[], int n_args, double pp[])
 				}
 			}
 			if (i == n_mm_bufs) {
-				die("rtinput", "no max/msp buffer named %s is set", str);
+				die("rtinput", "no Pd array named %s is set", str);
 				mm_buf_input = -1; // we are NOT using [buffer~] input, even if set
 				return -1;
 			}
