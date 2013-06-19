@@ -133,17 +133,33 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   // JWM: add optional third argument to autoload scorefile
   t_symbol* optional_filename;
   int fnflag = 0;
+  int inoutflag = 0;
+  int this_arg;
 
-  switch(argc)
+  // check for symbol to instantiate with scorefile
+  //
+  for (this_arg=0; this_arg<argc; this_arg++)
     {
-    case 3:
-      optional_filename = argv[2].a_w.w_symbol;
-      fnflag = 1;
-      DEBUG(post("rtcmix~: instantiating with scorefile %s",optional_filename););
-    case 2:
-      num_additional = atom_getint(argv+1);
-    case 1:
-      num_inoutputs = atom_getint(argv);
+      switch (argv[this_arg].a_type)
+	{
+	case A_SYMBOL:
+	  optional_filename = argv[this_arg].a_w.w_symbol;
+	  fnflag = 1;
+	  post("rtcmix~: instantiating with scorefile %s",optional_filename->s_name);
+	  break;
+	case A_FLOAT:
+	  if (inoutflag==0)
+	    {
+	      num_inoutputs = atom_getint(argv+this_arg);
+	      inoutflag=1;
+	      DEBUG(post("rtcmix~: creating with %d signal inlets and outlets",num_inoutputs););
+	    }
+	  else
+	    {
+	      num_additional = atom_getint(argv+this_arg);
+	      DEBUG(post("rtcmix~: creating with %d pfield inlets",num_additional););
+	    }
+	}
     }
 
   DEBUG(post("creating %d inlets and outlets and %d additional inlets",num_inoutputs,num_additional););
@@ -1238,18 +1254,22 @@ void rtcmix_bufset(t_rtcmix *x, t_symbol *s)
   t_garray *g;
   arraynumber_t *vec;
   int vecsize;
-  if (x->verbose == debug)
-    post("rtcmix~: bufset %s",s->s_name);
-  if ((g = (t_garray *)pd_findbyclass(s,garray_class)))
+  if (canvas_dspstate == 1)
     {
-      if (!array_getarray(g, &vecsize, &vec))
+      post("rtcmix~: bufset %s",s->s_name);
+      if ((g = (t_garray *)pd_findbyclass(s,garray_class)))
 	{
-	  error("rtcmix~: can't read array");
+	  if (!array_getarray(g, &vecsize, &vec))
+	    {
+	      error("rtcmix~: can't read array");
+	    }
+	  x->buffer_set(s->s_name, (float*)vec, vecsize, 2, 0);
 	}
-      x->buffer_set(s->s_name, (float*)vec, vecsize, 2, 0);
+      else
+	{
+	  error("rtcmix~: no array \"%s\"", s->s_name);
+	}
     }
   else
-    {
-      error("rtcmix~: no array \"%s\"", s->s_name);
-    }
+    error ("rtcmix~: can't add buffer with DSP off");
 }
