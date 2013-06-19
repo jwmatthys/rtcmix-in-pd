@@ -1,3 +1,4 @@
+
 // rtcmix~ v 0.31, Joel Matthys (8/2012) (Linux, Pd support), based on:
 // rtcmix~ v 1.81, Brad Garton (2/2011) (OS 10.5/6, Max5 support)
 // uses the RTcmix bundled executable lib, now based on RTcmix-4.0.1.6
@@ -17,8 +18,8 @@
 #include <math.h>
 #include <dlfcn.h>
 
-#define DEBUG(x) // debug off
-//#define DEBUG(x) x
+//#define DEBUG(x) // debug off
+#define DEBUG(x) x
 
 /*** PD EXTERNAL SETUP ---------------------------------------------------------------------------***/
 void rtcmix_tilde_setup(void)
@@ -1243,10 +1244,10 @@ void rtcmix_bufset(t_rtcmix *x, t_symbol *s)
   if ((g = (t_garray *)pd_findbyclass(s,garray_class)))
     {
       if (!array_getarray(g, &vecsize, &vec))
-	{
-	  error("rtcmix~: can't read array");
-	}
-      x->buffer_set(s->s_name, (float*)vec, vecsize, 2, 0);
+        {
+          error("rtcmix~: can't read array");
+        }
+      x->buffer_set(s->s_name, (float*)vec, vecsize, 1, 0);
     }
   else
     {
