@@ -1263,7 +1263,9 @@ void rtcmix_bufset(t_rtcmix *x, t_symbol *s)
 	    {
 	      error("rtcmix~: can't read array");
 	    }
-	  x->buffer_set(s->s_name, (float*)vec, vecsize, 2, 0);
+	  int chans = sizeof(t_word)/sizeof(float);
+	  DEBUG(post("rtcmix~: word size: %d, float size: %d",sizeof(t_word), sizeof(float)););
+	  x->buffer_set(s->s_name, (float*)vec, vecsize, chans, 0);
 	}
       else
 	{
