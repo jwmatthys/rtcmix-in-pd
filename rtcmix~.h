@@ -3,7 +3,7 @@
 #define TEMPFOLDERPREFIX "/tmp/"
 #define SCRIPTEDITOR "rtcmix_scripteditor.py"
 #define DEPENDSFOLDER "lib"
-#define DYLIBNAME "rtcmixdylib_linux.so"
+#define DYLIBNAME "rtcmixdylib_osx.so"
 #define TEMPSCRIPTNAME "tempscript"
 #define SCOREEXTENSION "sco"
 
