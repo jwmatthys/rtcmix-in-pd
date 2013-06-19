@@ -91,19 +91,22 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   // create true temp files with true temp names
   x->tempfolder_path = malloc(MAXPDSTRING);
   x->dylib_path = malloc(MAXPDSTRING);
-  // no /tmp path on Android, so put it in the external's folder
-  sprintf(x->tempfolder_path,"/tmp/rtcmixXXXXXX");
-  sprintf(x->dylib_path,"dylibXXXXXX");
-  // create temp folder
-  x->tempfolder_path = mkdtemp(x->tempfolder_path);
+  // on windows we'll place the tmp stuff in a tmp folder in the external's dir
+  sprintf(x->tempfolder_path,"%s/tmp",mpathname);
+  sprintf(x->dylib_path,DYLIBNAME);
+
   // create unique name for dylib
-  x->dylib_path = tempnam(x->tempfolder_path,x->dylib_path);
+  if (sprintf("%s/%s", x->tempfolder_path, x->dylib_path))
+    {
+      error ("rtcmix~: error setting dylib_path");
+    }
   DEBUG(post("rtcmix~: tempfolder: %s", x->tempfolder_path););
   // allow other users to read and write (no execute tho)
+  /*
   sprintf(sys_cmd, "chmod 766 %s", x->tempfolder_path);
   if (system(sys_cmd))
     error ("rtcmix~: error setting temp folder \"%s\" permissions.", x->tempfolder_path);
-
+  */
   // copy dylib from lib to /tmp/rtcmixN
   sprintf(sys_cmd, "cp %s/%s %s", mpathname, DYLIBNAME, x->dylib_path);
   DEBUG(post("rtcmix~: sys_cmd: %s", sys_cmd););
@@ -112,9 +115,11 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
 
   // full path to script editor
   x->editor_path = malloc (MAXPDSTRING);
-  sprintf(x->editor_path, "pyedXXXXXX");
-  x->editor_path = tempnam(x->tempfolder_path,x->editor_path);
-  //sprintf(x->editor_path, "%s/%s", x->tempfolder_path, SCRIPTEDITOR);
+  sprintf(x->editor_path, SCRIPTEDITOR);
+  if (sprintf("%s/%s",x->tempfolder_path,x->editor_path))
+    {
+      error ("rtcmix~: error setting editor_path");
+    }    
 
   DEBUG(post("rtcmix~: editor_path: %s", x->editor_path););
 
@@ -315,7 +320,7 @@ void rtcmix_dsp(t_rtcmix *x, t_signal **sp)
   // load the dylib
   rtcmix_dlopen_and_errorcheck(x);
 
-  // allocate the RTcmix i/o transfer buffers
+  // al-locate the RTcmix i/o transfer buffers
   x->pd_inbuf = malloc(sizeof(float) * vector_size * x->num_inputs);
   x->pd_outbuf = malloc(sizeof(float) * vector_size * x->num_outputs);
 
@@ -744,7 +749,7 @@ void rtcmix_goscript(t_rtcmix *x, t_float f)
       else
         break;
     }
-  // JWM: allocate extra 10 chars for each var
+  // JWM: al-locate extra 10 chars for each var
   char *thebuf = malloc(buflen+10*x->numvars[x->current_script]);
 
   if (x->verbose == debug)
