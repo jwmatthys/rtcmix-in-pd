@@ -14,18 +14,14 @@
 #include <prototypes.h>
 #include <ugens.h>
 #include <Option.h>
+#include <m_pd.h> // print directly to Pd console
 
-#define PREFIX  "*** "       /* print before WARNING and ERROR */
+#define PREFIX  "***"       /* print before WARNING and ERROR */
 #define BUFSIZE 1024
 
 #ifdef SGI  /* not as safe, but what can ya do */
 #define vsnprintf(str, sz, fmt, args)  vsprintf(str, fmt, args)
 #endif
-
-// BGG mm -- used to hold error messages to be printed in max/msp
-extern char *maxmsp_errbuf;
-extern int err_pending;
-
 
 /* These functions are wrappers for printf that do a little extra work.
    The first arg is the name of the instrument they're called from.
@@ -41,30 +37,22 @@ extern int err_pending;
 void
 rtcmix_advise(const char *inst_name, const char *format, ...)
 {
-   if (get_print_option()) {
+  if (get_print_option())
+    {
       char     buf[BUFSIZE];
       va_list  args;
-
+      
       va_start(args, format);
       vsnprintf(buf, BUFSIZE, format, args);
       va_end(args);
-
+      
+      // use Pd's built-in post() to print to console
       if (inst_name)
-         printf("%s:  %s\n", inst_name, buf);
+	post("%s:  %s", inst_name, buf);
       else
-         printf("%s\n", buf);
-
-// BGG mm
-		if (maxmsp_errbuf) { // be sure this pointer is initialized
-			if (err_pending != 2) {  // a fatal error needs to be reported
-				if(inst_name)
-					sprintf(maxmsp_errbuf, "ADVISE [%s]: %s", inst_name, buf); 
-				else
-					sprintf(maxmsp_errbuf, "ADVISE: %s", buf);
-				err_pending = 1;
-			}
-		}
-	}
+	post("%s", buf);
+      //fprintf(stdout,"Advise: %s",buf);
+    }
 }
 
 
@@ -72,92 +60,56 @@ rtcmix_advise(const char *inst_name, const char *format, ...)
 void
 warn(const char *inst_name, const char *format, ...)
 {
-   if (get_print_option()) {
+  if (get_print_option())
+    {
       char     buf[BUFSIZE];
       va_list  args;
-
+      
       va_start(args, format);
       vsnprintf(buf, BUFSIZE, format, args);
       va_end(args);
-
+      
+      // JWM: use Pd's post() command to print to console
       if (inst_name)
-         fprintf(stderr, "\n" PREFIX "WARNING [%s]:  %s\n\n", inst_name, buf);
+	post("%s %s %s", PREFIX, inst_name, buf);
       else
-         fprintf(stderr, "\n" PREFIX "WARNING:  %s\n\n", buf);
-
-// BGG mm
-		if (maxmsp_errbuf) { // be sure this pointer is initialized
-			if (err_pending != 2) {  // a fatal error needs to be reported
-				if (inst_name)
-					sprintf(maxmsp_errbuf, "WARNING [%s]: %s", inst_name, buf);
-				else
-					sprintf(maxmsp_errbuf, "WARNING: %s", buf);
-				err_pending = 1;
-			}
-		}
-	}
+	post("%s  %s", PREFIX, buf);
+      //fprintf(stdout,"Warn: %s",buf);
+    }
 }
-
 
 /* -------------------------------------------------------------- rterror --- */
 void
 rterror(const char *inst_name, const char *format, ...)
 {
-   char     buf[BUFSIZE];
-   va_list  args;
-
-   va_start(args, format);
-   vsnprintf(buf, BUFSIZE, format, args);
-   va_end(args);
-
-   if (inst_name)
-      fprintf(stderr, PREFIX "ERROR [%s]: %s\n", inst_name, buf);
-   else
-      fprintf(stderr, PREFIX "ERROR: %s\n", buf);
-
-// BGG mm
-	if (maxmsp_errbuf) { // be sure this pointer is initialized
-		if (inst_name)
-			sprintf(maxmsp_errbuf, "ERROR [%s]: %s", inst_name, buf);
-		else
-			sprintf(maxmsp_errbuf, "ERROR: %s", buf);
-		err_pending = 2;
-	}
+  char     buf[BUFSIZE];
+  va_list  args;
+  
+  va_start(args, format);
+  vsnprintf(buf, BUFSIZE, format, args);
+  va_end(args);
+  
+  if (inst_name)
+    error("%s ERROR [%s]: %s", PREFIX, inst_name, buf);
+  else
+    error("%s ERROR: %s", PREFIX, buf);
+  //fprintf(stdout,"Error: %s",buf);
 }
 
 /* ------------------------------------------------------------------ die --- */
 int
 die(const char *inst_name, const char *format, ...)
 {
-   char     buf[BUFSIZE];
-   va_list  args;
-
-   va_start(args, format);
-   vsnprintf(buf, BUFSIZE, format, args);
-   va_end(args);
-
-   if (inst_name)
-      fprintf(stderr, PREFIX "FATAL ERROR [%s]:  %s\n", inst_name, buf);
-   else
-      fprintf(stderr, PREFIX "FATAL ERROR:  %s\n", buf);
-
-// BGG mm
-	if (maxmsp_errbuf) { // be sure this pointer is initialized
-		if (inst_name)
-			sprintf(maxmsp_errbuf, "FATAL ERROR [%s]: %s", inst_name, buf);
-		else
-			sprintf(maxmsp_errbuf, "FATAL ERROR: %s", buf);
-		err_pending = 2;
-	}
-
-	if (get_bool_option(kOptionExitOnError)) {
-		if (!rtsetparams_was_called())
-			closesf_noexit();
-
-		exit(1);
-		return 0;	/*NOTREACHED*/
-	}
-	else
-		return DONT_SCHEDULE;
+  char     buf[BUFSIZE];
+  va_list  args;
+  
+  va_start(args, format);
+  vsnprintf(buf, BUFSIZE, format, args);
+  va_end(args);
+  
+  if (inst_name)
+    error("%s FATAL ERROR [%s]:  %s", PREFIX, inst_name, buf);
+  else
+    error("%s FATAL ERROR:  %s", PREFIX, buf);
+  //fprintf(stdout,"Fatal Error: %s",buf);
 }
-

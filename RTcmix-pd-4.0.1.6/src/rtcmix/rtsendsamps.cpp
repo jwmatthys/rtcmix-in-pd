@@ -21,6 +21,7 @@
 #include <AudioFileDevice.h>
 #include "Option.h"
 #include <bus.h>
+#include <m_pd.h> // for Pd console messages
 
 /* #define DUMP_AUDIO_TO_RAW_FILE */
 /* #define USE_REAL2INT */
@@ -105,11 +106,11 @@ write_to_audio_device(BufPtr out_buffer[], int samps, AudioDevice *device)
 		for (j = 0; j < nchans; j++) {
 			*out++ = out_buffer[j][i] * OUT_GAIN_FACTOR;
 			if (Option::reportClipping()) {
-				if (ABS(out_buffer[j][i]) > 32768.0)
-					warn("CLIPPING","val: %f   channel: %d",out_buffer[j][i], j);
+			  if (ABS(out_buffer[j][i]) > 32768.0)
+			    error("RTcmix: CLIPPING: val: %f   channel: %d",out_buffer[j][i], j);
 			}
 		}
-
+	
 	return 0;
 // end of BGG mm code
 

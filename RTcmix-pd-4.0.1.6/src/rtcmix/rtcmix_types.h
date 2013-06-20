@@ -74,6 +74,7 @@ typedef struct {
 		   (Instrument *) _val.handle->ptr : NULL;
    }
    void printInline(FILE *) const;
+   const char * printToChars() const;
 };
 #else
 } Arg;

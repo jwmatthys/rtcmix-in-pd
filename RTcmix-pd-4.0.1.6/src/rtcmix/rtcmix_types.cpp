@@ -75,3 +75,49 @@ Arg::printInline(FILE *stream) const
 	}
 }
 
+const char * 
+Arg::printToChars() const
+{
+  char stream[100];
+  switch (type()) {
+  case DoubleType:
+    sprintf(stream, "%g ", _val.number);
+    break;
+  case StringType:
+    sprintf(stream, "\"%s\" ", _val.string);
+    break;
+  case HandleType:
+    if (_val.handle != NULL) {
+      switch (_val.handle->type) {
+      case PFieldType:
+	{
+	  // Print PField start and end values.
+	  PField *pf = (PField *) _val.handle->ptr;
+	  double start = pf->doubleValue(0);
+	  double end = pf->doubleValue(1.0);
+	  sprintf(stream, "PF:[%g,...,%g] ", start, end);
+	  break;
+	}
+      case InstrumentPtrType:
+	sprintf(stream, "Inst:0x%p ", _val.handle->ptr);
+	break;
+      case AudioStreamType:
+	sprintf(stream, "AudioStr:0x%p", _val.handle->ptr);
+	break;
+      default:
+	sprintf(stream, "Unknown ");
+	break;
+      }
+    }
+    else
+      sprintf(stream, "NULL ");
+    break;
+  case ArrayType:
+    sprintf(stream, "[%g,...,%g] ", _val.array->data[0],
+	    _val.array->data[_val.array->len - 1]);
+    break;
+  default:
+    break;
+  }
+  return stream;
+}

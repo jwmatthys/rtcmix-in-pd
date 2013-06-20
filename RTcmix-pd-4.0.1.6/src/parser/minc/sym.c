@@ -9,6 +9,7 @@
 #include <string.h>
 #include "minc_internal.h"
 #include "handle.h"
+#include <m_pd.h>
 
 static struct symbol *htab[HASHSIZE] =
    {0};                         /* hash table */
@@ -246,7 +247,7 @@ dump(struct symbol *p, FILE * fp)
          for (p = htab[i]; p; p = p->next)
             dump(p, fp);
    else {
-      fprintf(fp, "%s ", dname(p->type));
+     rtcmix_advise(dname(p->type));
 /*
    fprintf(fp, "%s%s, %sscope=%s, offset=%d\n", p->name,
    dname(xshape(p->type)), p->defined?"defined, ":"",

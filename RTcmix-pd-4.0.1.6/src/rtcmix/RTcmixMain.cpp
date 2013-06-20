@@ -21,6 +21,7 @@
 #include "../parser/rtcmix_parse.h"
 #include <sockdefs.h>
 #include <limits.h>
+#include <m_pd.h> // for printing to Pd console
 
 using namespace std;
 
@@ -201,7 +202,7 @@ RTcmixMain::RTcmixMain() : RTcmix(false)
    /* Banner */
 // BGG mm -- got rid of argv[0] in the following for max/msp
    if (Option::print())
-      printf("--------> %s %s <--------\n",
+      post("--------> %s %s <--------",
              RTCMIX_NAME, RTCMIX_VERSION);
 
    ::ug_intro();                /* introduce standard routines */

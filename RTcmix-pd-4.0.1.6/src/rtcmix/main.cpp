@@ -26,7 +26,7 @@
 #include "sockdefs.h"
 #include "notetags.h"           // contains defs for note-tagging
 #include "dbug.h"
-
+#include "m_pd.h" // for posting to console
 
 extern "C" {
 #ifdef SGI
@@ -219,7 +219,8 @@ void buffer_set(char *bufname, float *bufstart, int nframes, int nchans, int mod
 // and rtHeap, thus flushing all scheduled events in the future
 void flush_sched()
 {
-        app->resetQueueHeap(); // in RTcmixMain.cpp
+  warn ("rtcmix~","flushing audio buffers.");
+  app->resetQueueHeap(); // in RTcmixMain.cpp
 }
 
 

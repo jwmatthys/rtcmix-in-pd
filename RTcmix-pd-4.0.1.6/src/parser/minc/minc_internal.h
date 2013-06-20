@@ -10,7 +10,7 @@
 #include <float.h>   /* for epsilon constants */
 #include <maxdispargs.h>
 #include "minc.h"
-
+  
 //#define DEBUG
 #ifdef DEBUG
    #define DPRINT(msg)                    printf((msg))

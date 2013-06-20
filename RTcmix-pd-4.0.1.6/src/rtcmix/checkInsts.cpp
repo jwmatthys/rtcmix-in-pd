@@ -19,6 +19,7 @@
 #include <string.h>
 #include <assert.h>
 #include <Option.h>
+#include <m_pd.h> // for printing to Pd console
 
 //#define DEBUG
 
@@ -29,13 +30,17 @@ printargs(const char *instname, const Arg arglist[], const int nargs)
    Arg arg;
 
    if (Option::print()) {
-      printf("========<rt-queueing>=======\n");
-      printf("%s:  ", instname);
-      for (i = 0; i < nargs; i++) {
-         arglist[i].printInline(stdout);
-      }
-      putchar('\n');
-      fflush(stdout);
+     //printf("========<rt-queueing>=======\n");
+     char* msg = new char[MAXPDSTRING];
+     strcpy (msg, instname);
+     strcat (msg, (char*)":");
+     for (i = 0; i < nargs; i++)
+       {
+	 strcat(msg, (char*)" ");
+	 strcat(msg, arglist[i].printToChars());
+       }
+     post (msg);
+     delete msg;
    }
 }
 

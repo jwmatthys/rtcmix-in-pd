@@ -28,6 +28,7 @@
 #include <ugens.h>
 #include <Option.h>
 #include "rtdefs.h"
+#include <m_pd.h> // for printing to Pd console
 
 /* #define DEBUG */
 
@@ -122,7 +123,7 @@ RTcmix::mm_rtsetparams(float sr, int nchans, int vecsize, float *mm_inbuf, float
    pthread_mutex_unlock(&audio_config_lock);
 
    if (verbose)
-      printf("Audio set:  %g sampling rate, %d channels\n", SR, NCHANS);
+      post("rtcmix~: Audio set:  %g sampling rate, %d channels\n", SR, NCHANS);
 
    /* Allocate output buffers. Do this *after* opening audio devices,
       in case OSS changes our buffer size, for example.

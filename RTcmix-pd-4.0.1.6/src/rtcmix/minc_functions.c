@@ -11,6 +11,7 @@
 #include <maxdispargs.h>
 #include <Option.h>
 #include <prototypes.h>
+#include <m_pd.h>
 
 #define ARRAY_SIZE 256
 #define NUM_ARRAYS  32
@@ -220,7 +221,7 @@ double m_min(float p[], int n_args)
 double m_exit(float p[], int n_args, double pp[])
 {
 	const char *message = DOUBLE_TO_STRING(p[0]);
-	if (message) fprintf(stderr, "%s\n", message);
+	if (message) error(message);
 	closesf();
 	return 0.0;
 }

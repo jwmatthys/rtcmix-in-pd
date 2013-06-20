@@ -1,4 +1,4 @@
-#define RTCMIX_NAME "RTcmix-mm"
+#define RTCMIX_NAME "RTcmix-pd"
 #define RTCMIX_MAJOR_VERSION "4"
 #define RTCMIX_MINOR_VERSION "0"
 #define RTCMIX_MICRO_VERSION "1.6"

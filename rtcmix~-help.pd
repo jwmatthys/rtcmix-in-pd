@@ -1,4 +1,4 @@
-#N canvas 324 98 907 445 12;
+#N canvas 322 103 907 445 12;
 #X obj 2 1 cnv 15 900 440 empty empty empty 20 12 0 14 -203904 -66577
 0;
 #X obj 41 21 cnv 15 120 400 empty empty empty 20 12 0 14 -159808 -66577
@@ -1030,7 +1030,7 @@ bang;
 #X text 616 48 and sample scores.;
 #X text 66 50 AM - amplitude modulation \; (2 examples);
 #X restore 46 350 pd filters etc.;
-#N canvas 533 266 262 335 ABOUT 0;
+#N canvas 529 332 262 335 ABOUT 0;
 #X text 82 7 Pd version by;
 #X text 80 30 Joel Matthys;
 #X text 75 38 _______________;
@@ -1041,10 +1041,13 @@ bang;
 #X text 58 209 Joel Matthys;
 #X text 58 232 released under the;
 #X text 36 252 Lesser GNU Public License;
-#N canvas 154 95 450 300 info 0;
+#N canvas 152 100 450 300 info 0;
 #X msg 81 54 \; object-messages info;
 #X obj 81 27 r info-bang;
+#X obj 262 25 loadbang;
+#X msg 264 68 \; pd dsp 1;
 #X connect 1 0 0 0;
+#X connect 2 0 3 0;
 #X restore 14 305 pd info;
 #X restore 45 395 pd ABOUT;
 #N canvas 207 290 403 302 demos 0;
@@ -1086,7 +1089,7 @@ bang;
 -1;
 #X obj 195 356 rtcmix~ 2 1;
 #X msg 253 213 verbose 0;
-#N canvas 337 196 494 344 META 0;
+#N canvas 335 201 494 344 META 0;
 #X text 12 157 HELP_PATCH_AUTHORS "pd meta" information added by Jonathan
 Wilkes for Pd version 0.42.;
 #X text 12 137 AUTHOR Joel Matthys;

@@ -5,6 +5,7 @@
 #include <RTcmix.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <assert.h>
 #include <ugens.h>      // for die, warn
 #include <rtcmix_types.h>
@@ -12,6 +13,7 @@
 #include <ug_intro.h>
 #include <string.h>
 #include <Option.h>
+#include <m_pd.h> // for printing to Pd console
 
 #define WARN_DUPLICATES
 
@@ -135,15 +137,20 @@ _printargs(const char *funcname, const Arg arglist[], const int nargs)
    int i;
    Arg arg;
 
-   if (Option::print()) {
-      printf("============================\n");
-      printf("%s:  ", funcname);
-      for (i = 0; i < nargs; i++) {
-         arglist[i].printInline(stdout);
-      }
-      putchar('\n');
-      fflush(stdout);
-   }
+   if (Option::print())
+     {
+       //printf("============================\n");
+       char* msg = new char[MAXPDSTRING];
+       strcpy (msg, funcname);
+       strcat (msg, (char*)":");
+       for (i = 0; i < nargs; i++)
+	 {
+	   strcat(msg, (char*)" ");
+	   strcat(msg, arglist[i].printToChars());
+	 }
+       post (msg);
+       delete msg;
+     }
 }
 
 /* ------------------------------------------------------------- checkfunc -- */

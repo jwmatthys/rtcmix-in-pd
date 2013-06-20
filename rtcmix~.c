@@ -263,7 +263,7 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   // Python. It reads temp.sco and rewrites when it's altered. [rtcmix~] reads that
   // temp.sco file, so we need to be sure it exists.
 
-  post("rtcmix~ --- RTcmix music language, http://rtcmix.org ---");
+  //post("rtcmix~ --- RTcmix music language, http://rtcmix.org ---");
   post("rtcmix~ version %s by Joel Matthys (%s)", VERSION, RTcmixVERSION);
 
   // If filename is given in score instantiation, open scorefile

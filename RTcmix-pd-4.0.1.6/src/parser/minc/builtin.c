@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <m_pd.h>
 
 /* Minc builtin functions, for use only in Minc scripts.
    To add a builtin function, make an entry for it in the function ptr array
@@ -120,21 +121,21 @@ _do_print(const MincListElem args[], const int nargs)
       switch (args[i].type) {
          case MincFloatType:
             if (i == last_arg)
-               printf("%.12g", args[i].val.number);
+               post("%.12g", args[i].val.number);
             else
-               printf("%.12g, ", args[i].val.number);
+               post("%.12g, ", args[i].val.number);
             break;
          case MincStringType:
             if (i == last_arg)
-               printf("\"%s\"", args[i].val.string);
+               post("\"%s\"", args[i].val.string);
             else
-               printf("\"%s\", ", args[i].val.string);
+               post("\"%s\", ", args[i].val.string);
             break;
          case MincHandleType:
             if (i == last_arg)
-               printf("Handle:%p", args[i].val.handle);
+               post("Handle:%p", args[i].val.handle);
             else
-               printf("Handle:%p, ", args[i].val.handle);
+               post("Handle:%p, ", args[i].val.handle);
             break;
          case MincListType:
             putchar('[');
@@ -142,7 +143,7 @@ _do_print(const MincListElem args[], const int nargs)
             if (i == last_arg)
                putchar(']');
             else
-               printf("], ");
+               post("], ");
             break;
          default:
             break;
@@ -214,14 +215,14 @@ _minc_printf(const MincListElem args[], const int nargs)
                      minc_warn("printf: wrong argument type for format");
                      goto err;
                   }
-                  printf("%d", (int) args[n].val.number);
+                  post("%d", (int) args[n].val.number);
                   break;
                case 'f':      /* print float object */
                   if (args[n].type != MincFloatType) {
                      minc_warn("printf: wrong argument type for format");
                      goto err;
                   }
-                  printf("%.12g", args[n].val.number);
+                  post("%.12g", args[n].val.number);
                   break;
                case 'l':      /* print list object */
                   if (args[n].type != MincListType) {

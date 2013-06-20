@@ -9,6 +9,7 @@
 #define YY_FLEX_MINOR_VERSION 5
 
 #include <stdio.h>
+#include <m_pd.h>
 
 // BGG mm
 char *thebuf;
@@ -1900,7 +1901,7 @@ static void yy_fatal_error( msg )
 char msg[];
 #endif
 	{
-	(void) fprintf( stderr, "%s\n", msg );
+	error( msg );
 	exit( YY_EXIT_FAILURE );
 	}
 
