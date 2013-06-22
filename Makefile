@@ -27,7 +27,8 @@ EXTRA_DIST =
 # unit tests and related files here, in the 'unittests' subfolder
 UNITTESTS =
 
-
+DYLIB_DIR = RTcmix-pd-4.0.1.6/src/rtcmix
+DYLIB_NAME = rtcmixdylib_osx.so
 
 #------------------------------------------------------------------------------#
 #
@@ -252,7 +253,7 @@ SHARED_TCL_LIB = $(wildcard lib$(LIBRARY_NAME).tcl)
 
 .PHONY = install libdir_install single_install install-doc install-examples install-manual install-unittests clean distclean dist etags $(LIBRARY_NAME)
 
-all: $(SOURCES:.c=.$(EXTENSION)) $(SHARED_LIB)
+all: $(SOURCES:.c=.$(EXTENSION)) $(SHARED_LIB) copy_dylib
 
 %.o: %.c
 	$(CC) $(ALL_CFLAGS) -o "$*.o" -c "$*.c"
@@ -269,6 +270,9 @@ $(LIBRARY_NAME): $(SOURCES:.c=.o) $(LIBRARY_NAME).o lib$(LIBRARY_NAME).o
 
 $(SHARED_LIB): $(SHARED_SOURCE:.c=.o)
 	$(CC) $(SHARED_LDFLAGS) -o $(SHARED_LIB) $(SHARED_SOURCE:.c=.o) $(ALL_LIBS)
+
+copy_dylib:
+	cp $(DYLIB_DIR)/$(DYLIB_NAME) lib/$(DYLIB_NAME)
 
 install: libdir_install
 
@@ -335,6 +339,7 @@ clean:
 	-rm -f -- $(LIBRARY_NAME).o
 	-rm -f -- $(LIBRARY_NAME).$(EXTENSION)
 	-rm -f -- $(SHARED_LIB)
+	-rm -f -- lib/$(DYLIB_NAME)
 
 distclean: clean
 	-rm -f -- $(DISTBINDIR).tar.gz

@@ -115,6 +115,9 @@ rtprofile()
 // maxmsp
 	RT_INTRO("MAXBANG",makeMAXBANG);
 	RT_INTRO("MAXMESSAGE",makeMAXMESSAGE);
+// jwm - vanity Pd rename
+	RT_INTRO("PDBANG",makeMAXBANG);
+	RT_INTRO("PDMESSAGE",makeMAXMESSAGE);
 // bgg
 	RT_INTRO("GVERB",makeGVERB);
 	RT_INTRO("HALFWAVE",makeHALFWAVE);

@@ -344,7 +344,7 @@ standalone_uninstall:
 
 clean:
 	(cd heap; $(MAKE) $(MFLAGS) clean;)
-	$(RM) $(COMMON_OBJS) $(TARGETS) core rtcmixdylib.so
+	$(RM) $(COMMON_OBJS) $(TARGETS) core rtcmixdylib_osx.so
 
 cleanall: clean
 	$(RM) depend

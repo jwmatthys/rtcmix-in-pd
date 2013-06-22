@@ -1,4 +1,4 @@
-// rtcmix~ v 0.31, Joel Matthys (8/2012) (Linux, Pd support), based on:
+// rtcmix~ v 0.31, Joel Matthys (6/2013) (Linux, Pd support), based on:
 // rtcmix~ v 1.81, Brad Garton (2/2011) (OS 10.5/6, Max5 support)
 // uses the RTcmix bundled executable lib, now based on RTcmix-4.0.1.6
 // see http://music.columbia.edu/cmc/RTcmix for more info
