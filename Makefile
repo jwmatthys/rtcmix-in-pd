@@ -34,12 +34,14 @@ LINUXCFLAGS = -DPD -O2 -fPIC -funroll-loops -fomit-frame-pointer \
 	-Wall -W -Wshadow -Werror \
 	-Wno-unused -Wno-parentheses -Wno-switch
 
-#LINUXINCLUDE =  -I../..
+LINUXINCLUDE =  -I/usr/include/pdl2ork -I/usr/local/include/pd
 
-.c.pd_linux:
+rtcmix:
 	RTcmix/configure
 	make -C RTcmix clean
 	make -C RTcmix
+
+.c.pd_linux:
 	cc $(LINUXCFLAGS) $(LINUXINCLUDE) -o $*.o -c $*.c
 	ld -shared -o $*.pd_linux $*.o -lc -lm
 	strip --strip-unneeded $*.pd_linux
