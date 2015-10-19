@@ -34,7 +34,7 @@ LINUXCFLAGS = -DPD -O2 -fPIC -funroll-loops -fomit-frame-pointer \
 	-Wall -W -Wshadow -Werror \
 	-Wno-unused -Wno-parentheses -Wno-switch
 
-LINUXINCLUDE =  -I/usr/include/pdl2ork -I/usr/local/include/pd
+LINUXINCLUDE = -I/usr/local/include/pd -I/usr/include/pdl2ork
 
 rtcmix:
 	RTcmix/configure
