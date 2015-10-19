@@ -1,4 +1,4 @@
-#N canvas 318 113 907 445 12;
+#N canvas 316 116 907 445 12;
 #X obj 2 1 cnv 15 900 440 empty empty empty 20 12 0 14 -203904 -66577
 0;
 #X obj 41 21 cnv 15 120 400 empty empty empty 20 12 0 14 -159808 -66577
@@ -19,7 +19,7 @@
 #X msg 411 114 save;
 #X msg 415 142 saveas;
 #X msg 415 190 setscript \$1;
-#X floatatom 470 167 5 0 19 0 - - -;
+#X floatatom 470 167 5 0 19 0 - - -, f 5;
 #X msg 414 221 flush;
 #X text 479 29 print current version;
 #X text 446 58 read a scorefile into memory via openpanel dialog;
@@ -39,7 +39,7 @@
 #X text 228 176 nth script;
 #X obj 178 344 cnv 15 280 40 empty empty empty 20 12 0 14 -262144 -66577
 0;
-#X floatatom 269 316 5 0 100 0 - - -;
+#X floatatom 269 316 5 0 100 0 - - -, f 5;
 #X obj 475 301 cnv 15 380 120 empty empty empty 20 12 0 14 -261682
 -66577 0;
 #X text 266 294 control p-fields;
@@ -1099,7 +1099,7 @@ Wilkes for Pd version 0.42.;
 #X text 12 65 INLET_0 object messages and input signal;
 #X text 12 81 OUTLET_0 RTcmix audio output;
 #X restore 404 394 pd META;
-#X text 59 25 rtcmix~ 0.31;
+#X text 59 25 rtcmix~ 0.4;
 #X connect 3 0 50 0;
 #X connect 3 1 50 1;
 #X connect 9 0 8 0;

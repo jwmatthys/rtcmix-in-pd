@@ -1,7 +1,7 @@
 current: rtcmix~_linux
 
 clean: ; rm -f *.pd_linux *.o
-	- rm lib/*
+	- rm -rf lib
 
 # ----------------------- NT -----------------------
 
@@ -37,10 +37,13 @@ LINUXCFLAGS = -DPD -O2 -fPIC -funroll-loops -fomit-frame-pointer \
 #LINUXINCLUDE =  -I../..
 
 .c.pd_linux:
+	RTcmix/configure
+	make -C RTcmix clean
+	make -C RTcmix
 	cc $(LINUXCFLAGS) $(LINUXINCLUDE) -o $*.o -c $*.c
 	ld -shared -o $*.pd_linux $*.o -lc -lm
 	strip --strip-unneeded $*.pd_linux
 	rm $*.o
 	test -d lib || mkdir lib
-	cp RTcmix-*/src/rtcmix/*.so lib
+	cp RTcmix/src/rtcmix/*.so lib
 	cp rtcmix_scripteditor.py lib

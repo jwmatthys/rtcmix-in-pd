@@ -4,7 +4,9 @@
 // see http://music.columbia.edu/cmc/RTcmix for more info
 
 #define VERSION "0.4"
-#define RTcmixVERSION "RTcmix-pd-4.0.1.6"
+
+// import RTcmix library version
+#include "RTcmix-pd-4.0.1.6/src/rtcmix/version.h"
 
 // JWM - Pd headers
 #include "rtcmix~.h"
@@ -264,7 +266,7 @@ void *rtcmix_tilde_new(t_symbol *s, int argc, t_atom *argv)
   // temp.sco file, so we need to be sure it exists.
 
   post("rtcmix~ --- RTcmix music language, http://rtcmix.org ---");
-  post("rtcmix~ version %s by Joel Matthys (%s)", VERSION, RTcmixVERSION);
+  post("rtcmix~ version %s by Joel Matthys (%s)", VERSION, RTCMIX_VERSION);
 
   // If filename is given in score instantiation, open scorefile
   if (fnflag==1)
@@ -507,7 +509,7 @@ void rtcmix_float(t_rtcmix *x, t_float scriptnum)
 // print out the rtcmix~ version
 void rtcmix_version(t_rtcmix *x)
 {
-  post("rtcmix~, v. %s by Joel Matthys (%s)", VERSION, RTcmixVERSION);
+  post("rtcmix~, v. %s by Joel Matthys (%s)", VERSION, RTCMIX_VERSION);
   outlet_bang(x->outpointer);
 }
 
