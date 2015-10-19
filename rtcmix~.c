@@ -6,7 +6,7 @@
 #define VERSION "0.4"
 
 // import RTcmix library version
-#include "RTcmix-pd-4.0.1.6/src/rtcmix/version.h"
+#include "RTcmix/src/rtcmix/version.h"
 
 // JWM - Pd headers
 #include "rtcmix~.h"
