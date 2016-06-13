@@ -3,7 +3,8 @@ To install the binary, unzip and copy the entire folder to somewhere on your Pd 
 You'll need bison and flex; not sure if there's anything else.
 
 To build:
-```make rtcmix
+```Makefile
+make rtcmix
 make
 ```
 
