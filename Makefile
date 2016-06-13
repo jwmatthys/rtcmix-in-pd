@@ -31,7 +31,7 @@ rtcmix~_linux: rtcmix~.pd_linux
 .SUFFIXES: .pd_linux
 
 LINUXCFLAGS = -DPD -O2 -fPIC -funroll-loops -fomit-frame-pointer \
-	-Wall -W -Wshadow -Werror \
+	-Wall -W -Wshadow \
 	-Wno-unused -Wno-parentheses -Wno-switch
 
 LINUXINCLUDE = -I/usr/local/include/pd -I/usr/include/pdl2ork

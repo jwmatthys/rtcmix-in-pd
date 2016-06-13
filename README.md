@@ -17,10 +17,14 @@ http://music.columbia.edu/cmc/RTcmix/rtcmix~/
 
 ## INSTALLATION
 
-To install the binary, unzip and copy the entire folder to somewhere on your Pd search path. You will need the python-tk package installed to use the script editor. (On Debian: apt-get install python-tk)
+You'll need bison and flex; not sure if there's anything else.
 
-To compile from source, first enter the RTcmix folder and ./configure; make clean; make. You'll need bison and flex; not sure what else.
-Then, in the rtcmix-in-pd root folder, make clean and make; that's it.
+To build:
+```make rtcmix
+make
+```
+
+To install the binary, unzip and copy the entire folder to somewhere on your Pd search path. You will need the python-tk package installed to use the script editor. (On Debian: apt-get install python-tk)
 
 ## LICENSE
 distributed under the terms of the Lesser GNU Public License
