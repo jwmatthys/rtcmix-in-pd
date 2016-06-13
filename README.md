@@ -20,7 +20,8 @@ http://music.columbia.edu/cmc/RTcmix/rtcmix~/
 You'll need bison and flex; not sure if there's anything else.
 
 To build:
-```make rtcmix
+```Makefile
+make rtcmix
 make
 ```
 
